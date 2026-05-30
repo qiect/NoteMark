@@ -1,0 +1,16 @@
+/workspace/src/ImportExport/obj/Debug/net8.0/ImportExport.csproj.AssemblyReference.cache
+/workspace/src/ImportExport/obj/Debug/net8.0/ImportExport.GeneratedMSBuildEditorConfig.editorconfig
+/workspace/src/ImportExport/obj/Debug/net8.0/ImportExport.AssemblyInfoInputs.cache
+/workspace/src/ImportExport/obj/Debug/net8.0/ImportExport.AssemblyInfo.cs
+/workspace/src/ImportExport/obj/Debug/net8.0/ImportExport.csproj.CoreCompileInputs.cache
+/workspace/src/ImportExport/obj/Debug/net8.0/ImportExport.sourcelink.json
+/workspace/src/ImportExport/bin/Debug/net8.0/ImportExport.deps.json
+/workspace/src/ImportExport/bin/Debug/net8.0/ImportExport.dll
+/workspace/src/ImportExport/bin/Debug/net8.0/ImportExport.pdb
+/workspace/src/ImportExport/bin/Debug/net8.0/MarkdownEngine.dll
+/workspace/src/ImportExport/bin/Debug/net8.0/MarkdownEngine.pdb
+/workspace/src/ImportExport/obj/Debug/net8.0/ImportExport.csproj.CopyComplete
+/workspace/src/ImportExport/obj/Debug/net8.0/ImportExport.dll
+/workspace/src/ImportExport/obj/Debug/net8.0/refint/ImportExport.dll
+/workspace/src/ImportExport/obj/Debug/net8.0/ImportExport.pdb
+/workspace/src/ImportExport/obj/Debug/net8.0/ref/ImportExport.dll

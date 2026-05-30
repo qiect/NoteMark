@@ -1,0 +1,32 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <UseWindowsForms>true</UseWindowsForms>
+    <EnableComHosting>true</EnableComHosting>
+    <RegisterForComInterop>true</RegisterForComInterop>
+    <ComVisible>true</ComVisible>
+    <AssemblyName>OneNoteAddIn</AssemblyName>
+    <RootNamespace>OneMarkDotNet.AddIn</RootNamespace>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <LangVersion>12</LangVersion>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Interop.Microsoft.Office.Interop.OneNote" Version="1.1.0.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\MarkdownEngine\MarkdownEngine.csproj" />
+    <ProjectReference Include="..\RenderingServices\RenderingServices.csproj" />
+    <ProjectReference Include="..\ThemeManager\ThemeManager.csproj" />
+    <ProjectReference Include="..\OneNoteConverter\OneNoteConverter.csproj" />
+    <ProjectReference Include="..\ImportExport\ImportExport.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Ribbon\RibbonXml.xml" />
+  </ItemGroup>
+
+</Project>

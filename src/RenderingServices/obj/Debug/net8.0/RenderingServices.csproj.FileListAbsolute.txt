@@ -1,0 +1,6 @@
+/workspace/src/RenderingServices/obj/Debug/net8.0/RenderingServices.csproj.AssemblyReference.cache
+/workspace/src/RenderingServices/obj/Debug/net8.0/RenderingServices.GeneratedMSBuildEditorConfig.editorconfig
+/workspace/src/RenderingServices/obj/Debug/net8.0/RenderingServices.AssemblyInfoInputs.cache
+/workspace/src/RenderingServices/obj/Debug/net8.0/RenderingServices.AssemblyInfo.cs
+/workspace/src/RenderingServices/obj/Debug/net8.0/RenderingServices.csproj.CoreCompileInputs.cache
+/workspace/src/RenderingServices/obj/Debug/net8.0/RenderingServices.sourcelink.json

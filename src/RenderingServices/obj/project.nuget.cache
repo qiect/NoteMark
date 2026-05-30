@@ -1,0 +1,11 @@
+{
+  "version": 2,
+  "dgSpecHash": "S8ZDS4u8KvJrldI32eYPCrTzIbQlkilNdiVenxdRkMyGxEc89YNMWxXq8YiEaS7lmTlg2FgUbDnioGeOW0t5Jw==",
+  "success": true,
+  "projectFilePath": "/workspace/src/RenderingServices/RenderingServices.csproj",
+  "expectedPackageFiles": [
+    "/root/.nuget/packages/markdig/0.38.0/markdig.0.38.0.nupkg.sha512",
+    "/root/.nuget/packages/microsoft.web.webview2/1.0.2903.40/microsoft.web.webview2.1.0.2903.40.nupkg.sha512"
+  ],
+  "logs": []
+}
