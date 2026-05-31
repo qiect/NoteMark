@@ -6,7 +6,7 @@ namespace OneMarkDotNet.AddIn;
 
 public sealed class OneNoteEventHandler : IDisposable
 {
-    private IApplication? _app;
+    private Microsoft.Office.Interop.OneNote.Application? _app;
     private readonly OneMarkDotNet.ThemeManager.ThemeManager _themeManager;
     private readonly AddInSettings _settings;
     private string _currentPageId = string.Empty;
@@ -27,9 +27,16 @@ public sealed class OneNoteEventHandler : IDisposable
     {
         try
         {
-            _app = application;
-            _app.OnHierarchyChange += OnHierarchyChange;
-            AppLogger.Instance.LogInfo("OneNote event handler initialized");
+            _app = application as Microsoft.Office.Interop.OneNote.Application;
+            if (_app is not null)
+            {
+                _app.OnHierarchyChange += OnHierarchyChange;
+                AppLogger.Instance.LogInfo("OneNote event handler initialized");
+            }
+            else
+            {
+                AppLogger.Instance.LogWarning("Could not cast IApplication to Application; event handling disabled");
+            }
         }
         catch (Exception ex)
         {
