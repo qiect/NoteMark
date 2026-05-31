@@ -33,4 +33,12 @@
     <EmbeddedResource Include="Ribbon\RibbonXml.xml" />
   </ItemGroup>
 
+  <Target Name="RegisterAddIn" AfterTargets="Build" Condition="'$(Configuration)' == 'Debug' and '$(OS)' == 'Windows_NT'">
+    <Exec Command="regsvr32 /s &quot;$(TargetDir)$(AssemblyName).comhost.dll&quot;" ContinueOnError="true" />
+    <Exec Command="reg add &quot;HKCU\Software\Microsoft\Office\OneNote\AddIns\OneMarkDotNet.AddIn&quot; /ve /d &quot;OneMarkDotNet - OneNote Markdown Plugin&quot; /f" ContinueOnError="true" />
+    <Exec Command="reg add &quot;HKCU\Software\Microsoft\Office\OneNote\AddIns\OneMarkDotNet.AddIn&quot; /v LoadBehavior /t REG_DWORD /d 3 /f" ContinueOnError="true" />
+    <Exec Command="reg add &quot;HKCU\Software\Microsoft\Office\OneNote\AddIns\OneMarkDotNet.AddIn&quot; /v FriendlyName /d &quot;OneMarkDotNet&quot; /f" ContinueOnError="true" />
+    <Exec Command="reg add &quot;HKCU\Software\Microsoft\Office\OneNote\AddIns\OneMarkDotNet.AddIn&quot; /v Description /d &quot;Markdown rendering and export plugin for OneNote&quot; /f" ContinueOnError="true" />
+  </Target>
+
 </Project>
