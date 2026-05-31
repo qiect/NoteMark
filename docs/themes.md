@@ -1,0 +1,104 @@
+# 主题定制指南
+
+## 主题目录
+
+主题文件存储在 `%APPDATA%\OneMarkDotNet\themes\` 目录下。每个 `.css` 文件代表一个主题，文件名（不含扩展名）即为主题名称。
+
+此外，`__global.css` 文件用于定义全局 CSS 变量，对所有主题生效。
+
+## 创建主题
+
+1. 在主题目录下创建一个新的 `.css` 文件，例如 `my-theme.css`
+2. 在文件中定义 `:root` 块并设置 CSS 变量
+3. 在 OneNote 的 OneMarkDotNet 选项卡中点击 Theme → Reload Themes
+4. 从 Theme → Select Theme 菜单中选择新主题
+
+## 示例主题
+
+### 暗色主题
+
+```css
+:root {
+  --font-family: "Segoe UI";
+  --bg-color: #1e1e1e;
+  --line-height: 1.7;
+  --paragraph-margin: 10px;
+  --monospace: "Cascadia Code";
+  --select-text-bg-color: #2d2d2d;
+  --select-text-font-color: #d4d4d4;
+  --blockquote-heading-icons: true;
+  --enable-heading-in-blockquote: true;
+  --enable-code-line-number: true;
+  --enable-latex-to-image: true;
+  --block-width-margin: #404040;
+}
+```
+
+### 学术主题
+
+```css
+:root {
+  --font-family: "Times New Roman";
+  --bg-color: #fffff8;
+  --line-height: 1.8;
+  --paragraph-margin: 12px;
+  --monospace: "Courier New";
+  --select-text-bg-color: #f9f7f1;
+  --select-text-font-color: #333333;
+  --blockquote-heading-icons: false;
+  --enable-heading-in-blockquote: false;
+  --enable-code-line-number: true;
+  --enable-latex-to-image: true;
+  --block-width-margin: #cccccc;
+}
+```
+
+## 支持的变量
+
+| 变量 | 类型 | 默认值 | 说明 |
+|------|------|--------|------|
+| `--font-family` | 字体名 | — | 正文主字体 |
+| `--bg-color` | 颜色值 | — | 页面背景色 |
+| `--line-height` | 数值 | — | 行高倍数 |
+| `--paragraph-margin` | 像素值 | — | 段落间距 |
+| `--monospace` | 字体名 | — | 代码块等宽字体 |
+| `--select-text-bg-color` | 颜色值 | — | 代码块背景色 |
+| `--select-text-font-color` | 颜色值 | — | 正文前景色 |
+| `--blockquote-heading-icons` | `true`/`false` | — | 引用块是否显示标题图标 |
+| `--enable-heading-in-blockquote` | `true`/`false` | — | 是否启用引用块内的标题 |
+| `--enable-code-line-number` | `true`/`false` | — | 代码块是否显示行号 |
+| `--enable-latex-to-image` | `true`/`false` | — | LaTeX 公式是否渲染为图片 |
+| `--block-width-margin` | 颜色值 | — | 块级元素边框颜色 |
+
+## 主题如何生效
+
+主题变量通过以下路径应用到 OneNote 页面渲染：
+
+1. `ThemeManager` 从 CSS 文件加载主题并解析变量
+2. `CssStyleMapper` 将 CSS 变量映射为 `OneNoteStyle` 对象
+3. `OneNoteXmlConverter.ApplyThemeToElements()` 根据元素类型应用样式
+4. `OneNoteXmlBuilder` 生成包含样式信息的 OneNote XML
+
+不同元素类型的样式应用规则：
+
+| 元素类型 | 应用的变量 |
+|----------|-----------|
+| 代码块 | `--monospace`、`--select-text-bg-color`、`--select-text-font-color` |
+| 标题 | `--font-family`、`--select-text-font-color` |
+| 引用块 | `--select-text-font-color`、`--font-family` |
+| 其他文本 | `--font-family`、`--select-text-font-color` |
+
+## 全局变量
+
+`__global.css` 中定义的变量对所有主题生效。如果主题文件和全局文件中定义了相同的变量，主题文件中的值优先。
+
+## 主题数量限制
+
+最多支持 10 个主题，按最后修改时间倒序排列。如需添加更多主题，请删除不使用的主题文件。
+
+## 注意事项
+
+- CSS 文件必须包含 `:root { }` 块，否则变量不会被解析
+- 不支持的 CSS 变量会被忽略
+- 主题文件编码应为 UTF-8
+- 修改主题文件后需要点击 Reload Themes 重新加载
