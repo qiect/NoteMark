@@ -138,16 +138,12 @@ public sealed class HtmlToOneNoteConverter
         var level = int.Parse(tagName[1..]);
 
         var html = BuildInlineHtml(element);
-        var style = new OneNoteStyle(
-            FontFamily: "Calibri",
-            FontSize: fontSize,
-            Bold: true,
-            Italic: false,
-            Underline: false,
-            Strikethrough: false,
-            Superscript: false,
-            Subscript: false
-        );
+        var style = new OneNoteStyle
+        {
+            FontFamily = "Calibri",
+            FontSize = fontSize,
+            Bold = true
+        };
 
         var oe = new XElement(Ns + "OE");
         oe.Add(new XAttribute("style", $"font-family:Calibri;font-size:{fontSize:F0}pt;font-weight:bold"));
@@ -316,16 +312,12 @@ public sealed class HtmlToOneNoteConverter
                     Type = ElementType.Heading,
                     Content = element.Value.Trim(),
                     Level = level,
-                    Style = new OneNoteStyle(
-                        FontFamily: "Calibri",
-                        FontSize: HeadingFontSizes[tagName],
-                        Bold: true,
-                        Italic: false,
-                        Underline: false,
-                        Strikethrough: false,
-                        Superscript: false,
-                        Subscript: false
-                    )
+                    Style = new OneNoteStyle
+                    {
+                        FontFamily = "Calibri",
+                        FontSize = HeadingFontSizes[tagName],
+                        Bold = true
+                    }
                 });
                 break;
             case "p":
@@ -354,17 +346,12 @@ public sealed class HtmlToOneNoteConverter
                 {
                     Type = ElementType.CodeBlock,
                     Content = element.Value,
-                    Style = new OneNoteStyle(
-                        FontFamily: "Consolas",
-                        FontSize: 10.0,
-                        HighlightColor: "#F5F5F5",
-                        Bold: false,
-                        Italic: false,
-                        Underline: false,
-                        Strikethrough: false,
-                        Superscript: false,
-                        Subscript: false
-                    )
+                    Style = new OneNoteStyle
+                    {
+                        FontFamily = "Consolas",
+                        FontSize = 10.0,
+                        HighlightColor = "#F5F5F5"
+                    }
                 });
                 break;
             case "ul" or "ol":

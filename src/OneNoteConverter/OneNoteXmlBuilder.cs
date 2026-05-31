@@ -173,18 +173,19 @@ public sealed class OneNoteXmlBuilder
             _ => 11.0
         };
 
-        var style = new OneNoteStyle(
-            FontFamily: element.Style.FontFamily ?? "Calibri",
-            FontColor: element.Style.FontColor,
-            HighlightColor: element.Style.HighlightColor,
-            FontSize: fontSize,
-            Bold: true,
-            Italic: element.Style.Italic,
-            Underline: element.Style.Underline,
-            Strikethrough: element.Style.Strikethrough,
-            Superscript: element.Style.Superscript,
-            Subscript: element.Style.Subscript
-        );
+        var style = new OneNoteStyle
+        {
+            FontFamily = element.Style.FontFamily ?? "Calibri",
+            FontColor = element.Style.FontColor,
+            HighlightColor = element.Style.HighlightColor,
+            FontSize = fontSize,
+            Bold = true,
+            Italic = element.Style.Italic,
+            Underline = element.Style.Underline,
+            Strikethrough = element.Style.Strikethrough,
+            Superscript = element.Style.Superscript,
+            Subscript = element.Style.Subscript
+        };
 
         var html = BuildStyledHtml(element.Content, style);
         var oe = BuildOE(html, style);
@@ -193,18 +194,19 @@ public sealed class OneNoteXmlBuilder
 
     private XElement BuildCodeBlockElement(OutlineElement element)
     {
-        var style = new OneNoteStyle(
-            FontFamily: "Consolas",
-            FontColor: element.Style.FontColor,
-            HighlightColor: element.Style.HighlightColor ?? "#F5F5F5",
-            FontSize: element.Style.FontSize ?? 10.0,
-            Bold: false,
-            Italic: false,
-            Underline: false,
-            Strikethrough: false,
-            Superscript: false,
-            Subscript: false
-        );
+        var style = new OneNoteStyle
+        {
+            FontFamily = "Consolas",
+            FontColor = element.Style.FontColor,
+            HighlightColor = element.Style.HighlightColor ?? "#F5F5F5",
+            FontSize = element.Style.FontSize ?? 10.0,
+            Bold = false,
+            Italic = false,
+            Underline = false,
+            Strikethrough = false,
+            Superscript = false,
+            Subscript = false
+        };
 
         var escaped = SecurityElementEscape(element.Content);
         var html = $"<span style='font-family:Consolas;font-size:10pt;background:#F5F5F5'>{escaped}</span>";
@@ -217,18 +219,19 @@ public sealed class OneNoteXmlBuilder
 
     private XElement BuildQuoteElement(OutlineElement element)
     {
-        var style = new OneNoteStyle(
-            FontFamily: element.Style.FontFamily,
-            FontColor: element.Style.FontColor ?? "#666666",
-            HighlightColor: element.Style.HighlightColor,
-            FontSize: element.Style.FontSize,
-            Bold: element.Style.Bold,
-            Italic: element.Style.Italic ?? true,
-            Underline: element.Style.Underline,
-            Strikethrough: element.Style.Strikethrough,
-            Superscript: element.Style.Superscript,
-            Subscript: element.Style.Subscript
-        );
+        var style = new OneNoteStyle
+        {
+            FontFamily = element.Style.FontFamily,
+            FontColor = element.Style.FontColor ?? "#666666",
+            HighlightColor = element.Style.HighlightColor,
+            FontSize = element.Style.FontSize,
+            Bold = element.Style.Bold,
+            Italic = element.Style.Italic,
+            Underline = element.Style.Underline,
+            Strikethrough = element.Style.Strikethrough,
+            Superscript = element.Style.Superscript,
+            Subscript = element.Style.Subscript
+        };
 
         var html = BuildStyledHtml(element.Content, style);
         var oe = BuildOE(html, style);

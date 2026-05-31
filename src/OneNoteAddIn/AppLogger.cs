@@ -10,7 +10,7 @@ public sealed class AppLogger
     private readonly string _logDirectory;
     private readonly string _logFilePath;
     private readonly ConcurrentQueue<string> _queue = new();
-    private readonly Timer _flushTimer;
+    private readonly System.Threading.Timer _flushTimer;
     private readonly int _maxLogAgeDays = 30;
     private bool _disposed;
 
@@ -22,7 +22,7 @@ public sealed class AppLogger
         var date = DateTime.Now.ToString("yyyyMMdd");
         _logFilePath = Path.Combine(_logDirectory, $"onemark_{date}.log");
 
-        _flushTimer = new Timer(_ => Flush(), null, TimeSpan.FromSeconds(1), TimeSpan.FromSeconds(5));
+        _flushTimer = new System.Threading.Timer(_ => Flush(), null, TimeSpan.FromSeconds(1), TimeSpan.FromSeconds(5));
 
         CleanOldLogs();
     }

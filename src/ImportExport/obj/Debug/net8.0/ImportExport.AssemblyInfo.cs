@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyCopyrightAttribute("Copyright © 2026 OneMarkDotNet")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+17f58c747495b24321eaadc809454eb044616eb1")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+d9e82481f1c3cde74e1ba0f40da433fc86db4499")]
 [assembly: System.Reflection.AssemblyProductAttribute("OneMarkDotNet - OneNote Markdown Plugin")]
 [assembly: System.Reflection.AssemblyTitleAttribute("ImportExport")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

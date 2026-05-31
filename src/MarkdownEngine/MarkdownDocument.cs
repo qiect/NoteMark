@@ -23,6 +23,11 @@ public class MarkdownDocument
     public List<string> Tags { get; set; } = [];
     public string? Author { get; set; }
 
+    public static MarkdownDocument Parse(string markdown)
+    {
+        return new MarkdownParser().Parse(markdown);
+    }
+
     public static MarkdownDocument FromMarkdigDocument(Markdig.Syntax.MarkdownDocument doc)
     {
         var document = new MarkdownDocument();

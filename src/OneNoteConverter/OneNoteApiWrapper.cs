@@ -10,7 +10,7 @@ public sealed class OneNoteApiWrapper : IDisposable
 
     public OneNoteApiWrapper()
     {
-        _app = new Application();
+        _app = new Microsoft.Office.Interop.OneNote.Application();
     }
 
     public void GetPageContent(string pageId, out string xml)

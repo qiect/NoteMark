@@ -39,7 +39,7 @@ public static partial class CssVariableParser
 
             foreach (Match varMatch in VariableRegex().Matches(blockContent))
             {
-                var name = $"--{varMatch.Groups[1].Value.Trim()}";
+                var name = string.Concat("--", varMatch.Groups[1].Value.Trim());
                 var value = varMatch.Groups[2].Value.Trim();
 
                 if (SupportedSet.Contains(name, StringComparer.OrdinalIgnoreCase))
@@ -62,7 +62,7 @@ public static partial class CssVariableParser
 
         foreach (var (name, value) in variables)
         {
-            sb.AppendLine($"  {name}: {value};");
+            sb.Append("  ").Append(name).Append(": ").Append(value).AppendLine(";");
         }
 
         sb.AppendLine("}");

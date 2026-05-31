@@ -10,7 +10,7 @@ namespace OneMarkDotNet.AddIn.Ribbon;
 public sealed class OneMarkRibbon : IRibbonExtensibility
 {
     private IRibbonUI? _ribbonUi;
-    private readonly ThemeManager _themeManager;
+    private readonly OneMarkDotNet.ThemeManager.ThemeManager _themeManager;
 
     public event Action? RenderMarkdownRequested;
     public event Action? ExportMarkdownRequested;
@@ -22,7 +22,7 @@ public sealed class OneMarkRibbon : IRibbonExtensibility
     public event Action? ExportMarkdownFileRequested;
     public event Action? AboutRequested;
 
-    public OneMarkRibbon(ThemeManager themeManager)
+    public OneMarkRibbon(OneMarkDotNet.ThemeManager.ThemeManager themeManager)
     {
         _themeManager = themeManager;
     }

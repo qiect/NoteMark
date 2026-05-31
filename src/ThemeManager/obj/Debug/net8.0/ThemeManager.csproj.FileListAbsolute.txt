@@ -3,3 +3,10 @@
 /workspace/src/ThemeManager/obj/Debug/net8.0/ThemeManager.AssemblyInfo.cs
 /workspace/src/ThemeManager/obj/Debug/net8.0/ThemeManager.csproj.CoreCompileInputs.cache
 /workspace/src/ThemeManager/obj/Debug/net8.0/ThemeManager.sourcelink.json
+/workspace/src/ThemeManager/bin/Debug/net8.0/ThemeManager.deps.json
+/workspace/src/ThemeManager/bin/Debug/net8.0/ThemeManager.dll
+/workspace/src/ThemeManager/bin/Debug/net8.0/ThemeManager.pdb
+/workspace/src/ThemeManager/obj/Debug/net8.0/ThemeManager.dll
+/workspace/src/ThemeManager/obj/Debug/net8.0/refint/ThemeManager.dll
+/workspace/src/ThemeManager/obj/Debug/net8.0/ThemeManager.pdb
+/workspace/src/ThemeManager/obj/Debug/net8.0/ref/ThemeManager.dll

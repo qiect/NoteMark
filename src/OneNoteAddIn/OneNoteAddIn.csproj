@@ -3,8 +3,8 @@
   <PropertyGroup>
     <TargetFramework>net8.0-windows</TargetFramework>
     <UseWindowsForms>true</UseWindowsForms>
-    <EnableComHosting>true</EnableComHosting>
-    <RegisterForComInterop>true</RegisterForComInterop>
+    <EnableComHosting Condition="'$(OS)' == 'Windows_NT'">true</EnableComHosting>
+    <RegisterForComInterop Condition="'$(OS)' == 'Windows_NT'">true</RegisterForComInterop>
     <ComVisible>true</ComVisible>
     <AssemblyName>OneNoteAddIn</AssemblyName>
     <RootNamespace>OneMarkDotNet.AddIn</RootNamespace>

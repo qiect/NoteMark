@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using System.Globalization;
 using System.Text;
 using System.Text.RegularExpressions;
 
@@ -52,9 +53,9 @@ public sealed class CodeHighlightService
         return result;
     }
 
-    public IReadOnlyList<string> GetSupportedLanguages() => SupportedLanguages;
+    public static IReadOnlyList<string> GetSupportedLanguages() => SupportedLanguages;
 
-    private string? NormalizeLanguage(string language)
+    private static string? NormalizeLanguage(string language)
     {
         if (string.IsNullOrWhiteSpace(language))
             return null;
@@ -75,7 +76,7 @@ public sealed class CodeHighlightService
         return ReconstructFromTokens(tokens, code);
     }
 
-    private List<Token> Tokenize(string code, LanguageRuleSet ruleSet)
+    private static List<Token> Tokenize(string code, LanguageRuleSet ruleSet)
     {
         var tokens = new List<Token>();
         var occupied = new bool[code.Length];
@@ -113,7 +114,7 @@ public sealed class CodeHighlightService
         return tokens;
     }
 
-    private string ReconstructFromTokens(List<Token> tokens, string code)
+    private static string ReconstructFromTokens(List<Token> tokens, string code)
     {
         var sb = new StringBuilder();
         var lastEnd = 0;
@@ -126,7 +127,7 @@ public sealed class CodeHighlightService
             }
 
             var text = code.Substring(token.Index, token.Length);
-            sb.Append($"<span class=\"{token.CssClass}\">{EscapeHtml(text)}</span>");
+            sb.Append(CultureInfo.InvariantCulture, $"""<span class="{token.CssClass}">{EscapeHtml(text)}</span>""");
             lastEnd = token.Index + token.Length;
         }
 
@@ -142,7 +143,7 @@ public sealed class CodeHighlightService
     {
         if (!showLineNumbers)
         {
-            return $"<pre><code class=\"hljs\">{highlightedCode}</code></pre>";
+            return string.Format(CultureInfo.InvariantCulture, "<pre><code class=\"hljs\">{0}</code></pre>", highlightedCode);
         }
 
         var lines = highlightedCode.Split("\n");
@@ -152,8 +153,8 @@ public sealed class CodeHighlightService
         for (var i = 0; i < lines.Length; i++)
         {
             var lineNumber = i + 1;
-            sb.Append($"<span class=\"hljs-ln-number\" data-line-number=\"{lineNumber}\"></span>");
-            sb.Append($"<span class=\"hljs-ln-line\">{lines[i]}");
+            sb.Append(CultureInfo.InvariantCulture, $"""<span class="hljs-ln-number" data-line-number="{lineNumber}"></span>""");
+            sb.Append(CultureInfo.InvariantCulture, $"""<span class="hljs-ln-line">{lines[i]}""");
             if (i < lines.Length - 1)
                 sb.Append('\n');
             sb.Append("</span>");
@@ -164,7 +165,10 @@ public sealed class CodeHighlightService
     }
 
     private static string EscapeHtml(string text) =>
-        text.Replace("&", "&amp;").Replace("<", "&lt;").Replace(">", "&gt;").Replace("\"", "&quot;");
+        text.Replace("&", "&amp;", StringComparison.Ordinal)
+            .Replace("<", "&lt;", StringComparison.Ordinal)
+            .Replace(">", "&gt;", StringComparison.Ordinal)
+            .Replace("\"", "&quot;", StringComparison.Ordinal);
 
     private static Dictionary<string, LanguageRuleSet> InitializeRuleSets() => new()
     {
@@ -198,7 +202,7 @@ public sealed class CodeHighlightService
         [
             new HighlightRule(new Regex(@"'''[\s\S]*?'''|""""[\s\S]*?""""", RegexOptions.Compiled), "hljs-string"),
             new HighlightRule(new Regex(@"#.*?$", RegexOptions.Multiline | RegexOptions.Compiled), "hljs-comment"),
-            new HighlightRule(new Regex(@"f?\"\"\"(?:[^""\\]|\\.)*\"\"\"|f?'(?:[^'\\]|\\.)*'|f?\"(?:[^""\\]|\\.)*\"", RegexOptions.Compiled), "hljs-string"),
+            new HighlightRule(new Regex(@"f?""""(?:[^""\\]|\\.)*""""|f?'(?:[^'\\]|\\.)*'|f?""(?:[^""\\]|\\.)*""", RegexOptions.Compiled), "hljs-string"),
             new HighlightRule(new Regex(@"\b(?:False|True|None|and|as|assert|async|await|break|class|continue|def|del|elif|else|except|finally|for|from|global|if|import|in|is|lambda|nonlocal|not|or|pass|raise|return|try|while|with|yield|match|case)\b", RegexOptions.Compiled), "hljs-keyword"),
             new HighlightRule(new Regex(@"\b(?:True|False|None)\b", RegexOptions.Compiled), "hljs-literal"),
             new HighlightRule(new Regex(@"\b\d+\.\d+(?:[eE][+-]?\d+)?[jJ]?\b|\b\d+[jJ]?\b|\b0[xXoObB][0-9a-fA-F]+\b", RegexOptions.Compiled), "hljs-number"),
@@ -285,7 +289,7 @@ public sealed class CodeHighlightService
             new HighlightRule(new Regex(@"/\*[\s\S]*?\*/", RegexOptions.Compiled), "hljs-comment"),
             new HighlightRule(new Regex(@"""(?:[^""\\]|\\.)*""", RegexOptions.Compiled), "hljs-string"),
             new HighlightRule(new Regex(@"'(?:[^'\\]|\\.)*'", RegexOptions.Compiled), "hljs-string"),
-            new HighlightRule(new Regex(@"\b(?:align-content|align-items|align-self|animation|animation-delay|animation-direction|animation-duration|animation-fill-mode|animation-iteration-count|animation-name|animation-play-state|animation-timing-function|appearance|backdrop-filter|backface-visibility|background|background-attachment|background-blend-mode|background-clip|background-color|background-image|background-origin|background-position|background-repeat|background-size|border|border-bottom|border-bottom-color|border-bottom-left-radius|border-bottom-right-radius|border-bottom-style|border-bottom-width|border-collapse|border-color|border-image|border-left|border-left-color|border-left-style|border-left-width|border-radius|border-right|border-right-color|border-right-style|border-right-width|border-spacing|border-style|border-top|border-top-color|border-top-left-radius|border-top-right-radius|border-top-style|border-top-width|border-width|bottom|box-decoration-break|box-shadow|box-sizing|caption-side|clear|clip-path|color|column-count|column-fill|column-gap|column-rule|column-span|column-width|columns|content|counter-increment|counter-reset|cursor|direction|display|empty-cells|filter|flex|flex-basis|flex-direction|flex-flow|flex-grow|flex-shrink|flex-wrap|float|font|font-family|font-feature-settings|font-kerning|font-language-override|font-size|font-size-adjust|font-stretch|font-style|font-variant|font-weight|gap|grid|grid-area|grid-auto-columns|grid-auto-flow|grid-auto-rows|grid-column|grid-column-end|grid-column-gap|grid-column-start|grid-gap|grid-row|grid-row-end|grid-row-gap|grid-row-start|grid-template|grid-template-areas|grid-template-columns|grid-template-rows|height|justify-content|justify-items|justify-self|left|letter-spacing|line-height|list-style|list-style-image|list-style-position|list-style-type|margin|margin-bottom|margin-left|margin-right|margin-top|max-height|max-width|min-height|min-width|mix-blend-mode|object-fit|object-position|opacity|order|outline|outline-color|outline-offset|outline-style|outline-width|overflow|overflow-wrap|overflow-x|overflow-y|padding|padding-bottom|padding-left|padding-right|padding-top|perspective|perspective-origin|place-content|place-items|place-self|pointer-events|position|quotes|resize|right|row-gap|scroll-behavior|tab-size|table-layout|text-align|text-align-last|text-decoration|text-decoration-color|text-decoration-line|text-decoration-style|text-indent|text-justify|text-overflow|text-shadow|text-transform|top|transform|transform-origin|transform-style|transition|transition-delay|transition-duration|transition-property|transition-timing-function|user-select|vertical-align|visibility|white-space|width|word-break|word-spacing|word-wrap|writing-mode|z-index)\s*:", RegexOptions.Compiled), "hljs-attribute"),
+            new HighlightRule(new Regex(@"\b(?:align-content|align-items|align-self|animation|animation-delay|animation-direction|animation-duration|animation-fill-mode|animation-iteration-count|animation-name|animation-play-state|animation-timing-function|appearance|backdrop-filter|backface-visibility|background|background-attachment|background-blend-mode|background-clip|background-color|background-image|background-origin|background-position|background-repeat|background-size|border|border-bottom|border-bottom-color|border-bottom-left-radius|border-bottom-right-radius|border-bottom-style|border-bottom-width|border-collapse|border-color|border-image|border-left|border-left-color|border-left-style|border-left-width|border-radius|border-right|border-right-color|border-right-style|border-right-width|border-spacing|border-style|border-top|border-top-color|border-top-left-radius|border-top-right-radius|border-top-style|border-top-width|border-width|bottom|box-decoration-break|box-shadow|box-sizing|caption-side|clear|clip-path|color|column-count|column-fill|column-gap|column-rule|column-span|column-width|columns|content|counter-increment|counter-reset|cursor|direction|display|empty-cells|filter|flex|flex-basis|flex-direction|flex-flow|flex-grow|flex-shrink|flex-wrap|float|font|font-family|font-feature-settings|font-kerning|font-language-override|font-size|font-size-adjust|font-stretch|font-style|font-variant|font-weight|gap|grid|grid-area|grid-auto-columns|grid-auto-flow|grid-auto-rows|grid-column|grid-column-end|grid-column-gap|grid-column-start|grid-gap|grid-row|grid-row-end|grid-row-gap|grid-row-start|grid-template|grid-template-areas|grid-template-columns|grid-template-rows|height|justify-content|justify-items|justify-self|left|letter-spacing|line-height|list-style|list-style-image|list-style-position|list-style-type|margin|margin-bottom|margin-left|margin-right|margin-top|max-height|max-width|min-height|min-width|mix-blend-mode|object-fit|object-position|opacity|order|outline|outline-color|outline-offset|outline-style|outline-width|overflow|overflow-wrap|overflow-x|overflow-y|padding|padding-bottom|padding-left|padding-right|padding-top|perspective|perspective-origin|place-content|place-items|place-self|pointer-events|position|quotes|resize|right|row-gap|scroll-behavior|tab-size|table-layout|text-align|text-align-last|text-combine-upright|text-decoration|text-decoration-color|text-decoration-line|text-decoration-style|text-indent|text-justify|text-orientation|text-overflow|text-shadow|text-transform|top|transform|transform-origin|transform-style|transition|transition-delay|transition-duration|transition-property|transition-timing-function|unicode-bidi|user-select|vertical-align|visibility|white-space|width|word-break|word-spacing|word-wrap|writing-mode|z-index)\b", RegexOptions.Compiled), "hljs-tag"),
             new HighlightRule(new Regex(@"\b(?:inherit|initial|unset|auto|none|block|inline|inline-block|flex|grid|inline-flex|inline-grid|relative|absolute|fixed|sticky|static|hidden|visible|scroll|solid|dashed|dotted|bold|bolder|lighter|normal|italic|center|left|right|justify|baseline|middle|top|bottom|cover|contain|pointer|default|transparent|currentColor|ease|ease-in|ease-out|ease-in-out|linear|step-start|step-end|forwards|backwards|both|infinite|alternate|alternate-reverse|normal|reverse|row|column|row-reverse|column-reverse|wrap|nowrap|wrap-reverse|space-between|space-around|space-evenly|stretch|start|end|flex-start|flex-end|center|max-content|min-content|fit-content|available|border-box|content-box|break-spaces|pre|pre-wrap|pre-line|nowrap|uppercase|lowercase|capitalize|underline|overline|line-through|blink|ellipsis|clip|scale|rotate|translate|translateX|translateY|translateZ|skew|matrix|perspective|rgb|rgba|hsl|hsla|var|calc|env|min|max|clamp|attr|url|linear-gradient|radial-gradient|conic-gradient|repeating-linear-gradient|repeating-radial-gradient|repeating-conic-gradient)\b", RegexOptions.Compiled), "hljs-built_in"),
             new HighlightRule(new Regex(@"#[0-9a-fA-F]{3,8}\b", RegexOptions.Compiled), "hljs-number"),
             new HighlightRule(new Regex(@"\b\d+\.?\d*(?:px|em|rem|vh|vw|vmin|vmax|%|cm|mm|in|pt|pc|ch|ex|fr|deg|rad|turn|s|ms|Hz|kHz|dpi|dpcm|dppx)?\b", RegexOptions.Compiled), "hljs-number"),

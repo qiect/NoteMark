@@ -1,8 +1,10 @@
 {
   "version": 2,
-  "dgSpecHash": "LiJWFLVZG20z67dD82hvPT7huuYJNs4sOT3QBywOsUP6rj3/QMQKypFjRqarHakIuaRyWv+diaxmxC/N0gg9Dg==",
+  "dgSpecHash": "vOPrh4zycQ8=",
   "success": true,
   "projectFilePath": "/workspace/src/ThemeManager/ThemeManager.csproj",
-  "expectedPackageFiles": [],
+  "expectedPackageFiles": [
+    "/root/.nuget/packages/microsoft.windowsdesktop.app.ref/8.0.27/microsoft.windowsdesktop.app.ref.8.0.27.nupkg.sha512"
+  ],
   "logs": []
 }

@@ -1,5 +1,5 @@
 using System.Xml.Linq;
-using MarkdownEngine;
+using OneMarkDotNet.MarkdownEngine;
 using OneMarkDotNet.OneNoteConverter;
 using OneMarkDotNet.RenderingServices;
 using OneMarkDotNet.ThemeManager;
@@ -15,11 +15,11 @@ public sealed class MarkdownRenderHandler : IDisposable
     private readonly OneNotePageUpdater _pageUpdater;
     private readonly MarkdownParser _parser = new();
     private readonly CodeHighlightService _highlightService = new();
-    private readonly ThemeManager _themeManager;
+    private readonly OneMarkDotNet.ThemeManager.ThemeManager _themeManager;
     private readonly AddInSettings _settings;
     private bool _disposed;
 
-    public MarkdownRenderHandler(OneNoteApiWrapper api, ThemeManager themeManager, AddInSettings settings)
+    public MarkdownRenderHandler(OneNoteApiWrapper api, OneMarkDotNet.ThemeManager.ThemeManager themeManager, AddInSettings settings)
     {
         _api = api;
         _themeManager = themeManager;
@@ -246,7 +246,7 @@ public sealed class MarkdownRenderHandler : IDisposable
         if (trimmed.StartsWith("> ")) return true;
         if (trimmed.StartsWith("```")) return true;
         if (trimmed.StartsWith("---") || trimmed.StartsWith("***") || trimmed.StartsWith("___")) return true;
-        if (trimmed.StartsWith("|") && trimmed.Contains('|', 1)) return true;
+        if (trimmed.StartsWith("|") && trimmed.IndexOf('|', 1) >= 0) return true;
         if (System.Text.RegularExpressions.Regex.IsMatch(trimmed, @"^\d+\.\s")) return true;
         if (trimmed.Contains("**") || trimmed.Contains("__")) return true;
         if (trimmed.Contains("$$")) return true;

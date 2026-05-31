@@ -13,10 +13,10 @@ public sealed class ExportHandler
     private readonly OneNoteXmlConverter _converter = new();
     private readonly MarkdownExporter _exporter = new();
     private readonly MarkdownImporter _importer = new();
-    private readonly ThemeManager _themeManager;
+    private readonly OneMarkDotNet.ThemeManager.ThemeManager _themeManager;
     private readonly AddInSettings _settings;
 
-    public ExportHandler(OneNoteApiWrapper api, ThemeManager themeManager, AddInSettings settings)
+    public ExportHandler(OneNoteApiWrapper api, OneMarkDotNet.ThemeManager.ThemeManager themeManager, AddInSettings settings)
     {
         _api = api;
         _themeManager = themeManager;

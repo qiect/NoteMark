@@ -15,6 +15,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\MarkdownEngine\MarkdownEngine.csproj" />
+    <ProjectReference Include="..\ThemeManager\ThemeManager.csproj" />
   </ItemGroup>
 
 </Project>

@@ -13,7 +13,7 @@ public enum ElementType
     Diagram
 }
 
-public sealed class OutlineElement
+public sealed record OutlineElement
 {
     public ElementType Type { get; init; }
     public string Content { get; init; } = string.Empty;
@@ -22,7 +22,7 @@ public sealed class OutlineElement
     public List<OutlineElement> Children { get; init; } = [];
 }
 
-public sealed class OneNoteStyle
+public sealed record OneNoteStyle
 {
     public string? FontFamily { get; init; }
     public string? FontColor { get; init; }

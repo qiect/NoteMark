@@ -1,4 +1,5 @@
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Xml.Linq;
 
 namespace OneMarkDotNet.OneNoteConverter;
@@ -280,18 +281,19 @@ public sealed class OneNoteToMarkdownConverter
         var highlightAttr = oe.Attribute("highlightColor")?.Value;
         if (highlightAttr is not null) highlightColor = highlightAttr;
 
-        return new OneNoteStyle(
-            FontFamily: fontFamily,
-            FontColor: fontColor,
-            HighlightColor: highlightColor,
-            FontSize: fontSize,
-            Bold: bold,
-            Italic: italic,
-            Underline: underline,
-            Strikethrough: strikethrough,
-            Superscript: false,
-            Subscript: false
-        );
+        return new OneNoteStyle
+        {
+            FontFamily = fontFamily,
+            FontColor = fontColor,
+            HighlightColor = highlightColor,
+            FontSize = fontSize,
+            Bold = bold,
+            Italic = italic,
+            Underline = underline,
+            Strikethrough = strikethrough,
+            Superscript = false,
+            Subscript = false
+        };
     }
 
     private void ExtractOutlineElements(XElement outline, List<OutlineElement> elements, int indentLevel)

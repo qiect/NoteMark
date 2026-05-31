@@ -28,7 +28,10 @@
           "Markdig": "0.38.0"
         },
         "runtime": {
-          "MarkdownEngine.dll": {}
+          "MarkdownEngine.dll": {
+            "assemblyVersion": "1.0.0",
+            "fileVersion": "1.0.0.0"
+          }
         }
       }
     }

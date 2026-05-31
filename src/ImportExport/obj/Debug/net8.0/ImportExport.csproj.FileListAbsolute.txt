@@ -9,8 +9,8 @@
 /workspace/src/ImportExport/bin/Debug/net8.0/ImportExport.pdb
 /workspace/src/ImportExport/bin/Debug/net8.0/MarkdownEngine.dll
 /workspace/src/ImportExport/bin/Debug/net8.0/MarkdownEngine.pdb
-/workspace/src/ImportExport/obj/Debug/net8.0/ImportExport.csproj.CopyComplete
 /workspace/src/ImportExport/obj/Debug/net8.0/ImportExport.dll
 /workspace/src/ImportExport/obj/Debug/net8.0/refint/ImportExport.dll
 /workspace/src/ImportExport/obj/Debug/net8.0/ImportExport.pdb
 /workspace/src/ImportExport/obj/Debug/net8.0/ref/ImportExport.dll
+/workspace/src/ImportExport/obj/Debug/net8.0/ImportEx.B14A9EAD.Up2Date

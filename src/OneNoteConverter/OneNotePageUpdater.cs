@@ -1,5 +1,6 @@
 using System.Xml.Linq;
-using MarkdownEngine;
+using OneMarkDotNet.MarkdownEngine;
+using OneMarkDotNet.ThemeManager;
 
 namespace OneMarkDotNet.OneNoteConverter;
 
@@ -85,7 +86,7 @@ public sealed class OneNotePageUpdater : IDisposable
         var pageDoc = XDocument.Parse(pageXml);
 
         var document = MarkdownDocument.Parse(markdown);
-        var html = document.ToHtml();
+        var html = new MarkdownParser().ParseToHtml(document.RawContent);
         var outlineElements = _converter.ConvertToOneNoteElements(document, theme);
 
         var selectedTElements = pageDoc.Descendants(ns + "T")

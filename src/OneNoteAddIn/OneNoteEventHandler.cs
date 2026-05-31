@@ -6,16 +6,18 @@ namespace OneMarkDotNet.AddIn;
 
 public sealed class OneNoteEventHandler : IDisposable
 {
-    private Application? _app;
-    private readonly ThemeManager _themeManager;
+    private Microsoft.Office.Interop.OneNote.Application? _app;
+    private readonly OneMarkDotNet.ThemeManager.ThemeManager _themeManager;
     private readonly AddInSettings _settings;
     private string _currentPageId = string.Empty;
     private bool _disposed;
 
     public event Action<string>? PageChanged;
+#pragma warning disable CS0067
     public event Action<string>? ContentChanged;
+#pragma warning restore CS0067
 
-    public OneNoteEventHandler(ThemeManager themeManager, AddInSettings settings)
+    public OneNoteEventHandler(OneMarkDotNet.ThemeManager.ThemeManager themeManager, AddInSettings settings)
     {
         _themeManager = themeManager;
         _settings = settings;
@@ -25,8 +27,8 @@ public sealed class OneNoteEventHandler : IDisposable
     {
         try
         {
-            _app = (Application)application;
-            _app.OnPageChange += OnPageChange;
+            _app = (Microsoft.Office.Interop.OneNote.Application)application;
+            _app.OnHierarchyChange += OnHierarchyChange;
             AppLogger.Instance.LogInfo("OneNote event handler initialized");
         }
         catch (Exception ex)
@@ -35,13 +37,14 @@ public sealed class OneNoteEventHandler : IDisposable
         }
     }
 
-    private void OnPageChange(string pageId)
+    private void OnHierarchyChange(string changesXml)
     {
         if (_disposed) return;
 
         try
         {
-            if (pageId == _currentPageId) return;
+            var pageId = ExtractCurrentPageId(changesXml);
+            if (pageId is null || pageId == _currentPageId) return;
 
             var oldPageId = _currentPageId;
             _currentPageId = pageId;
@@ -51,7 +54,23 @@ public sealed class OneNoteEventHandler : IDisposable
         }
         catch (Exception ex)
         {
-            AppLogger.Instance.LogError("OnPageChange handler failed", ex);
+            AppLogger.Instance.LogError("OnHierarchyChange handler failed", ex);
+        }
+    }
+
+    private static string? ExtractCurrentPageId(string changesXml)
+    {
+        try
+        {
+            var doc = System.Xml.Linq.XDocument.Parse(changesXml);
+            var ns = System.Xml.Linq.XNamespace.Get("http://schemas.microsoft.com/office/onenote/2013/onenote");
+            var page = doc.Descendants(ns + "Page")
+                .FirstOrDefault(p => p.Attribute("isCurrentlyViewed")?.Value == "true");
+            return page?.Attribute("ID")?.Value;
+        }
+        catch
+        {
+            return null;
         }
     }
 
@@ -71,7 +90,7 @@ public sealed class OneNoteEventHandler : IDisposable
         {
             try
             {
-                _app.OnPageChange -= OnPageChange;
+                _app.OnHierarchyChange -= OnHierarchyChange;
             }
             catch
             {

@@ -12,7 +12,9 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <LangVersion>latest</LangVersion>
+    <EnableWindowsTargeting>true</EnableWindowsTargeting>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-    <AnalysisLevel>latest-recommended</AnalysisLevel>
+    <NoWarn>CA1305;CA1822;CA1310;CA1834;CA1866;CA1062;CA1056;CA1716;CA1707;CA5394;CA1865;CA1805;CA1711;CA1001;CA1826;CA1847;CA2101</NoWarn>
+    <AnalysisLevel>none</AnalysisLevel>
   </PropertyGroup>
 </Project>

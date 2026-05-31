@@ -60,9 +60,8 @@ public sealed class WebView2Helper : IAsyncDisposable
         if (_webView?.CoreWebView2 is null)
             throw new InvalidOperationException("WebView2 is not initialized.");
 
-        var stream = await _webView.CoreWebView2.CapturePreviewAsync(CoreWebView2CapturePreviewImageFormat.Png, new MemoryStream());
         using var ms = new MemoryStream();
-        await stream.CopyToAsync(ms);
+        await _webView.CoreWebView2.CapturePreviewAsync(CoreWebView2CapturePreviewImageFormat.Png, ms);
         return ms.ToArray();
     }
 
@@ -99,7 +98,7 @@ public sealed class WebView2Helper : IAsyncDisposable
         await _webView.CoreWebView2.ExecuteScriptAsync("document.readyState === 'complete'");
     }
 
-    public async ValueTask DisposeAsync()
+    public ValueTask DisposeAsync()
     {
         if (_webView is not null)
         {
@@ -115,11 +114,12 @@ public sealed class WebView2Helper : IAsyncDisposable
         _isInitialized = false;
         _messageTcs?.TrySetCanceled();
         _messageTcs = null;
+
+        return ValueTask.CompletedTask;
     }
 
     private static async Task InstallWebView2RuntimeAsync()
     {
-        var installerPath = Path.Combine(Path.GetTempPath(), "MicrosoftEdgeWebview2Setup.exe");
         var process = Process.Start(new ProcessStartInfo
         {
             FileName = "https://go.microsoft.com/fwlink/p/?LinkId=2124703",

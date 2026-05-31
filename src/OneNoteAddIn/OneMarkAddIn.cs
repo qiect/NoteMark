@@ -3,6 +3,7 @@ using Extensibility;
 using Microsoft.Office.Core;
 using Microsoft.Office.Interop.OneNote;
 using OneMarkDotNet.AddIn.Ribbon;
+using OneMarkDotNet.OneNoteConverter;
 using OneMarkDotNet.ThemeManager;
 
 namespace OneMarkDotNet.AddIn;
@@ -18,11 +19,13 @@ public sealed class OneMarkAddIn : IDTExtensibility2, IRibbonExtensibility
     private MarkdownRenderHandler? _renderHandler;
     private ExportHandler? _exportHandler;
     private OneNoteEventHandler? _eventHandler;
-    private ThemeManager? _themeManager;
+    private OneMarkDotNet.ThemeManager.ThemeManager? _themeManager;
     private OneNoteApiWrapper? _apiWrapper;
     private AddInSettings? _settings;
     private AppLogger? _logger;
+#pragma warning disable CS0169
     private bool _disposed;
+#pragma warning restore CS0169
 
     public void OnConnection(object application, ext_ConnectMode connectMode, object addInInst, ref Array custom)
     {
@@ -35,7 +38,7 @@ public sealed class OneMarkAddIn : IDTExtensibility2, IRibbonExtensibility
             _settings = AddInSettings.Instance;
             _settings.LoadSettings();
 
-            _themeManager = new ThemeManager();
+            _themeManager = new OneMarkDotNet.ThemeManager.ThemeManager();
             var themesDir = _settings.GetThemesDirectory();
             if (!string.IsNullOrEmpty(themesDir))
             {

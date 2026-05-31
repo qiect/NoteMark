@@ -1,7 +1,7 @@
 {
   "version": 3,
   "targets": {
-    "net8.0": {
+    "net8.0-windows7.0": {
       "Interop.Microsoft.Office.Interop.OneNote/1.1.0.2": {
         "type": "package",
         "compile": {
@@ -35,6 +35,16 @@
         },
         "runtime": {
           "bin/placeholder/MarkdownEngine.dll": {}
+        }
+      },
+      "ThemeManager/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v8.0",
+        "compile": {
+          "bin/placeholder/ThemeManager.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/ThemeManager.dll": {}
         }
       }
     }
@@ -80,12 +90,18 @@
       "type": "project",
       "path": "../MarkdownEngine/MarkdownEngine.csproj",
       "msbuildProject": "../MarkdownEngine/MarkdownEngine.csproj"
+    },
+    "ThemeManager/1.0.0": {
+      "type": "project",
+      "path": "../ThemeManager/ThemeManager.csproj",
+      "msbuildProject": "../ThemeManager/ThemeManager.csproj"
     }
   },
   "projectFileDependencyGroups": {
-    "net8.0": [
+    "net8.0-windows7.0": [
       "Interop.Microsoft.Office.Interop.OneNote >= 1.1.0.2",
-      "MarkdownEngine >= 1.0.0"
+      "MarkdownEngine >= 1.0.0",
+      "ThemeManager >= 1.0.0"
     ]
   },
   "packageFolders": {
@@ -104,17 +120,20 @@
         "/root/.nuget/NuGet/NuGet.Config"
       ],
       "originalTargetFrameworks": [
-        "net8.0"
+        "net8.0-windows"
       ],
       "sources": {
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
-        "net8.0": {
-          "targetAlias": "net8.0",
+        "net8.0-windows7.0": {
+          "targetAlias": "net8.0-windows",
           "projectReferences": {
             "/workspace/src/MarkdownEngine/MarkdownEngine.csproj": {
               "projectPath": "/workspace/src/MarkdownEngine/MarkdownEngine.csproj"
+            },
+            "/workspace/src/ThemeManager/ThemeManager.csproj": {
+              "projectPath": "/workspace/src/ThemeManager/ThemeManager.csproj"
             }
           }
         }
@@ -124,11 +143,16 @@
         "warnAsError": [
           "NU1605"
         ]
+      },
+      "restoreAuditProperties": {
+        "enableAudit": "true",
+        "auditLevel": "low",
+        "auditMode": "direct"
       }
     },
     "frameworks": {
-      "net8.0": {
-        "targetAlias": "net8.0",
+      "net8.0-windows7.0": {
+        "targetAlias": "net8.0-windows",
         "dependencies": {
           "Interop.Microsoft.Office.Interop.OneNote": {
             "target": "Package",
@@ -146,12 +170,21 @@
         ],
         "assetTargetFallback": true,
         "warn": true,
+        "downloadDependencies": [
+          {
+            "name": "Microsoft.WindowsDesktop.App.Ref",
+            "version": "[8.0.27, 8.0.27]"
+          }
+        ],
         "frameworkReferences": {
           "Microsoft.NETCore.App": {
             "privateAssets": "all"
+          },
+          "Microsoft.WindowsDesktop.App.WindowsForms": {
+            "privateAssets": "none"
           }
         },
-        "runtimeIdentifierGraphPath": "/usr/lib/dotnet/sdk/8.0.127/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/8.0.421/PortableRuntimeIdentifierGraph.json"
       }
     }
   }

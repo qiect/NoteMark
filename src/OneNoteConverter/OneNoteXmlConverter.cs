@@ -1,5 +1,6 @@
 using System.Xml.Linq;
-using MarkdownEngine;
+using OneMarkDotNet.MarkdownEngine;
+using OneMarkDotNet.ThemeManager;
 
 namespace OneMarkDotNet.OneNoteConverter;
 
@@ -13,7 +14,7 @@ public sealed class OneNoteXmlConverter
 
     public string ConvertToOneNoteXml(MarkdownDocument document, Theme theme)
     {
-        var html = document.ToHtml();
+        var html = new MarkdownParser().ParseToHtml(document.RawContent);
         var outlineElements = _htmlConverter.ConvertHtmlToOutlineElements(html);
         ApplyThemeToElements(outlineElements, theme);
 
@@ -43,7 +44,7 @@ public sealed class OneNoteXmlConverter
 
     public List<OutlineElement> ConvertToOneNoteElements(MarkdownDocument document, Theme theme)
     {
-        var html = document.ToHtml();
+        var html = new MarkdownParser().ParseToHtml(document.RawContent);
         var elements = _htmlConverter.ConvertHtmlToOutlineElements(html);
         ApplyThemeToElements(elements, theme);
         return elements;
