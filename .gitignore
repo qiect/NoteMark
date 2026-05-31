@@ -1,0 +1,125 @@
+## .NET Build Outputs
+bin/
+obj/
+[Dd]ebug/
+[Rr]elease/
+x64/
+x86/
+[Aa][Rr][Mm]/
+[Aa][Rr][Mm]64/
+bld/
+[Bb]in/
+[Oo]bj/
+[Ll]og/
+[Ll]ogs/
+
+## Visual Studio
+.vs/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+*.userprefs
+
+## Visual Studio Code
+.vscode/
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+
+## Rider
+.idea/
+*.sln.iml
+
+## NuGet
+**/packages/*
+*.nupkg
+**/[Pp]ackages/**
+project.lock.json
+project.fragment.lock.json
+artifacts/
+
+## MSBuild
+MSBuild.exe.config
+
+## Test Results
+[Tt]est[Rr]esult*/
+[Bb]uild[Ll]og.*
+*.VisualState.xml
+TestResult.xml
+nunit-*.xml
+*.trx
+
+## Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+## macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+## Linux
+*~
+
+## COM Add-In Registration
+*.reg
+*.snk
+*.pfx
+
+## Publish Profiles
+PublishProfiles/
+*.pubxml
+*.publishsettings
+
+## ASP.NET Scaffolding
+ScaffoldingReadMe.txt
+
+## NuGet Symbol Packages
+*.symbols.nupkg
+
+## Files built by Visual Studio
+*_i.c
+*_p.c
+*_h.h
+*.ilk
+*.meta
+*.obj
+*.iobj
+*.pch
+*.pdb
+*.ipdb
+*.pgc
+*.pgd
+*.rsp
+*.sbr
+*.tlb
+*.tli
+*.tlh
+*.tmp
+*.tmp_proj
+*_wpftmp.csproj
+*.log
+*.tlog
+*.vspscc
+*.vssscc
+.builds
+*.pidb
+*.svclog
+*.scc
+
+## Windows Store
+AppPackages/
+BundleArtifacts/
+Package.StoreAssociation.xml
+
+## Others
+*.cache
+*.dll
+*.exe
+*.exp
+*.lib
+*.winmd
