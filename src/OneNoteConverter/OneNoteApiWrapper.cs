@@ -6,11 +6,19 @@ namespace OneMarkDotNet.OneNoteConverter;
 public sealed class OneNoteApiWrapper : IDisposable
 {
     private IApplication? _app;
+    private readonly bool _ownsApp;
     private bool _disposed;
 
     public OneNoteApiWrapper()
     {
         _app = new Microsoft.Office.Interop.OneNote.Application();
+        _ownsApp = true;
+    }
+
+    public OneNoteApiWrapper(IApplication application)
+    {
+        _app = application;
+        _ownsApp = false;
     }
 
     public void GetPageContent(string pageId, out string xml)
@@ -62,16 +70,17 @@ public sealed class OneNoteApiWrapper : IDisposable
 
         if (_app is null) return;
 
-        try
+        if (_ownsApp)
         {
-            Marshal.ReleaseComObject(_app);
+            try
+            {
+                Marshal.ReleaseComObject(_app);
+            }
+            catch (COMException)
+            {
+            }
         }
-        catch (COMException)
-        {
-        }
-        finally
-        {
-            _app = null;
-        }
+
+        _app = null;
     }
 }

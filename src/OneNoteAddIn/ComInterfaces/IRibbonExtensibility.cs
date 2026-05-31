@@ -8,7 +8,8 @@ namespace Microsoft.Office.Core;
 public interface IRibbonExtensibility
 {
     [DispId(1)]
-    string GetCustomUI(string ribbonId);
+    [return: MarshalAs(UnmanagedType.BStr)]
+    string GetCustomUI([In, MarshalAs(UnmanagedType.BStr)] string ribbonId);
 }
 
 [ComImport]
@@ -17,13 +18,13 @@ public interface IRibbonExtensibility
 public interface IRibbonControl
 {
     [DispId(1)]
-    string Id { get; }
+    string Id { [return: MarshalAs(UnmanagedType.BStr)] get; }
 
     [DispId(2)]
     object Context { get; }
 
     [DispId(3)]
-    string Tag { get; }
+    string Tag { [return: MarshalAs(UnmanagedType.BStr)] get; }
 }
 
 [ComImport]
@@ -35,5 +36,5 @@ public interface IRibbonUI
     void Invalidate();
 
     [DispId(2)]
-    void InvalidateControl(string controlId);
+    void InvalidateControl([In, MarshalAs(UnmanagedType.BStr)] string controlId);
 }

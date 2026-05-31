@@ -6,9 +6,8 @@ using OneMarkDotNet.ThemeManager;
 
 namespace OneMarkDotNet.AddIn.Ribbon;
 
-[ComVisible(true)]
-[Guid("B8F3C4A1-7D2E-4F9B-A6C3-8E1D5F7A2B94")]
-public sealed class OneMarkRibbon : IRibbonExtensibility
+[ClassInterface(ClassInterfaceType.None)]
+public sealed class OneMarkRibbon
 {
     private IRibbonUI? _ribbonUi;
     private readonly OneMarkDotNet.ThemeManager.ThemeManager _themeManager;
@@ -121,11 +120,6 @@ public sealed class OneMarkRibbon : IRibbonExtensibility
 
         sb.Append("</menu>");
         return sb.ToString();
-    }
-
-    public string LoadImage(string imageId)
-    {
-        return string.Empty;
     }
 
     public void Invalidate()

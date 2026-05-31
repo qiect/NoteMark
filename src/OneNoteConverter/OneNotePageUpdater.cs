@@ -13,11 +13,6 @@ public sealed class OneNotePageUpdater : IDisposable
     private readonly OneNoteXmlBuilder _builder = new();
     private bool _disposed;
 
-    public OneNotePageUpdater()
-    {
-        _api = new OneNoteApiWrapper();
-    }
-
     public OneNotePageUpdater(OneNoteApiWrapper api)
     {
         _api = api;
@@ -162,6 +157,5 @@ public sealed class OneNotePageUpdater : IDisposable
     {
         if (_disposed) return;
         _disposed = true;
-        _api.Dispose();
     }
 }

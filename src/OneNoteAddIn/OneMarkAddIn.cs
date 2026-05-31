@@ -11,6 +11,7 @@ namespace OneMarkDotNet.AddIn;
 [ComVisible(true)]
 [Guid("B8F2E4A1-3D7C-4F9B-A5E6-8C1D2F3A4B5E")]
 [ProgId("OneMarkDotNet.AddIn")]
+[ClassInterface(ClassInterfaceType.AutoDispatch)]
 public sealed class OneMarkAddIn : IDTExtensibility2, IRibbonExtensibility
 {
     private IApplication? _oneNoteApp;
@@ -46,8 +47,7 @@ public sealed class OneMarkAddIn : IDTExtensibility2, IRibbonExtensibility
                 _themeManager.LoadThemes(themesDir);
             }
 
-            _apiWrapper = new OneNoteApiWrapper();
-
+            _apiWrapper = new OneNoteApiWrapper(_oneNoteApp);
             _renderHandler = new MarkdownRenderHandler(_apiWrapper, _themeManager, _settings);
             _exportHandler = new ExportHandler(_apiWrapper, _themeManager, _settings);
 
@@ -55,7 +55,6 @@ public sealed class OneMarkAddIn : IDTExtensibility2, IRibbonExtensibility
             _eventHandler.Initialize(_oneNoteApp);
 
             _ribbon = new OneMarkRibbon(_themeManager);
-            SubscribeRibbonEvents();
 
             _keyboardHook = new KeyboardHook();
             SubscribeKeyboardEvents();
@@ -121,58 +120,27 @@ public sealed class OneMarkAddIn : IDTExtensibility2, IRibbonExtensibility
         return _ribbon?.GetCustomUI(ribbonId) ?? string.Empty;
     }
 
-    private void SubscribeRibbonEvents()
+    public void RibbonOnLoad(IRibbonUI ribbonUi)
     {
-        if (_ribbon is null) return;
-
-        _ribbon.RenderMarkdownRequested += OnRenderMarkdown;
-        _ribbon.ExportMarkdownRequested += OnExportMarkdown;
-        _ribbon.SourceModeToggleRequested += OnSourceModeToggle;
-        _ribbon.ThemeSelected += OnThemeSelected;
-        _ribbon.OpenThemeDirectoryRequested += OnOpenThemeDirectory;
-        _ribbon.ReloadThemesRequested += OnReloadThemes;
-        _ribbon.ImportMarkdownRequested += OnImportMarkdown;
-        _ribbon.ExportMarkdownFileRequested += OnExportMarkdownFile;
-        _ribbon.AboutRequested += OnAbout;
+        _ribbon?.RibbonOnLoad(ribbonUi);
     }
 
-    private void SubscribeKeyboardEvents()
-    {
-        if (_keyboardHook is null) return;
-
-        _keyboardHook.EnterPressed += OnEnterPressed;
-        _keyboardHook.CtrlEnterPressed += OnCtrlEnterPressed;
-        _keyboardHook.CtrlCommaPressed += OnCtrlCommaPressed;
-        _keyboardHook.F5Pressed += OnF5Pressed;
-        _keyboardHook.F8Pressed += OnF8Pressed;
-        _keyboardHook.TabPressed += OnTabPressed;
-    }
-
-    private void OnRenderMarkdown()
+    public void OnRenderMarkdown(IRibbonControl control)
     {
         _renderHandler?.HandleF5Render();
     }
 
-    private void OnExportMarkdown()
+    public void OnExportMarkdown(IRibbonControl control)
     {
         _exportHandler?.HandleF8Export();
     }
 
-    private void OnSourceModeToggle()
+    public void OnSourceModeToggle(IRibbonControl control)
     {
         _renderHandler?.HandleSourceModeToggle();
     }
 
-    private void OnThemeSelected(string themeName)
-    {
-        if (_settings is null) return;
-        _settings.CurrentThemeName = themeName;
-        _settings.SaveSettings();
-        _ribbon?.InvalidateControl("dynThemeMenu");
-        _logger?.LogInfo($"Theme changed to: {themeName}");
-    }
-
-    private void OnOpenThemeDirectory()
+    public void OnOpenThemeDirectory(IRibbonControl control)
     {
         try
         {
@@ -189,30 +157,57 @@ public sealed class OneMarkAddIn : IDTExtensibility2, IRibbonExtensibility
         }
     }
 
-    private void OnReloadThemes()
+    public void OnReloadThemes(IRibbonControl control)
     {
         _themeManager?.ReloadThemes();
         _ribbon?.InvalidateControl("dynThemeMenu");
         _logger?.LogInfo("Themes reloaded");
     }
 
-    private void OnImportMarkdown()
+    public void OnImportMarkdown(IRibbonControl control)
     {
         _exportHandler?.HandleImportFromFile().GetAwaiter().GetResult();
     }
 
-    private void OnExportMarkdownFile()
+    public void OnExportMarkdownFile(IRibbonControl control)
     {
         _exportHandler?.HandleExportToFile().GetAwaiter().GetResult();
     }
 
-    private void OnAbout()
+    public void OnAbout(IRibbonControl control)
     {
         System.Windows.Forms.MessageBox.Show(
             "OneMarkDotNet v1.0.0\n\nMarkdown rendering for OneNote\nhttps://github.com/onemarkdotnet",
             "About OneMarkDotNet",
             System.Windows.Forms.MessageBoxButtons.OK,
             System.Windows.Forms.MessageBoxIcon.Information);
+    }
+
+    public void OnThemeSelected(IRibbonControl control)
+    {
+        var themeName = control.Tag;
+        if (string.IsNullOrEmpty(themeName) || _settings is null) return;
+        _settings.CurrentThemeName = themeName;
+        _settings.SaveSettings();
+        _ribbon?.InvalidateControl("dynThemeMenu");
+        _logger?.LogInfo($"Theme changed to: {themeName}");
+    }
+
+    public string GetThemeMenuContent(IRibbonControl control)
+    {
+        return _ribbon?.GetThemeMenuContent(control) ?? string.Empty;
+    }
+
+    private void SubscribeKeyboardEvents()
+    {
+        if (_keyboardHook is null) return;
+
+        _keyboardHook.EnterPressed += OnEnterPressed;
+        _keyboardHook.CtrlEnterPressed += OnCtrlEnterPressed;
+        _keyboardHook.CtrlCommaPressed += OnCtrlCommaPressed;
+        _keyboardHook.F5Pressed += OnF5Pressed;
+        _keyboardHook.F8Pressed += OnF8Pressed;
+        _keyboardHook.TabPressed += OnTabPressed;
     }
 
     private void OnEnterPressed()

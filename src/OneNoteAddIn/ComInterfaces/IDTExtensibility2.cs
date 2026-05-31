@@ -7,11 +7,29 @@ namespace Extensibility;
 [InterfaceType(ComInterfaceType.InterfaceIsIDispatch)]
 public interface IDTExtensibility2
 {
-    void OnConnection(object application, ext_ConnectMode connectMode, object addInInst, ref Array custom);
-    void OnDisconnection(ext_DisconnectMode removeMode, ref Array custom);
-    void OnAddInsUpdate(ref Array custom);
-    void OnStartupComplete(ref Array custom);
-    void OnBeginShutdown(ref Array custom);
+    [DispId(1)]
+    void OnConnection(
+        [In, MarshalAs(UnmanagedType.IDispatch)] object application,
+        [In] ext_ConnectMode connectMode,
+        [In, MarshalAs(UnmanagedType.IDispatch)] object addInInst,
+        [In] ref Array custom);
+
+    [DispId(2)]
+    void OnDisconnection(
+        [In] ext_DisconnectMode removeMode,
+        [In] ref Array custom);
+
+    [DispId(3)]
+    void OnAddInsUpdate(
+        [In] ref Array custom);
+
+    [DispId(4)]
+    void OnStartupComplete(
+        [In] ref Array custom);
+
+    [DispId(5)]
+    void OnBeginShutdown(
+        [In] ref Array custom);
 }
 
 public enum ext_ConnectMode
