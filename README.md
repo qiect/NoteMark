@@ -92,7 +92,7 @@ dotnet build -c Release
 }
 ```
 
-详细说明请参阅 [主题定制指南](docs/themes.md)。
+详细说明请参阅 [主题定制指南](docs/主题定制指南.md)。
 
 ## 配置
 
@@ -110,10 +110,10 @@ dotnet build -c Release
 
 ## 文档
 
-- [架构设计](docs/architecture.md) — 项目架构和模块关系
-- [开发指南](docs/development.md) — 开发环境搭建和编码规范
-- [快捷键参考](docs/keyboard-shortcuts.md) — 完整快捷键列表
-- [主题定制](docs/themes.md) — 主题创建和自定义
+- [架构设计](docs/架构设计.md) — 项目架构和模块关系
+- [开发指南](docs/开发指南.md) — 开发环境搭建和编码规范
+- [快捷键参考](docs/快捷键参考.md) — 完整快捷键列表
+- [主题定制](docs/主题定制指南.md) — 主题创建和自定义
 
 ## 技术栈
 
