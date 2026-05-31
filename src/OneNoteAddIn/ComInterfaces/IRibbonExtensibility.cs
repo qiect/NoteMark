@@ -2,6 +2,7 @@ using System.Runtime.InteropServices;
 
 namespace Microsoft.Office.Core;
 
+[ComVisible(true)]
 [ComImport]
 [Guid("000C0396-0000-0000-C000-000000000046")]
 [InterfaceType(ComInterfaceType.InterfaceIsIDispatch)]
@@ -12,6 +13,7 @@ public interface IRibbonExtensibility
     string GetCustomUI([In, MarshalAs(UnmanagedType.BStr)] string ribbonId);
 }
 
+[ComVisible(true)]
 [ComImport]
 [Guid("000C03A5-0000-0000-C000-000000000046")]
 [InterfaceType(ComInterfaceType.InterfaceIsIDispatch)]
@@ -27,6 +29,7 @@ public interface IRibbonControl
     string Tag { [return: MarshalAs(UnmanagedType.BStr)] get; }
 }
 
+[ComVisible(true)]
 [ComImport]
 [Guid("C3AF8585-252C-4E3C-9B1A-30B5F2E8E0FA")]
 [InterfaceType(ComInterfaceType.InterfaceIsIDispatch)]

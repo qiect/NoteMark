@@ -43,15 +43,13 @@ Root: HKCU; Subkey: "Software\Microsoft\Office\OneNote\AddIns\{#ProgId}"; ValueT
 Root: HKCU; Subkey: "Software\Microsoft\Office\OneNote\AddIns\{#ProgId}"; ValueType: string; ValueName: "Description"; ValueData: "Markdown rendering and export plugin for OneNote"; Flags: uninsdeletekey
 
 [Run]
-Filename: "{sys}\regsvr32.exe"; Parameters: "/s ""{app}\OneNoteAddIn.comhost.dll"""; StatusMsg: "Registering COM add-in..."; Flags: runhidden 64bit
+Filename: "{sys}\regsvr32.exe"; Parameters: """{app}\OneNoteAddIn.comhost.dll"""; StatusMsg: "Registering COM add-in..."; Flags: 64bit
 
 [UninstallRun]
-Filename: "{sys}\regsvr32.exe"; Parameters: "/u /s ""{app}\OneNoteAddIn.comhost.dll"""; Flags: runhidden 64bit
+Filename: "{sys}\regsvr32.exe"; Parameters: "/u ""{app}\OneNoteAddIn.comhost.dll"""; Flags: 64bit
 
 [Code]
 function InitializeSetup: Boolean;
-var
-  ResultCode: Integer;
 begin
   Result := True;
 end;

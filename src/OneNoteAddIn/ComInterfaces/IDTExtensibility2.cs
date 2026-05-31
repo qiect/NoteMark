@@ -2,6 +2,7 @@ using System.Runtime.InteropServices;
 
 namespace Extensibility;
 
+[ComVisible(true)]
 [ComImport]
 [Guid("B65AD801-ABAF-11D0-BB8B-00A0C90F2744")]
 [InterfaceType(ComInterfaceType.InterfaceIsIDispatch)]
@@ -32,6 +33,7 @@ public interface IDTExtensibility2
         [In] ref Array custom);
 }
 
+[ComVisible(true)]
 public enum ext_ConnectMode
 {
     ext_cm_AfterStartup = 0,
@@ -42,6 +44,7 @@ public enum ext_ConnectMode
     ext_cm_UISetup = 5
 }
 
+[ComVisible(true)]
 public enum ext_DisconnectMode
 {
     ext_dm_HostShutdown = 0,

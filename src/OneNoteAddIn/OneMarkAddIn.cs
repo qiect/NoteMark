@@ -12,7 +12,7 @@ namespace OneMarkDotNet.AddIn;
 [Guid("B8F2E4A1-3D7C-4F9B-A5E6-8C1D2F3A4B5E")]
 [ProgId("OneMarkDotNet.AddIn")]
 [ClassInterface(ClassInterfaceType.AutoDispatch)]
-public sealed class OneMarkAddIn : IDTExtensibility2, IRibbonExtensibility
+public class OneMarkAddIn : IDTExtensibility2, IRibbonExtensibility
 {
     private IApplication? _oneNoteApp;
     private OneMarkRibbon? _ribbon;
@@ -24,9 +24,11 @@ public sealed class OneMarkAddIn : IDTExtensibility2, IRibbonExtensibility
     private OneNoteApiWrapper? _apiWrapper;
     private AddInSettings? _settings;
     private AppLogger? _logger;
-#pragma warning disable CS0169
-    private bool _disposed;
-#pragma warning restore CS0169
+
+    public OneMarkAddIn()
+    {
+        DiagnosticLog("Instance constructor called");
+    }
 
     static OneMarkAddIn()
     {
@@ -53,49 +55,127 @@ public sealed class OneMarkAddIn : IDTExtensibility2, IRibbonExtensibility
 
         try
         {
-            _oneNoteApp = (IApplication)application;
-            DiagnosticLog("IApplication cast succeeded");
+            _oneNoteApp = application as IApplication;
+            if (_oneNoteApp is null)
+            {
+                DiagnosticLog($"OnConnection: application type={application?.GetType().Name ?? "null"}, casting...");
+                _oneNoteApp = (IApplication)application!;
+            }
+            DiagnosticLog("IApplication acquired");
+        }
+        catch (Exception ex)
+        {
+            DiagnosticLog($"IApplication cast FAILED: {ex.GetType().Name}: {ex.Message}");
+        }
 
+        try
+        {
             _logger = AppLogger.Instance;
             _logger.LogInfo("OneMarkDotNet AddIn connecting...");
+        }
+        catch (Exception ex)
+        {
+            DiagnosticLog($"Logger init FAILED: {ex.GetType().Name}: {ex.Message}");
+        }
 
+        try
+        {
             _settings = AddInSettings.Instance;
             _settings.LoadSettings();
             DiagnosticLog("Settings loaded");
+        }
+        catch (Exception ex)
+        {
+            DiagnosticLog($"Settings FAILED: {ex.GetType().Name}: {ex.Message}");
+        }
 
+        try
+        {
             _themeManager = new OneMarkDotNet.ThemeManager.ThemeManager();
-            var themesDir = _settings.GetThemesDirectory();
+            var themesDir = _settings?.GetThemesDirectory();
             if (!string.IsNullOrEmpty(themesDir))
             {
                 Directory.CreateDirectory(themesDir);
                 _themeManager.LoadThemes(themesDir);
             }
             DiagnosticLog("ThemeManager initialized");
+        }
+        catch (Exception ex)
+        {
+            DiagnosticLog($"ThemeManager FAILED: {ex.GetType().Name}: {ex.Message}");
+        }
 
-            _apiWrapper = new OneNoteApiWrapper(_oneNoteApp);
-            _renderHandler = new MarkdownRenderHandler(_apiWrapper, _themeManager, _settings);
-            _exportHandler = new ExportHandler(_apiWrapper, _themeManager, _settings);
+        try
+        {
+            if (_oneNoteApp is not null)
+            {
+                _apiWrapper = new OneNoteApiWrapper(_oneNoteApp);
+            }
+            DiagnosticLog("ApiWrapper initialized");
+        }
+        catch (Exception ex)
+        {
+            DiagnosticLog($"ApiWrapper FAILED: {ex.GetType().Name}: {ex.Message}");
+        }
+
+        try
+        {
+            if (_apiWrapper is not null && _themeManager is not null && _settings is not null)
+            {
+                _renderHandler = new MarkdownRenderHandler(_apiWrapper, _themeManager, _settings);
+                _exportHandler = new ExportHandler(_apiWrapper, _themeManager, _settings);
+            }
             DiagnosticLog("Render/Export handlers initialized");
+        }
+        catch (Exception ex)
+        {
+            DiagnosticLog($"Handlers FAILED: {ex.GetType().Name}: {ex.Message}");
+        }
 
-            _eventHandler = new OneNoteEventHandler(_themeManager, _settings);
-            _eventHandler.Initialize(_oneNoteApp);
+        try
+        {
+            if (_themeManager is not null && _settings is not null)
+            {
+                _eventHandler = new OneNoteEventHandler(_themeManager, _settings);
+                if (_oneNoteApp is not null)
+                {
+                    _eventHandler.Initialize(_oneNoteApp);
+                }
+            }
             DiagnosticLog("EventHandler initialized");
+        }
+        catch (Exception ex)
+        {
+            DiagnosticLog($"EventHandler FAILED: {ex.GetType().Name}: {ex.Message}");
+        }
 
-            _ribbon = new OneMarkRibbon(_themeManager);
+        try
+        {
+            if (_themeManager is not null)
+            {
+                _ribbon = new OneMarkRibbon(_themeManager);
+            }
             DiagnosticLog("Ribbon initialized");
+        }
+        catch (Exception ex)
+        {
+            DiagnosticLog($"Ribbon FAILED: {ex.GetType().Name}: {ex.Message}");
+        }
 
+        try
+        {
             _keyboardHook = new KeyboardHook();
             SubscribeKeyboardEvents();
             _keyboardHook.Install();
             DiagnosticLog("KeyboardHook installed");
-
-            _logger.LogInfo("OneMarkDotNet AddIn connected successfully");
         }
         catch (Exception ex)
         {
-            DiagnosticLog($"OnConnection FAILED: {ex.GetType().Name}: {ex.Message}\n{ex.StackTrace}");
-            _logger?.LogError("OnConnection failed", ex);
+            DiagnosticLog($"KeyboardHook FAILED: {ex.GetType().Name}: {ex.Message}");
         }
+
+        _logger?.LogInfo("OneMarkDotNet AddIn OnConnection completed");
+        DiagnosticLog("OnConnection completed");
     }
 
     public void OnDisconnection(ext_DisconnectMode removeMode, ref Array custom)
@@ -116,18 +196,12 @@ public sealed class OneMarkAddIn : IDTExtensibility2, IRibbonExtensibility
             _apiWrapper?.Dispose();
             _apiWrapper = null;
 
-            if (_oneNoteApp is not null)
-            {
-                Marshal.ReleaseComObject(_oneNoteApp);
-                _oneNoteApp = null;
-            }
-
             _settings?.SaveSettings();
             _logger?.LogInfo("OneMarkDotNet AddIn disconnected");
         }
         catch (Exception ex)
         {
-            _logger?.LogError("OnDisconnection failed", ex);
+            DiagnosticLog($"OnDisconnection FAILED: {ex.GetType().Name}: {ex.Message}");
         }
     }
 
@@ -137,6 +211,7 @@ public sealed class OneMarkAddIn : IDTExtensibility2, IRibbonExtensibility
 
     public void OnStartupComplete(ref Array custom)
     {
+        DiagnosticLog("OnStartupComplete called");
         _logger?.LogInfo("OneMarkDotNet AddIn startup complete");
     }
 
@@ -162,22 +237,32 @@ public sealed class OneMarkAddIn : IDTExtensibility2, IRibbonExtensibility
     public void RibbonOnLoad(IRibbonUI ribbonUi)
     {
         DiagnosticLog("RibbonOnLoad called");
-        _ribbon?.RibbonOnLoad(ribbonUi);
+        try
+        {
+            _ribbon?.RibbonOnLoad(ribbonUi);
+        }
+        catch (Exception ex)
+        {
+            DiagnosticLog($"RibbonOnLoad FAILED: {ex.GetType().Name}: {ex.Message}");
+        }
     }
 
     public void OnRenderMarkdown(IRibbonControl control)
     {
-        _renderHandler?.HandleF5Render();
+        try { _renderHandler?.HandleF5Render(); }
+        catch (Exception ex) { _logger?.LogError("OnRenderMarkdown failed", ex); }
     }
 
     public void OnExportMarkdown(IRibbonControl control)
     {
-        _exportHandler?.HandleF8Export();
+        try { _exportHandler?.HandleF8Export(); }
+        catch (Exception ex) { _logger?.LogError("OnExportMarkdown failed", ex); }
     }
 
     public void OnSourceModeToggle(IRibbonControl control)
     {
-        _renderHandler?.HandleSourceModeToggle();
+        try { _renderHandler?.HandleSourceModeToggle(); }
+        catch (Exception ex) { _logger?.LogError("OnSourceModeToggle failed", ex); }
     }
 
     public void OnOpenThemeDirectory(IRibbonControl control)
@@ -191,51 +276,70 @@ public sealed class OneMarkAddIn : IDTExtensibility2, IRibbonExtensibility
                 System.Diagnostics.Process.Start("explorer.exe", themesDir);
             }
         }
-        catch (Exception ex)
-        {
-            _logger?.LogError("Failed to open theme directory", ex);
-        }
+        catch (Exception ex) { _logger?.LogError("OnOpenThemeDirectory failed", ex); }
     }
 
     public void OnReloadThemes(IRibbonControl control)
     {
-        _themeManager?.ReloadThemes();
-        _ribbon?.InvalidateControl("dynThemeMenu");
-        _logger?.LogInfo("Themes reloaded");
+        try
+        {
+            _themeManager?.ReloadThemes();
+            _ribbon?.InvalidateControl("dynThemeMenu");
+            _logger?.LogInfo("Themes reloaded");
+        }
+        catch (Exception ex) { _logger?.LogError("OnReloadThemes failed", ex); }
     }
 
     public void OnImportMarkdown(IRibbonControl control)
     {
-        _exportHandler?.HandleImportFromFile().GetAwaiter().GetResult();
+        try { _exportHandler?.HandleImportFromFile().GetAwaiter().GetResult(); }
+        catch (Exception ex) { _logger?.LogError("OnImportMarkdown failed", ex); }
     }
 
     public void OnExportMarkdownFile(IRibbonControl control)
     {
-        _exportHandler?.HandleExportToFile().GetAwaiter().GetResult();
+        try { _exportHandler?.HandleExportToFile().GetAwaiter().GetResult(); }
+        catch (Exception ex) { _logger?.LogError("OnExportMarkdownFile failed", ex); }
     }
 
     public void OnAbout(IRibbonControl control)
     {
-        System.Windows.Forms.MessageBox.Show(
-            "OneMarkDotNet v1.0.0\n\nMarkdown rendering for OneNote\nhttps://github.com/onemarkdotnet",
-            "About OneMarkDotNet",
-            System.Windows.Forms.MessageBoxButtons.OK,
-            System.Windows.Forms.MessageBoxIcon.Information);
+        try
+        {
+            System.Windows.Forms.MessageBox.Show(
+                "OneMarkDotNet v1.0.0\n\nMarkdown rendering for OneNote\nhttps://github.com/onemarkdotnet",
+                "About OneMarkDotNet",
+                System.Windows.Forms.MessageBoxButtons.OK,
+                System.Windows.Forms.MessageBoxIcon.Information);
+        }
+        catch (Exception ex) { _logger?.LogError("OnAbout failed", ex); }
     }
 
     public void OnThemeSelected(IRibbonControl control)
     {
-        var themeName = control.Tag;
-        if (string.IsNullOrEmpty(themeName) || _settings is null) return;
-        _settings.CurrentThemeName = themeName;
-        _settings.SaveSettings();
-        _ribbon?.InvalidateControl("dynThemeMenu");
-        _logger?.LogInfo($"Theme changed to: {themeName}");
+        try
+        {
+            var themeName = control.Tag;
+            if (string.IsNullOrEmpty(themeName) || _settings is null) return;
+            _settings.CurrentThemeName = themeName;
+            _settings.SaveSettings();
+            _ribbon?.InvalidateControl("dynThemeMenu");
+            _logger?.LogInfo($"Theme changed to: {themeName}");
+        }
+        catch (Exception ex) { _logger?.LogError("OnThemeSelected failed", ex); }
     }
 
     public string GetThemeMenuContent(IRibbonControl control)
     {
-        return _ribbon?.GetThemeMenuContent(control) ?? string.Empty;
+        try
+        {
+            return _ribbon?.GetThemeMenuContent(control) ?? string.Empty;
+        }
+        catch (Exception ex)
+        {
+            _logger?.LogError("GetThemeMenuContent failed", ex);
+            return string.Empty;
+        }
     }
 
     private void SubscribeKeyboardEvents()
@@ -250,33 +354,10 @@ public sealed class OneMarkAddIn : IDTExtensibility2, IRibbonExtensibility
         _keyboardHook.TabPressed += OnTabPressed;
     }
 
-    private void OnEnterPressed()
-    {
-        _renderHandler?.HandleEnterKey();
-    }
-
-    private void OnCtrlEnterPressed()
-    {
-        _renderHandler?.HandleCtrlEnter();
-    }
-
-    private void OnCtrlCommaPressed()
-    {
-        _renderHandler?.HandleSourceModeToggle();
-    }
-
-    private void OnF5Pressed()
-    {
-        _renderHandler?.HandleF5Render();
-    }
-
-    private void OnF8Pressed()
-    {
-        _exportHandler?.HandleF8Export();
-    }
-
-    private void OnTabPressed()
-    {
-        _renderHandler?.HandleTabRender();
-    }
+    private void OnEnterPressed() { try { _renderHandler?.HandleEnterKey(); } catch { } }
+    private void OnCtrlEnterPressed() { try { _renderHandler?.HandleCtrlEnter(); } catch { } }
+    private void OnCtrlCommaPressed() { try { _renderHandler?.HandleSourceModeToggle(); } catch { } }
+    private void OnF5Pressed() { try { _renderHandler?.HandleF5Render(); } catch { } }
+    private void OnF8Pressed() { try { _exportHandler?.HandleF8Export(); } catch { } }
+    private void OnTabPressed() { try { _renderHandler?.HandleTabRender(); } catch { } }
 }
