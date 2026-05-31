@@ -6,7 +6,7 @@ public static class HtmlTemplateGenerator
 {
     public static string GenerateMermaidHtml(string mermaidContent)
     {
-        var escaped = EscapeForHtml(mermaidContent);
+        var htmlEscaped = EscapeForHtml(mermaidContent);
         return $"""
             <!DOCTYPE html>
             <html>
@@ -20,11 +20,11 @@ public static class HtmlTemplateGenerator
             </head>
             <body>
             <div id="container">
-              <pre class="mermaid">{escaped}</pre>
+              <pre class="mermaid">{htmlEscaped}</pre>
             </div>
             <script>
               mermaid.initialize({{ startOnLoad: true, theme: 'default' }});
-              mermaid.run().then(() => {{
+              mermaid.run().then(function() {{
                 window.chrome.webview.postMessage(JSON.stringify({{ type: 'renderComplete' }}));
               }});
             </script>
@@ -35,7 +35,7 @@ public static class HtmlTemplateGenerator
 
     public static string GenerateFlowchartHtml(string flowchartContent)
     {
-        var escaped = EscapeForHtml(flowchartContent);
+        var jsEscaped = EscapeForJavaScript(flowchartContent);
         return $"""
             <!DOCTYPE html>
             <html>
@@ -53,7 +53,7 @@ public static class HtmlTemplateGenerator
               <div id="diagram"></div>
             </div>
             <script>
-              var diagram = flowchart.parse(`{escaped}`);
+              var diagram = flowchart.parse('{jsEscaped}');
               diagram.drawSVG('diagram');
               window.chrome.webview.postMessage(JSON.stringify({{ type: 'renderComplete' }}));
             </script>
@@ -64,7 +64,7 @@ public static class HtmlTemplateGenerator
 
     public static string GenerateSequenceHtml(string sequenceContent)
     {
-        var escaped = EscapeForHtml(sequenceContent);
+        var jsEscaped = EscapeForJavaScript(sequenceContent);
         return $"""
             <!DOCTYPE html>
             <html>
@@ -82,7 +82,7 @@ public static class HtmlTemplateGenerator
               <div id="diagram"></div>
             </div>
             <script>
-              var diagram = Diagram.parse(`{escaped}`);
+              var diagram = Diagram.parse('{jsEscaped}');
               diagram.drawSVG('diagram', {{ theme: 'simple' }});
               window.chrome.webview.postMessage(JSON.stringify({{ type: 'renderComplete' }}));
             </script>
@@ -93,7 +93,7 @@ public static class HtmlTemplateGenerator
 
     public static string GenerateMindmapHtml(string mindmapContent)
     {
-        var escaped = EscapeForHtml(mindmapContent);
+        var jsEscaped = EscapeForJavaScript(mindmapContent);
         return $"""
             <!DOCTYPE html>
             <html>
@@ -113,11 +113,11 @@ public static class HtmlTemplateGenerator
               <svg id="markmap" class="markmap"></svg>
             </div>
             <script>
-              const {{ Markmap }} = window.markmap;
-              const content = `{escaped}`;
-              const {{ root }} = markmap.transform(markmap.transformMarkdown(content));
-              Markmap.create('svg#markmap', null, root);
-              setTimeout(() => {{
+              var MarkmapClass = window.markmap.Markmap;
+              var content = '{jsEscaped}';
+              var root = markmap.transform(markmap.transformMarkdown(content));
+              MarkmapClass.create('svg#markmap', null, root);
+              setTimeout(function() {{
                 window.chrome.webview.postMessage(JSON.stringify({{ type: 'renderComplete' }}));
               }}, 500);
             </script>
@@ -128,7 +128,7 @@ public static class HtmlTemplateGenerator
 
     public static string GenerateLatexHtml(string formula, bool isInline)
     {
-        var escaped = EscapeForHtml(formula);
+        var jsEscaped = EscapeForJavaScript(formula);
         var displayMode = isInline ? "false" : "true";
         return $"""
             <!DOCTYPE html>
@@ -149,7 +149,7 @@ public static class HtmlTemplateGenerator
             </div>
             <script>
               try {{
-                katex.render(`{escaped}`, document.getElementById('formula'), {{
+                katex.render('{jsEscaped}', document.getElementById('formula'), {{
                   displayMode: {displayMode},
                   throwOnError: true
                 }});
@@ -171,7 +171,7 @@ public static class HtmlTemplateGenerator
 
     public static string GenerateCodeHighlightHtml(string code, string language, bool showLineNumbers)
     {
-        var escaped = EscapeForHtml(code);
+        var htmlEscaped = EscapeForHtml(code);
         var lineNumberStyles = showLineNumbers ? "padding-left: 3.8em;" : "";
         var lineNumberScript = showLineNumbers ? GenerateLineNumberScript() : "";
 
@@ -190,7 +190,7 @@ public static class HtmlTemplateGenerator
             <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11/build/highlight.min.js"></script>
             </head>
             <body>
-            <pre><code id="code" class="language-{language}">{escaped}</code></pre>
+            <pre><code id="code" class="language-{language}">{htmlEscaped}</code></pre>
             <script>
               hljs.highlightElement(document.getElementById('code'));
               {lineNumberScript}
@@ -220,11 +220,42 @@ public static class HtmlTemplateGenerator
 
     private static string EscapeForHtml(string content)
     {
-        return content
-            .Replace("&", "&amp;")
-            .Replace("<", "&lt;")
-            .Replace(">", "&gt;")
-            .Replace("\"", "&quot;")
-            .Replace("'", "&#39;");
+        var sb = new StringBuilder(content.Length);
+        foreach (var c in content)
+        {
+            switch (c)
+            {
+                case '&': sb.Append("&amp;"); break;
+                case '<': sb.Append("&lt;"); break;
+                case '>': sb.Append("&gt;"); break;
+                case '"': sb.Append("&quot;"); break;
+                case '\'': sb.Append("&#39;"); break;
+                default: sb.Append(c); break;
+            }
+        }
+        return sb.ToString();
+    }
+
+    private static string EscapeForJavaScript(string content)
+    {
+        var sb = new StringBuilder(content.Length);
+        foreach (var c in content)
+        {
+            switch (c)
+            {
+                case '\\': sb.Append("\\\\"); break;
+                case '\'': sb.Append("\\'"); break;
+                case '\"': sb.Append("\\\""); break;
+                case '\n': sb.Append("\\n"); break;
+                case '\r': sb.Append("\\r"); break;
+                case '\t': sb.Append("\\t"); break;
+                case '<': sb.Append("\\x3c"); break;
+                case '>': sb.Append("\\x3e"); break;
+                case '\u2028': sb.Append("\\u2028"); break;
+                case '\u2029': sb.Append("\\u2029"); break;
+                default: sb.Append(c); break;
+            }
+        }
+        return sb.ToString();
     }
 }
