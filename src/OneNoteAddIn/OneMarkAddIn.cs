@@ -28,16 +28,40 @@ public sealed class OneMarkAddIn : IDTExtensibility2, IRibbonExtensibility
     private bool _disposed;
 #pragma warning restore CS0169
 
-    public void OnConnection(object application, ext_ConnectMode connectMode, object addInInst, ref Array custom)
+    static OneMarkAddIn()
+    {
+        DiagnosticLog("Static constructor called - .NET runtime loaded successfully");
+    }
+
+    private static void DiagnosticLog(string message)
     {
         try
         {
+            var dir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "OneMarkDotNet", "logs");
+            Directory.CreateDirectory(dir);
+            var line = $"[{DateTime.Now:yyyy-MM-dd HH:mm:ss.fff}] {message}\r\n";
+            File.AppendAllText(Path.Combine(dir, "startup.log"), line);
+        }
+        catch
+        {
+        }
+    }
+
+    public void OnConnection(object application, ext_ConnectMode connectMode, object addInInst, ref Array custom)
+    {
+        DiagnosticLog($"OnConnection called, connectMode={connectMode}");
+
+        try
+        {
             _oneNoteApp = (IApplication)application;
+            DiagnosticLog("IApplication cast succeeded");
+
             _logger = AppLogger.Instance;
             _logger.LogInfo("OneMarkDotNet AddIn connecting...");
 
             _settings = AddInSettings.Instance;
             _settings.LoadSettings();
+            DiagnosticLog("Settings loaded");
 
             _themeManager = new OneMarkDotNet.ThemeManager.ThemeManager();
             var themesDir = _settings.GetThemesDirectory();
@@ -46,24 +70,30 @@ public sealed class OneMarkAddIn : IDTExtensibility2, IRibbonExtensibility
                 Directory.CreateDirectory(themesDir);
                 _themeManager.LoadThemes(themesDir);
             }
+            DiagnosticLog("ThemeManager initialized");
 
             _apiWrapper = new OneNoteApiWrapper(_oneNoteApp);
             _renderHandler = new MarkdownRenderHandler(_apiWrapper, _themeManager, _settings);
             _exportHandler = new ExportHandler(_apiWrapper, _themeManager, _settings);
+            DiagnosticLog("Render/Export handlers initialized");
 
             _eventHandler = new OneNoteEventHandler(_themeManager, _settings);
             _eventHandler.Initialize(_oneNoteApp);
+            DiagnosticLog("EventHandler initialized");
 
             _ribbon = new OneMarkRibbon(_themeManager);
+            DiagnosticLog("Ribbon initialized");
 
             _keyboardHook = new KeyboardHook();
             SubscribeKeyboardEvents();
             _keyboardHook.Install();
+            DiagnosticLog("KeyboardHook installed");
 
             _logger.LogInfo("OneMarkDotNet AddIn connected successfully");
         }
         catch (Exception ex)
         {
+            DiagnosticLog($"OnConnection FAILED: {ex.GetType().Name}: {ex.Message}\n{ex.StackTrace}");
             _logger?.LogError("OnConnection failed", ex);
         }
     }
@@ -117,11 +147,21 @@ public sealed class OneMarkAddIn : IDTExtensibility2, IRibbonExtensibility
 
     public string GetCustomUI(string ribbonId)
     {
-        return _ribbon?.GetCustomUI(ribbonId) ?? string.Empty;
+        DiagnosticLog($"GetCustomUI called, ribbonId={ribbonId}");
+        try
+        {
+            return _ribbon?.GetCustomUI(ribbonId) ?? string.Empty;
+        }
+        catch (Exception ex)
+        {
+            DiagnosticLog($"GetCustomUI FAILED: {ex.GetType().Name}: {ex.Message}");
+            return string.Empty;
+        }
     }
 
     public void RibbonOnLoad(IRibbonUI ribbonUi)
     {
+        DiagnosticLog("RibbonOnLoad called");
         _ribbon?.RibbonOnLoad(ribbonUi);
     }
 

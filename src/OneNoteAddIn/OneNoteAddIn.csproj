@@ -17,6 +17,14 @@
     <StartProgram>C:\Program Files\Microsoft Office\root\Office16\ONENOTE.EXE</StartProgram>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)' == 'Release'">
+    <SelfContained>true</SelfContained>
+    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+    <PublishSingleFile>true</PublishSingleFile>
+    <IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
+    <PublishTrimmed>false</PublishTrimmed>
+  </PropertyGroup>
+
   <ItemGroup>
     <PackageReference Include="Interop.Microsoft.Office.Interop.OneNote" Version="1.1.0.2" />
   </ItemGroup>
@@ -34,11 +42,24 @@
   </ItemGroup>
 
   <Target Name="RegisterAddIn" AfterTargets="Build" Condition="'$(Configuration)' == 'Debug' and '$(OS)' == 'Windows_NT'">
-    <Exec Command="regsvr32 /s &quot;$(TargetDir)$(AssemblyName).comhost.dll&quot;" ContinueOnError="true" />
-    <Exec Command="reg add &quot;HKCU\Software\Microsoft\Office\OneNote\AddIns\OneMarkDotNet.AddIn&quot; /ve /d &quot;OneMarkDotNet - OneNote Markdown Plugin&quot; /f" ContinueOnError="true" />
-    <Exec Command="reg add &quot;HKCU\Software\Microsoft\Office\OneNote\AddIns\OneMarkDotNet.AddIn&quot; /v LoadBehavior /t REG_DWORD /d 3 /f" ContinueOnError="true" />
-    <Exec Command="reg add &quot;HKCU\Software\Microsoft\Office\OneNote\AddIns\OneMarkDotNet.AddIn&quot; /v FriendlyName /d &quot;OneMarkDotNet&quot; /f" ContinueOnError="true" />
-    <Exec Command="reg add &quot;HKCU\Software\Microsoft\Office\OneNote\AddIns\OneMarkDotNet.AddIn&quot; /v Description /d &quot;Markdown rendering and export plugin for OneNote&quot; /f" ContinueOnError="true" />
+    <Exec ContinueOnError="true" Command="regsvr32 /s &quot;$(TargetDir)$(AssemblyName).comhost.dll&quot;" />
+    <Exec ContinueOnError="true" Command="reg add &quot;HKCU\Software\Microsoft\Office\OneNote\AddIns\OneMarkDotNet.AddIn&quot; /ve /d &quot;OneMarkDotNet - OneNote Markdown Plugin&quot; /f" />
+    <Exec ContinueOnError="true" Command="reg add &quot;HKCU\Software\Microsoft\Office\OneNote\AddIns\OneMarkDotNet.AddIn&quot; /v LoadBehavior /t REG_DWORD /d 3 /f" />
+    <Exec ContinueOnError="true" Command="reg add &quot;HKCU\Software\Microsoft\Office\OneNote\AddIns\OneMarkDotNet.AddIn&quot; /v FriendlyName /d &quot;OneMarkDotNet&quot; /f" />
+    <Exec ContinueOnError="true" Command="reg add &quot;HKCU\Software\Microsoft\Office\OneNote\AddIns\OneMarkDotNet.AddIn&quot; /v Description /d &quot;Markdown rendering and export plugin for OneNote&quot; /f" />
+  </Target>
+
+  <Target Name="RegisterPublishedAddIn" AfterTargets="Publish" Condition="'$(Configuration)' == 'Release' and '$(OS)' == 'Windows_NT'">
+    <Exec ContinueOnError="true" Command="regsvr32 /s &quot;$(PublishDir)$(AssemblyName).comhost.dll&quot;" />
+    <Exec ContinueOnError="true" Command="reg add &quot;HKCU\Software\Microsoft\Office\OneNote\AddIns\OneMarkDotNet.AddIn&quot; /ve /d &quot;OneMarkDotNet - OneNote Markdown Plugin&quot; /f" />
+    <Exec ContinueOnError="true" Command="reg add &quot;HKCU\Software\Microsoft\Office\OneNote\AddIns\OneMarkDotNet.AddIn&quot; /v LoadBehavior /t REG_DWORD /d 3 /f" />
+    <Exec ContinueOnError="true" Command="reg add &quot;HKCU\Software\Microsoft\Office\OneNote\AddIns\OneMarkDotNet.AddIn&quot; /v FriendlyName /d &quot;OneMarkDotNet&quot; /f" />
+    <Exec ContinueOnError="true" Command="reg add &quot;HKCU\Software\Microsoft\Office\OneNote\AddIns\OneMarkDotNet.AddIn&quot; /v Description /d &quot;Markdown rendering and export plugin for OneNote&quot; /f" />
+  </Target>
+
+  <Target Name="UnregisterAddIn" Condition="'$(OS)' == 'Windows_NT'">
+    <Exec ContinueOnError="true" Command="regsvr32 /u /s &quot;$(TargetDir)$(AssemblyName).comhost.dll&quot;" />
+    <Exec ContinueOnError="true" Command="reg delete &quot;HKCU\Software\Microsoft\Office\OneNote\AddIns\OneMarkDotNet.AddIn&quot; /f" />
   </Target>
 
 </Project>
