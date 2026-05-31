@@ -2,7 +2,6 @@
 #define AppVersion "1.0.0"
 #define AppPublisher "OneMarkDotNet"
 #define AppURL "https://github.com/onemarkdotnet"
-#define AppExeName "ONENOTE.EXE"
 #define ProgId "OneMarkDotNet.AddIn"
 #define Clsid "{B8F2E4A1-3D7C-4F9B-A5E6-8C1D2F3A4B5E}"
 
@@ -44,10 +43,10 @@ Root: HKCU; Subkey: "Software\Microsoft\Office\OneNote\AddIns\{#ProgId}"; ValueT
 Root: HKCU; Subkey: "Software\Microsoft\Office\OneNote\AddIns\{#ProgId}"; ValueType: string; ValueName: "Description"; ValueData: "Markdown rendering and export plugin for OneNote"; Flags: uninsdeletekey
 
 [Run]
-Filename: "regsvr32.exe"; Parameters: "/s ""{app}\OneNoteAddIn.comhost.dll"""; StatusMsg: "Registering COM add-in..."; Flags: runhidden 32bit
+Filename: "{sys}\regsvr32.exe"; Parameters: "/s ""{app}\OneNoteAddIn.comhost.dll"""; StatusMsg: "Registering COM add-in..."; Flags: runhidden 64bit
 
 [UninstallRun]
-Filename: "regsvr32.exe"; Parameters: "/u /s ""{app}\OneNoteAddIn.comhost.dll"""; Flags: runhidden 32bit
+Filename: "{sys}\regsvr32.exe"; Parameters: "/u /s ""{app}\OneNoteAddIn.comhost.dll"""; Flags: runhidden 64bit
 
 [Code]
 function InitializeSetup: Boolean;
