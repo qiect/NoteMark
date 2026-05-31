@@ -1,0 +1,13 @@
+/workspace/src/MarkdownEngine/obj/Debug/net8.0/MarkdownEngine.csproj.AssemblyReference.cache
+/workspace/src/MarkdownEngine/obj/Debug/net8.0/MarkdownEngine.GeneratedMSBuildEditorConfig.editorconfig
+/workspace/src/MarkdownEngine/obj/Debug/net8.0/MarkdownEngine.AssemblyInfoInputs.cache
+/workspace/src/MarkdownEngine/obj/Debug/net8.0/MarkdownEngine.AssemblyInfo.cs
+/workspace/src/MarkdownEngine/obj/Debug/net8.0/MarkdownEngine.csproj.CoreCompileInputs.cache
+/workspace/src/MarkdownEngine/obj/Debug/net8.0/MarkdownEngine.sourcelink.json
+/workspace/src/MarkdownEngine/bin/Debug/net8.0/MarkdownEngine.deps.json
+/workspace/src/MarkdownEngine/bin/Debug/net8.0/MarkdownEngine.dll
+/workspace/src/MarkdownEngine/bin/Debug/net8.0/MarkdownEngine.pdb
+/workspace/src/MarkdownEngine/obj/Debug/net8.0/MarkdownEngine.dll
+/workspace/src/MarkdownEngine/obj/Debug/net8.0/refint/MarkdownEngine.dll
+/workspace/src/MarkdownEngine/obj/Debug/net8.0/MarkdownEngine.pdb
+/workspace/src/MarkdownEngine/obj/Debug/net8.0/ref/MarkdownEngine.dll

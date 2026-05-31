@@ -1,0 +1,5 @@
+/workspace/src/ThemeManager/obj/Debug/net8.0/ThemeManager.GeneratedMSBuildEditorConfig.editorconfig
+/workspace/src/ThemeManager/obj/Debug/net8.0/ThemeManager.AssemblyInfoInputs.cache
+/workspace/src/ThemeManager/obj/Debug/net8.0/ThemeManager.AssemblyInfo.cs
+/workspace/src/ThemeManager/obj/Debug/net8.0/ThemeManager.csproj.CoreCompileInputs.cache
+/workspace/src/ThemeManager/obj/Debug/net8.0/ThemeManager.sourcelink.json
