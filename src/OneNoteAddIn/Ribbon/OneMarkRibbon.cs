@@ -7,6 +7,7 @@ using OneMarkDotNet.ThemeManager;
 namespace OneMarkDotNet.AddIn.Ribbon;
 
 [ComVisible(true)]
+[Guid("B8F3C4A1-7D2E-4F9B-A6C3-8E1D5F7A2B94")]
 public sealed class OneMarkRibbon : IRibbonExtensibility
 {
     private IRibbonUI? _ribbonUi;
