@@ -32,7 +32,6 @@ CloseApplications=force
 CloseApplicationsFilter=*.exe
 
 [Languages]
-Name: "chinesesimplified"; MessagesFile: "compiler:Languages\ChineseSimp.isl"
 Name: "english"; MessagesFile: "compiler:Default.isl"
 
 [Files]
