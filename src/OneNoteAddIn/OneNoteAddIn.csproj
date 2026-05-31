@@ -12,6 +12,11 @@
     <LangVersion>12</LangVersion>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)' == 'Debug'">
+    <StartAction>Program</StartAction>
+    <StartProgram>C:\Program Files\Microsoft Office\root\Office16\ONENOTE.EXE</StartProgram>
+  </PropertyGroup>
+
   <ItemGroup>
     <PackageReference Include="Interop.Microsoft.Office.Interop.OneNote" Version="1.1.0.2" />
   </ItemGroup>

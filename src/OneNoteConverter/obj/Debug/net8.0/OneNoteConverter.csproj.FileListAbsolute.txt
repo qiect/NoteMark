@@ -1,6 +1,0 @@
-/workspace/src/OneNoteConverter/obj/Debug/net8.0/OneNoteConverter.csproj.AssemblyReference.cache
-/workspace/src/OneNoteConverter/obj/Debug/net8.0/OneNoteConverter.GeneratedMSBuildEditorConfig.editorconfig
-/workspace/src/OneNoteConverter/obj/Debug/net8.0/OneNoteConverter.AssemblyInfoInputs.cache
-/workspace/src/OneNoteConverter/obj/Debug/net8.0/OneNoteConverter.AssemblyInfo.cs
-/workspace/src/OneNoteConverter/obj/Debug/net8.0/OneNoteConverter.csproj.CoreCompileInputs.cache
-/workspace/src/OneNoteConverter/obj/Debug/net8.0/OneNoteConverter.sourcelink.json
