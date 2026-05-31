@@ -6,6 +6,7 @@ using OneMarkDotNet.ThemeManager;
 
 namespace OneMarkDotNet.AddIn.Ribbon;
 
+[ComVisible(false)]
 [ClassInterface(ClassInterfaceType.None)]
 public sealed class OneMarkRibbon
 {
