@@ -116,6 +116,10 @@ AppPackages/
 BundleArtifacts/
 Package.StoreAssociation.xml
 
+## Installer
+installer/output/
+installer/publish/
+
 ## Others
 *.cache
 *.dll
