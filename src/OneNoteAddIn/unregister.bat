@@ -1,23 +1,26 @@
 @echo off
-setlocal
-
-set DLL_PATH=%~dp0bin\Debug\net8.0-windows\OneNoteAddIn.comhost.dll
-set PROGID=OneMarkDotNet.AddIn
-set ADDIN_KEY=HKCU\Software\Microsoft\Office\OneNote\AddIns\%PROGID%
-
-echo === OneMarkDotNet COM Add-In Unregistration ===
+echo ============================================
+echo   NoteMark AddIn Unregistration (net48 + RegAsm)
+echo ============================================
 echo.
 
-:: 1. Remove OneNote Add-In registry entry
-echo [1/2] Removing OneNote Add-In registry entry...
-reg delete "%ADDIN_KEY%" /f >nul 2>&1
-echo   Registry entry removed.
+set DLL=%~dp0bin\Debug\net48\OneNoteAddIn.dll
 
-:: 2. Unregister COM host
-echo [2/2] Unregistering COM host...
-regsvr32 /u /s "%DLL_PATH%" 2>nul
-echo   COM host unregistered.
+echo [1/2] Removing OneNote AddIn registry entries...
+reg delete "HKCU\Software\Microsoft\Office\OneNote\AddIns\NoteMark.AddIn" /f 2>nul
+echo Registry entries removed.
 
 echo.
-echo === Unregistration complete! ===
+echo [2/2] Unregistering COM component with RegAsm...
+if exist "%DLL%" (
+    "%WINDIR%\Microsoft.NET\Framework64\v4.0.30319\RegAsm.exe" "%DLL%" /unregister
+    echo RegAsm unregistration completed.
+) else (
+    echo DLL not found at %DLL%, skipping RegAsm unregistration.
+    echo If the DLL exists elsewhere, run manually:
+    echo   RegAsm.exe "path\to\OneNoteAddIn.dll" /unregister
+)
+
+echo.
+echo Unregistration completed. Please restart OneNote.
 pause

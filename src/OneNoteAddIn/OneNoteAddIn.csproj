@@ -1,30 +1,24 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net8.0-windows</TargetFramework>
+    <TargetFramework>net48</TargetFramework>
     <UseWindowsForms>true</UseWindowsForms>
-    <EnableComHosting Condition="'$(OS)' == 'Windows_NT'">true</EnableComHosting>
     <ComVisible>false</ComVisible>
     <AssemblyName>OneNoteAddIn</AssemblyName>
-    <RootNamespace>OneMarkDotNet.AddIn</RootNamespace>
+    <RootNamespace>NoteMark.AddIn</RootNamespace>
     <Nullable>enable</Nullable>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <LangVersion>12</LangVersion>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)' == 'Debug'">
-    <StartAction>Program</StartAction>
-    <StartProgram>C:\Program Files\Microsoft Office\root\Office16\ONENOTE.EXE</StartProgram>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)' == 'Release'">
-    <SelfContained>true</SelfContained>
-    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
-    <PublishTrimmed>false</PublishTrimmed>
+    <LangVersion>latest</LangVersion>
+    <RegisterForComInterop>false</RegisterForComInterop>
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Include="..\Shared\Polyfills.cs" Link="Shared\Polyfills.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Interop.Microsoft.Office.Interop.OneNote" Version="1.1.0.2" />
+    <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.2903.40" />
+    <PackageReference Include="System.Text.Json" Version="8.0.5" />
   </ItemGroup>
 
   <ItemGroup>
@@ -40,24 +34,16 @@
   </ItemGroup>
 
   <Target Name="RegisterAddIn" AfterTargets="Build" Condition="'$(Configuration)' == 'Debug' and '$(OS)' == 'Windows_NT'">
-    <Exec ContinueOnError="true" Command="regsvr32 /s &quot;$(TargetDir)$(AssemblyName).comhost.dll&quot;" />
-    <Exec ContinueOnError="true" Command="reg add &quot;HKCU\Software\Microsoft\Office\OneNote\AddIns\OneMarkDotNet.AddIn&quot; /ve /d &quot;OneMarkDotNet - OneNote Markdown Plugin&quot; /f" />
-    <Exec ContinueOnError="true" Command="reg add &quot;HKCU\Software\Microsoft\Office\OneNote\AddIns\OneMarkDotNet.AddIn&quot; /v LoadBehavior /t REG_DWORD /d 3 /f" />
-    <Exec ContinueOnError="true" Command="reg add &quot;HKCU\Software\Microsoft\Office\OneNote\AddIns\OneMarkDotNet.AddIn&quot; /v FriendlyName /d &quot;OneMarkDotNet&quot; /f" />
-    <Exec ContinueOnError="true" Command="reg add &quot;HKCU\Software\Microsoft\Office\OneNote\AddIns\OneMarkDotNet.AddIn&quot; /v Description /d &quot;Markdown rendering and export plugin for OneNote&quot; /f" />
-  </Target>
-
-  <Target Name="RegisterPublishedAddIn" AfterTargets="Publish" Condition="'$(Configuration)' == 'Release' and '$(OS)' == 'Windows_NT'">
-    <Exec ContinueOnError="true" Command="regsvr32 /s &quot;$(PublishDir)$(AssemblyName).comhost.dll&quot;" />
-    <Exec ContinueOnError="true" Command="reg add &quot;HKCU\Software\Microsoft\Office\OneNote\AddIns\OneMarkDotNet.AddIn&quot; /ve /d &quot;OneMarkDotNet - OneNote Markdown Plugin&quot; /f" />
-    <Exec ContinueOnError="true" Command="reg add &quot;HKCU\Software\Microsoft\Office\OneNote\AddIns\OneMarkDotNet.AddIn&quot; /v LoadBehavior /t REG_DWORD /d 3 /f" />
-    <Exec ContinueOnError="true" Command="reg add &quot;HKCU\Software\Microsoft\Office\OneNote\AddIns\OneMarkDotNet.AddIn&quot; /v FriendlyName /d &quot;OneMarkDotNet&quot; /f" />
-    <Exec ContinueOnError="true" Command="reg add &quot;HKCU\Software\Microsoft\Office\OneNote\AddIns\OneMarkDotNet.AddIn&quot; /v Description /d &quot;Markdown rendering and export plugin for OneNote&quot; /f" />
+    <Exec ContinueOnError="true" Command="&quot;%WINDIR%\Microsoft.NET\Framework64\v4.0.30319\RegAsm.exe&quot; &quot;$(TargetPath)&quot; /codebase" />
+    <Exec ContinueOnError="true" Command="reg add &quot;HKCU\Software\Microsoft\Office\OneNote\AddIns\NoteMark.AddIn&quot; /ve /d &quot;NoteMark - OneNote Markdown Plugin&quot; /f" />
+    <Exec ContinueOnError="true" Command="reg add &quot;HKCU\Software\Microsoft\Office\OneNote\AddIns\NoteMark.AddIn&quot; /v LoadBehavior /t REG_DWORD /d 3 /f" />
+    <Exec ContinueOnError="true" Command="reg add &quot;HKCU\Software\Microsoft\Office\OneNote\AddIns\NoteMark.AddIn&quot; /v FriendlyName /d &quot;NoteMark&quot; /f" />
+    <Exec ContinueOnError="true" Command="reg add &quot;HKCU\Software\Microsoft\Office\OneNote\AddIns\NoteMark.AddIn&quot; /v Description /d &quot;Markdown rendering and export plugin for OneNote&quot; /f" />
   </Target>
 
   <Target Name="UnregisterAddIn" Condition="'$(OS)' == 'Windows_NT'">
-    <Exec ContinueOnError="true" Command="regsvr32 /u /s &quot;$(TargetDir)$(AssemblyName).comhost.dll&quot;" />
-    <Exec ContinueOnError="true" Command="reg delete &quot;HKCU\Software\Microsoft\Office\OneNote\AddIns\OneMarkDotNet.AddIn&quot; /f" />
+    <Exec ContinueOnError="true" Command="&quot;%WINDIR%\Microsoft.NET\Framework64\v4.0.30319\RegAsm.exe&quot; &quot;$(TargetPath)&quot; /unregister" />
+    <Exec ContinueOnError="true" Command="reg delete &quot;HKCU\Software\Microsoft\Office\OneNote\AddIns\NoteMark.AddIn&quot; /f" />
   </Target>
 
 </Project>

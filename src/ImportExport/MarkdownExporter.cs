@@ -1,9 +1,9 @@
 using System.Text;
 using System.Xml.Linq;
 using Markdig;
-using OneMarkDotNet.MarkdownEngine;
+using NoteMark.MarkdownEngine;
 
-namespace OneMarkDotNet.ImportExport;
+namespace NoteMark.ImportExport;
 
 public sealed class MarkdownExporter
 {
@@ -38,7 +38,7 @@ public sealed class MarkdownExporter
 
         sb.Append(processedContent);
 
-        await File.WriteAllTextAsync(filePath, sb.ToString());
+        File.WriteAllText(filePath, sb.ToString());
     }
 
     public void ExportToClipboard(MarkdownDocument document)
@@ -91,10 +91,10 @@ public sealed class MarkdownExporter
         if (document.Tags.Count > 0)
             fm["tags"] = document.Tags;
 
-        foreach (var (key, value) in document.FrontMatter)
+        foreach (var kv in document.FrontMatter)
         {
-            if (!fm.ContainsKey(key))
-                fm[key] = value;
+            if (!fm.ContainsKey(kv.Key))
+                fm[kv.Key] = kv.Value;
         }
 
         return _frontMatterParser.Serialize(fm);
@@ -244,20 +244,20 @@ public sealed class MarkdownExporter
         if (string.IsNullOrEmpty(style))
             return text;
 
-        if (style.Contains("bold", StringComparison.OrdinalIgnoreCase) &&
-            style.Contains("italic", StringComparison.OrdinalIgnoreCase))
+        if (style.IndexOf("bold", StringComparison.OrdinalIgnoreCase) >= 0 &&
+            style.IndexOf("italic", StringComparison.OrdinalIgnoreCase) >= 0)
             return $"***{text}***";
 
-        if (style.Contains("bold", StringComparison.OrdinalIgnoreCase))
+        if (style.IndexOf("bold", StringComparison.OrdinalIgnoreCase) >= 0)
             return $"**{text}**";
 
-        if (style.Contains("italic", StringComparison.OrdinalIgnoreCase))
+        if (style.IndexOf("italic", StringComparison.OrdinalIgnoreCase) >= 0)
             return $"*{text}*";
 
-        if (style.Contains("underline", StringComparison.OrdinalIgnoreCase))
+        if (style.IndexOf("underline", StringComparison.OrdinalIgnoreCase) >= 0)
             return $"<u>{text}</u>";
 
-        if (style.Contains("strikethrough", StringComparison.OrdinalIgnoreCase))
+        if (style.IndexOf("strikethrough", StringComparison.OrdinalIgnoreCase) >= 0)
             return $"~~{text}~~";
 
         return text;

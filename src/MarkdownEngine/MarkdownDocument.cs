@@ -3,11 +3,11 @@ using Markdig.Extensions.Mathematics;
 using Markdig.Extensions.TaskLists;
 using Markdig.Syntax;
 using Markdig.Syntax.Inlines;
-using OneMarkDotNet.MarkdownEngine.Elements;
+using NoteMark.MarkdownEngine.Elements;
 
 using MarkdigTable = Markdig.Extensions.Tables;
 
-namespace OneMarkDotNet.MarkdownEngine;
+namespace NoteMark.MarkdownEngine;
 
 public class MarkdownDocument
 {

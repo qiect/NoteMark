@@ -1,7 +1,7 @@
 using Markdig;
-using OneMarkDotNet.MarkdownEngine.Elements;
+using NoteMark.MarkdownEngine.Elements;
 
-namespace OneMarkDotNet.MarkdownEngine;
+namespace NoteMark.MarkdownEngine;
 
 public class MarkdownParser
 {
@@ -15,7 +15,7 @@ public class MarkdownParser
             .UseAutoLinks()
             .UseEmojiAndSmiley()
             .UseEmphasisExtras()
-            .Use(new OneMarkExtension())
+            .Use(new NoteMarkExtension())
             .Build();
     }
 

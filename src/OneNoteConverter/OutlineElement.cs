@@ -1,4 +1,4 @@
-namespace OneMarkDotNet.OneNoteConverter;
+namespace NoteMark.OneNoteConverter;
 
 public enum ElementType
 {

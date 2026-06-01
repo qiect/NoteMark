@@ -1,7 +1,7 @@
 using Markdig;
-using OneMarkDotNet.MarkdownEngine;
+using NoteMark.MarkdownEngine;
 
-namespace OneMarkDotNet.ImportExport;
+namespace NoteMark.ImportExport;
 
 public sealed class MarkdownImporter
 {
@@ -17,7 +17,7 @@ public sealed class MarkdownImporter
         if (!File.Exists(filePath))
             throw new FileNotFoundException($"Markdown file not found: {filePath}");
 
-        var markdown = await File.ReadAllTextAsync(filePath);
+        var markdown = File.ReadAllText(filePath);
         var document = ImportFromText(markdown);
         document.SourceFilePath = Path.GetFullPath(filePath);
 
@@ -69,9 +69,10 @@ public sealed class MarkdownImporter
             document.Tags = tags switch
             {
                 List<string> list => list,
-                IList<string> iList => [.. iList],
-                string s => [.. s.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)],
-                _ => []
+                IList<string> iList => iList.ToList(),
+                string s => s.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries)
+                    .Select(x => x.Trim()).ToList(),
+                _ => new List<string>()
             };
         }
 
@@ -95,15 +96,15 @@ public sealed class MarkdownImporter
 
     static string ExtractTitleFromContent(string body)
     {
-        var lines = body.Split('\n', StringSplitOptions.RemoveEmptyEntries);
+        var lines = body.Split(new[] { '\n' }, StringSplitOptions.RemoveEmptyEntries);
         foreach (var line in lines)
         {
             var trimmed = line.TrimStart();
             if (trimmed.StartsWith("# "))
-                return trimmed[2..].Trim();
+                return trimmed.Substring(2).Trim();
         }
 
         var firstLine = lines.FirstOrDefault()?.Trim() ?? string.Empty;
-        return firstLine.Length > 100 ? firstLine[..100] : firstLine;
+        return firstLine.Length > 100 ? firstLine.Substring(0, 100) : firstLine;
     }
 }

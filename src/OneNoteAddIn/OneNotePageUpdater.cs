@@ -1,8 +1,9 @@
 using System.Xml.Linq;
-using OneMarkDotNet.MarkdownEngine;
-using OneMarkDotNet.ThemeManager;
+using NoteMark.MarkdownEngine;
+using NoteMark.OneNoteConverter;
+using NoteMark.ThemeManager;
 
-namespace OneMarkDotNet.OneNoteConverter;
+namespace NoteMark.AddIn;
 
 public sealed class OneNotePageUpdater : IDisposable
 {
@@ -20,20 +21,20 @@ public sealed class OneNotePageUpdater : IDisposable
 
     public void UpdatePageContent(string pageId, string xml)
     {
-        ObjectDisposedException.ThrowIf(_disposed, this);
+        if (_disposed) throw new ObjectDisposedException(nameof(OneNotePageUpdater));
         _api.UpdatePageContent(xml, DateTime.Now);
     }
 
     public string GetPageContent(string pageId)
     {
-        ObjectDisposedException.ThrowIf(_disposed, this);
+        if (_disposed) throw new ObjectDisposedException(nameof(OneNotePageUpdater));
         _api.GetPageContent(pageId, out var xml);
         return xml;
     }
 
     public string GetSelectedText()
     {
-        ObjectDisposedException.ThrowIf(_disposed, this);
+        if (_disposed) throw new ObjectDisposedException(nameof(OneNotePageUpdater));
         _api.GetHierarchy(string.Empty, Microsoft.Office.Interop.OneNote.HierarchyScope.hsPages, out var hierarchyXml);
 
         var doc = XDocument.Parse(hierarchyXml);
@@ -63,7 +64,7 @@ public sealed class OneNotePageUpdater : IDisposable
 
     public void ReplaceSelectedText(string markdown, Theme theme)
     {
-        ObjectDisposedException.ThrowIf(_disposed, this);
+        if (_disposed) throw new ObjectDisposedException(nameof(OneNotePageUpdater));
         _api.GetHierarchy(string.Empty, Microsoft.Office.Interop.OneNote.HierarchyScope.hsPages, out var hierarchyXml);
 
         var doc = XDocument.Parse(hierarchyXml);
@@ -108,7 +109,7 @@ public sealed class OneNotePageUpdater : IDisposable
 
     public void AppendContentToPage(string pageId, string markdown, Theme theme)
     {
-        ObjectDisposedException.ThrowIf(_disposed, this);
+        if (_disposed) throw new ObjectDisposedException(nameof(OneNotePageUpdater));
 
         _api.GetPageContent(pageId, out var pageXml);
         var pageDoc = XDocument.Parse(pageXml);
@@ -145,7 +146,7 @@ public sealed class OneNotePageUpdater : IDisposable
 
     public void ReplacePageContent(string pageId, string markdown, Theme theme)
     {
-        ObjectDisposedException.ThrowIf(_disposed, this);
+        if (_disposed) throw new ObjectDisposedException(nameof(OneNotePageUpdater));
 
         var document = MarkdownDocument.Parse(markdown);
         var xml = _converter.ConvertToOneNoteXml(document, theme);

@@ -1,4 +1,4 @@
-namespace OneMarkDotNet.MarkdownEngine.Elements;
+namespace NoteMark.MarkdownEngine.Elements;
 
 public enum TableColumnAlign
 {

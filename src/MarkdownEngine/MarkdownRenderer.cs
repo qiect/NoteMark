@@ -1,8 +1,8 @@
 using System.Globalization;
 using System.Text;
-using OneMarkDotNet.MarkdownEngine.Elements;
+using NoteMark.MarkdownEngine.Elements;
 
-namespace OneMarkDotNet.MarkdownEngine;
+namespace NoteMark.MarkdownEngine;
 
 public interface IDocumentRenderer
 {

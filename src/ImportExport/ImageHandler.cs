@@ -1,11 +1,11 @@
 using System.Buffers;
 using System.Text;
 using System.Text.RegularExpressions;
-using OneMarkDotNet.MarkdownEngine;
+using NoteMark.MarkdownEngine;
 
-namespace OneMarkDotNet.ImportExport;
+namespace NoteMark.ImportExport;
 
-public sealed partial class ImageHandler
+public sealed class ImageHandler
 {
     static readonly HashSet<string> SupportedExtensions = new(StringComparer.OrdinalIgnoreCase)
     {
@@ -22,19 +22,20 @@ public sealed partial class ImageHandler
         [".bmp"] = "image/bmp"
     };
 
-    [GeneratedRegex(@"!\[([^\]]*)\]\(([^)]+)\)", RegexOptions.Compiled)]
-    private static partial Regex ImagePattern();
+    private static readonly Regex ImagePatternRegex =
+        new Regex(@"!\[([^\]]*)\]\(([^)]+)\)", RegexOptions.Compiled);
 
-    [GeneratedRegex(@"data:image/([a-zA-Z+]+);base64,([A-Za-z0-9+/=]+)", RegexOptions.Compiled)]
-    private static partial Regex Base64ImagePattern();
+    private static readonly Regex Base64ImagePatternRegex =
+        new Regex(@"data:image/([a-zA-Z+]+);base64,([A-Za-z0-9+/=]+)", RegexOptions.Compiled);
 
-    [GeneratedRegex(@"<one:Image[^>]*>.*?<one:Data>([^<]+)</one:Data>.*?</one:Image>", RegexOptions.Singleline | RegexOptions.Compiled)]
-    private static partial Regex OneNoteImagePattern();
+    private static readonly Regex OneNoteImagePatternRegex =
+        new Regex(@"<one:Image[^>]*>.*?<one:Data>([^<]+)</one:Data>.*?</one:Image>",
+            RegexOptions.Singleline | RegexOptions.Compiled);
 
     public List<MarkdownImage> ExtractImagesFromMarkdown(string markdown, string baseDirectory)
     {
         var images = new List<MarkdownImage>();
-        var matches = ImagePattern().Matches(markdown);
+        var matches = ImagePatternRegex.Matches(markdown);
 
         foreach (Match match in matches)
         {
@@ -54,7 +55,7 @@ public sealed partial class ImageHandler
             }
             else if (path.StartsWith("data:image/", StringComparison.OrdinalIgnoreCase))
             {
-                var base64Match = Base64ImagePattern().Match(path);
+                var base64Match = Base64ImagePatternRegex.Match(path);
                 if (base64Match.Success)
                 {
                     image.Base64Data = base64Match.Groups[2].Value;
@@ -77,7 +78,7 @@ public sealed partial class ImageHandler
     public async Task<string> ConvertLocalImagesToBase64(string markdown, string baseDirectory)
     {
         var result = markdown;
-        var matches = ImagePattern().Matches(markdown);
+        var matches = ImagePatternRegex.Matches(markdown);
 
         foreach (Match match in matches)
         {
@@ -111,7 +112,7 @@ public sealed partial class ImageHandler
         var assetsDir = Path.Combine(outputDirectory, "assets");
         Directory.CreateDirectory(assetsDir);
 
-        var matches = ImagePattern().Matches(markdown);
+        var matches = ImagePatternRegex.Matches(markdown);
         var imageIndex = 0;
 
         foreach (Match match in matches)
@@ -122,7 +123,7 @@ public sealed partial class ImageHandler
             if (!path.StartsWith("data:image/", StringComparison.OrdinalIgnoreCase))
                 continue;
 
-            var base64Match = Base64ImagePattern().Match(path);
+            var base64Match = Base64ImagePatternRegex.Match(path);
             if (!base64Match.Success)
                 continue;
 
@@ -201,7 +202,7 @@ public sealed partial class ImageHandler
     public List<MarkdownImage> ExtractOneNoteImagesFromXml(string xml)
     {
         var images = new List<MarkdownImage>();
-        var matches = OneNoteImagePattern().Matches(xml);
+        var matches = OneNoteImagePatternRegex.Matches(xml);
 
         foreach (Match match in matches)
         {
@@ -230,16 +231,16 @@ public sealed partial class ImageHandler
 
     static async Task<string> ReadFileAsBase64Async(string filePath)
     {
-        await using var fs = new FileStream(filePath, FileMode.Open, FileAccess.Read,
+        using var fs = new FileStream(filePath, FileMode.Open, FileAccess.Read,
             FileShare.Read, bufferSize: 81920, useAsync: true);
         var buffer = ArrayPool<byte>.Shared.Rent(81920);
         try
         {
             using var ms = new MemoryStream();
             int bytesRead;
-            while ((bytesRead = await fs.ReadAsync(buffer.AsMemory())) > 0)
+            while ((bytesRead = await fs.ReadAsync(buffer, 0, buffer.Length)) > 0)
             {
-                await ms.WriteAsync(buffer.AsMemory(0, bytesRead));
+                await ms.WriteAsync(buffer, 0, bytesRead);
             }
 
             return Convert.ToBase64String(ms.ToArray());
@@ -253,9 +254,9 @@ public sealed partial class ImageHandler
     static async Task WriteBase64AsFileAsync(string base64Data, string filePath)
     {
         var bytes = Convert.FromBase64String(base64Data);
-        await using var fs = new FileStream(filePath, FileMode.Create, FileAccess.Write,
+        using var fs = new FileStream(filePath, FileMode.Create, FileAccess.Write,
             FileShare.None, bufferSize: 81920, useAsync: true);
-        await fs.WriteAsync(bytes);
+        await fs.WriteAsync(bytes, 0, bytes.Length);
     }
 
     static string DetectImageFormatFromHeader(string filePath)
@@ -263,8 +264,8 @@ public sealed partial class ImageHandler
         try
         {
             using var fs = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.Read, 8, useAsync: false);
-            Span<byte> header = stackalloc byte[8];
-            var read = fs.Read(header);
+            var header = new byte[8];
+            var read = fs.Read(header, 0, header.Length);
 
             if (read >= 8 && header[0] == 0x89 && header[1] == 0x50 && header[2] == 0x4E && header[3] == 0x47)
                 return "png";
@@ -287,7 +288,8 @@ public sealed partial class ImageHandler
     {
         try
         {
-            var bytes = Convert.FromBase64String(base64Data[..Math.Min(base64Data.Length, 32)]);
+            var sliceLen = Math.Min(base64Data.Length, 32);
+            var bytes = Convert.FromBase64String(base64Data.Substring(0, sliceLen));
             if (bytes.Length >= 8 && bytes[0] == 0x89 && bytes[1] == 0x50 && bytes[2] == 0x4E && bytes[3] == 0x47)
                 return "png";
             if (bytes.Length >= 2 && bytes[0] == 0xFF && bytes[1] == 0xD8)

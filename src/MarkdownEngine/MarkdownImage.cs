@@ -1,4 +1,4 @@
-namespace OneMarkDotNet.MarkdownEngine;
+namespace NoteMark.MarkdownEngine;
 
 public sealed class MarkdownImage
 {

@@ -1,11 +1,11 @@
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 
-namespace OneMarkDotNet.AddIn;
+namespace NoteMark.AddIn;
 
 public sealed class KeyboardHook : IDisposable
 {
-    private nint _hookId = nint.Zero;
+    private IntPtr _hookId = IntPtr.Zero;
     private readonly LowLevelKeyboardProc _hookProc;
     private bool _disposed;
 
@@ -26,24 +26,24 @@ public sealed class KeyboardHook : IDisposable
     private const int VK_OEM_COMMA = 0xBC;
 
     [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
-    private static extern nint SetWindowsHookEx(int idHook, LowLevelKeyboardProc lpfn, nint hMod, uint dwThreadId);
+    private static extern IntPtr SetWindowsHookEx(int idHook, LowLevelKeyboardProc lpfn, IntPtr hMod, uint dwThreadId);
 
     [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
     [return: MarshalAs(UnmanagedType.Bool)]
-    private static extern bool UnhookWindowsHookEx(nint hhk);
+    private static extern bool UnhookWindowsHookEx(IntPtr hhk);
 
     [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
-    private static extern nint CallNextHookEx(nint hhk, int nCode, nint wParam, nint lParam);
+    private static extern IntPtr CallNextHookEx(IntPtr hhk, int nCode, IntPtr wParam, IntPtr lParam);
 
     [DllImport("kernel32.dll", CharSet = CharSet.Auto, SetLastError = true)]
-    private static extern nint GetModuleHandle(string lpModuleName);
+    private static extern IntPtr GetModuleHandle(string lpModuleName);
 
     [DllImport("user32.dll")]
     private static extern short GetAsyncKeyState(int vKey);
 
     private const int VK_CONTROL = 0x11;
 
-    private delegate nint LowLevelKeyboardProc(int nCode, nint wParam, nint lParam);
+    private delegate IntPtr LowLevelKeyboardProc(int nCode, IntPtr wParam, IntPtr lParam);
 
     public KeyboardHook()
     {
@@ -52,13 +52,13 @@ public sealed class KeyboardHook : IDisposable
 
     public void Install()
     {
-        if (_hookId != nint.Zero) return;
+        if (_hookId != IntPtr.Zero) return;
 
         using var process = Process.GetCurrentProcess();
         using var module = process.MainModule!;
         _hookId = SetWindowsHookEx(WH_KEYBOARD_LL, _hookProc, GetModuleHandle(module.ModuleName), 0);
 
-        if (_hookId == nint.Zero)
+        if (_hookId == IntPtr.Zero)
         {
             var error = Marshal.GetLastWin32Error();
             AppLogger.Instance.LogError($"Failed to install keyboard hook. Error: {error}");
@@ -71,16 +71,16 @@ public sealed class KeyboardHook : IDisposable
 
     public void Uninstall()
     {
-        if (_hookId == nint.Zero) return;
+        if (_hookId == IntPtr.Zero) return;
 
         UnhookWindowsHookEx(_hookId);
-        _hookId = nint.Zero;
+        _hookId = IntPtr.Zero;
         AppLogger.Instance.LogInfo("Keyboard hook uninstalled");
     }
 
-    private nint HookCallback(int nCode, nint wParam, nint lParam)
+    private IntPtr HookCallback(int nCode, IntPtr wParam, IntPtr lParam)
     {
-        if (nCode >= 0 && (wParam == WM_KEYDOWN || wParam == WM_SYSKEYDOWN))
+        if (nCode >= 0 && (wParam.ToInt32() == WM_KEYDOWN || wParam.ToInt32() == WM_SYSKEYDOWN))
         {
             var vkCode = Marshal.ReadInt32(lParam);
             var ctrlPressed = (GetAsyncKeyState(VK_CONTROL) & 0x8000) != 0;
@@ -88,37 +88,37 @@ public sealed class KeyboardHook : IDisposable
             if (vkCode == VK_RETURN && ctrlPressed)
             {
                 CtrlEnterPressed?.Invoke();
-                return (nint)1;
+                return (IntPtr)1;
             }
 
             if (vkCode == VK_RETURN)
             {
                 EnterPressed?.Invoke();
-                return (nint)1;
+                return (IntPtr)1;
             }
 
             if (vkCode == VK_OEM_COMMA && ctrlPressed)
             {
                 CtrlCommaPressed?.Invoke();
-                return (nint)1;
+                return (IntPtr)1;
             }
 
             if (vkCode == VK_F5)
             {
                 F5Pressed?.Invoke();
-                return (nint)1;
+                return (IntPtr)1;
             }
 
             if (vkCode == VK_F8)
             {
                 F8Pressed?.Invoke();
-                return (nint)1;
+                return (IntPtr)1;
             }
 
             if (vkCode == VK_TAB)
             {
                 TabPressed?.Invoke();
-                return (nint)1;
+                return (IntPtr)1;
             }
         }
 

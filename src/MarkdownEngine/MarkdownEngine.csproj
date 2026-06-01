@@ -1,14 +1,13 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
     <AssemblyName>MarkdownEngine</AssemblyName>
-    <RootNamespace>OneMarkDotNet.MarkdownEngine</RootNamespace>
-    <Nullable>enable</Nullable>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <LangVersion>12</LangVersion>
-    <NoWarn>CA1305</NoWarn>
+    <RootNamespace>NoteMark.MarkdownEngine</RootNamespace>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="..\Shared\Polyfills.cs" Link="Shared\Polyfills.cs" />
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Markdig" Version="0.38.0" />

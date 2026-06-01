@@ -1,8 +1,8 @@
 using System.Xml.Linq;
-using OneMarkDotNet.MarkdownEngine;
-using OneMarkDotNet.ThemeManager;
+using NoteMark.MarkdownEngine;
+using NoteMark.ThemeManager;
 
-namespace OneMarkDotNet.OneNoteConverter;
+namespace NoteMark.OneNoteConverter;
 
 public sealed class OneNoteXmlConverter
 {

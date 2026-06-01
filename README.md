@@ -1,6 +1,6 @@
-# OneMarkDotNet
+# NoteMark
 
-OneMarkDotNet 是一个 OneNote Markdown 插件，通过 COM Add-In 方式集成到 Microsoft OneNote 中，为 OneNote 提供 Markdown 实时渲染、导入导出和主题定制功能。
+NoteMark 是一个 OneNote Markdown 插件，通过 COM Add-In 方式集成到 Microsoft OneNote 中，为 OneNote 提供 Markdown 实时渲染、导入导出和主题定制功能。
 
 ## 功能特性
 
@@ -30,16 +30,24 @@ OneMarkDotNet 是一个 OneNote Markdown 插件，通过 COM Add-In 方式集成
 ## 项目结构
 
 ```
-OneMarkDotNet/
-├── Directory.Build.props          # 解决方案级别 MSBuild 属性
-├── OneMarkDotNet.sln              # Visual Studio 解决方案文件
+NoteMark/
+├── Directory.Build.props          # 解决方案级别 MSBuild 属性（默认 netstandard2.0）
+├── NoteMark.sln              # Visual Studio 解决方案文件
 ├── src/
-│   ├── OneNoteAddIn/              # COM Add-In 入口，Ribbon UI 和事件处理
-│   ├── MarkdownEngine/            # Markdown 解析、文档模型和渲染引擎
-│   ├── OneNoteConverter/          # OneNote XML 与 Markdown 双向转换
-│   ├── RenderingServices/         # 代码高亮、LaTeX 和图表渲染服务
-│   ├── ImportExport/              # Markdown 文件导入导出和剪贴板操作
-│   └── ThemeManager/              # CSS 主题加载、解析和应用
+│   ├── OneNoteAddIn/              # COM Add-In 入口（.NET Framework 4.8）
+│   │   ├── NoteMarkAddIn.cs        # Add-In 主类，IDTExtensibility2 + IRibbonExtensibility
+│   │   ├── OneNoteApiWrapper.cs   # OneNote COM API 封装
+│   │   ├── OneNotePageUpdater.cs  # 页面更新器
+│   │   ├── WebView2Helper.cs      # WebView2 辅助类
+│   │   ├── DiagramRenderService.cs# 图表渲染服务
+│   │   ├── LatexRenderService.cs  # LaTeX 渲染服务
+│   │   └── ...
+│   ├── MarkdownEngine/            # Markdown 解析、文档模型和渲染引擎（.NET Standard 2.0）
+│   ├── OneNoteConverter/          # OneNote XML 与 Markdown 双向转换（.NET Standard 2.0）
+│   ├── RenderingServices/         # 代码高亮和 HTML 模板生成（.NET Standard 2.0）
+│   ├── ImportExport/              # Markdown 文件导入导出和剪贴板操作（.NET Standard 2.0）
+│   ├── ThemeManager/              # CSS 主题加载、解析和应用（.NET Standard 2.0）
+│   └── Shared/                    # 共享代码（Polyfills 等）
 └── docs/                          # 项目文档
 ```
 
@@ -47,7 +55,7 @@ OneMarkDotNet/
 
 - Windows 10 1809 或更高版本
 - Microsoft OneNote 2016 / Microsoft 365
-- .NET 8.0 Runtime
+- .NET Framework 4.8（Windows 预装）
 - Microsoft Edge WebView2 Runtime
 
 ## 构建项目
@@ -66,12 +74,33 @@ dotnet build -c Release
 ## 安装
 
 1. 构建 Release 版本
-2. 使用 `regsvr32` 注册 COM Add-In DLL
-3. 在 OneNote 选项中启用 OneMarkDotNet 加载项
+2. 使用 `RegAsm.exe` 注册 COM Add-In：
+   ```cmd
+   "%WINDIR%\Microsoft.NET\Framework64\v4.0.30319\RegAsm.exe" bin\Release\net48\OneNoteAddIn.dll /codebase
+   ```
+3. 添加 OneNote AddIn 注册表项：
+   ```reg
+   [HKCU\Software\Microsoft\Office\OneNote\AddIns\NoteMark.AddIn]
+   FriendlyName=NoteMark
+   Description=Markdown Plugin
+   LoadBehavior=3
+   ```
+4. 重启 OneNote
+
+或使用项目提供的 `register.bat` 脚本一键注册。
+
+## 卸载
+
+```cmd
+"%WINDIR%\Microsoft.NET\Framework64\v4.0.30319\RegAsm.exe" bin\Release\net48\OneNoteAddIn.dll /unregister
+reg delete "HKCU\Software\Microsoft\Office\OneNote\AddIns\NoteMark.AddIn" /f
+```
+
+或使用 `unregister.bat` 脚本。
 
 ## 主题定制
 
-主题以 CSS 文件形式存储在 `%APPDATA%\OneMarkDotNet\themes\` 目录下。每个 CSS 文件定义一组 CSS 变量来控制渲染样式。
+主题以 CSS 文件形式存储在 `%APPDATA%\NoteMark\themes\` 目录下。每个 CSS 文件定义一组 CSS 变量来控制渲染样式。
 
 支持的变量：
 
@@ -96,7 +125,7 @@ dotnet build -c Release
 
 ## 配置
 
-插件配置文件位于 `%APPDATA%\OneMarkDotNet\settings.json`：
+插件配置文件位于 `%APPDATA%\NoteMark\settings.json`：
 
 ```json
 {
@@ -117,7 +146,8 @@ dotnet build -c Release
 
 ## 技术栈
 
-- **.NET 8.0** — 目标框架
+- **.NET Framework 4.8** — AddIn 宿主框架
+- **.NET Standard 2.0** — 业务层类库
 - **Markdig** — Markdown 解析库
 - **Microsoft.Office.Interop.OneNote** — OneNote COM 互操作
 - **Microsoft.Web.WebView2** — WebView2 渲染引擎

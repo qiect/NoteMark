@@ -1,6 +1,6 @@
 using System.Collections.Concurrent;
 
-namespace OneMarkDotNet.AddIn;
+namespace NoteMark.AddIn;
 
 public sealed class AppLogger
 {
@@ -16,7 +16,7 @@ public sealed class AppLogger
 
     private AppLogger()
     {
-        _logDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "OneMarkDotNet", "logs");
+        _logDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "NoteMark", "logs");
         Directory.CreateDirectory(_logDirectory);
 
         var date = DateTime.Now.ToString("yyyyMMdd");
@@ -50,7 +50,7 @@ public sealed class AppLogger
         if (_disposed) return;
 
         var timestamp = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff");
-        var threadId = Environment.CurrentManagedThreadId;
+        var threadId = System.Threading.Thread.CurrentThread.ManagedThreadId;
         var line = $"[{timestamp}] [{level}] [T{threadId}] {message}";
         _queue.Enqueue(line);
     }

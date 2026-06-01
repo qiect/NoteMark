@@ -1,6 +1,6 @@
 using System.Globalization;
 
-namespace OneMarkDotNet.ThemeManager;
+namespace NoteMark.ThemeManager;
 
 public static class CssStyleMapper
 {
@@ -65,12 +65,7 @@ public static class CssStyleMapper
         if (value is null)
             return null;
 
-        var normalized = value.Trim()
-            .Replace("px", "", StringComparison.OrdinalIgnoreCase)
-            .Replace("em", "", StringComparison.OrdinalIgnoreCase)
-            .Replace("rem", "", StringComparison.OrdinalIgnoreCase)
-            .Replace("%", "", StringComparison.OrdinalIgnoreCase)
-            .Trim();
+        var normalized = System.Text.RegularExpressions.Regex.Replace(value.Trim(), @"px|em|rem|%", "", System.Text.RegularExpressions.RegexOptions.IgnoreCase).Trim();
 
         return double.TryParse(normalized, NumberStyles.Float, CultureInfo.InvariantCulture, out var result)
             ? result

@@ -2,16 +2,16 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Xml;
 using Microsoft.Office.Core;
-using OneMarkDotNet.ThemeManager;
+using NoteMark.ThemeManager;
 
-namespace OneMarkDotNet.AddIn.Ribbon;
+namespace NoteMark.AddIn.Ribbon;
 
 [ComVisible(false)]
 [ClassInterface(ClassInterfaceType.None)]
-public sealed class OneMarkRibbon
+public sealed class NoteMarkRibbon
 {
     private IRibbonUI? _ribbonUi;
-    private readonly OneMarkDotNet.ThemeManager.ThemeManager _themeManager;
+    private readonly NoteMark.ThemeManager.ThemeManager _themeManager;
 
     public event Action? RenderMarkdownRequested;
     public event Action? ExportMarkdownRequested;
@@ -23,7 +23,7 @@ public sealed class OneMarkRibbon
     public event Action? ExportMarkdownFileRequested;
     public event Action? AboutRequested;
 
-    public OneMarkRibbon(OneMarkDotNet.ThemeManager.ThemeManager themeManager)
+    public NoteMarkRibbon(NoteMark.ThemeManager.ThemeManager themeManager)
     {
         _themeManager = themeManager;
     }
@@ -31,7 +31,7 @@ public sealed class OneMarkRibbon
     public string GetCustomUI(string ribbonId)
     {
         var assembly = Assembly.GetExecutingAssembly();
-        var resourceName = "OneMarkDotNet.AddIn.Ribbon.RibbonXml.xml";
+        var resourceName = "NoteMark.AddIn.Ribbon.RibbonXml.xml";
 
         using var stream = assembly.GetManifestResourceStream(resourceName);
         if (stream is null)

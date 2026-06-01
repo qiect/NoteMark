@@ -1,0 +1,28 @@
+namespace System.Runtime.CompilerServices
+{
+    [AttributeUsage(AttributeTargets.All, AllowMultiple = true, Inherited = false)]
+    internal sealed class CompilerFeatureRequiredAttribute : Attribute
+    {
+        public string FeatureName { get; }
+        public bool IsOptional { get; set; }
+
+        public CompilerFeatureRequiredAttribute(string featureName)
+        {
+            FeatureName = featureName;
+        }
+    }
+
+    internal sealed class IsExternalInit;
+}
+
+namespace System.Runtime.CompilerServices
+{
+    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct | AttributeTargets.Field | AttributeTargets.Property, AllowMultiple = false, Inherited = false)]
+    internal sealed class RequiredMemberAttribute : Attribute;
+}
+
+namespace System.Diagnostics.CodeAnalysis
+{
+    [AttributeUsage(AttributeTargets.Constructor, AllowMultiple = false, Inherited = false)]
+    internal sealed class SetsRequiredMembersAttribute : Attribute;
+}

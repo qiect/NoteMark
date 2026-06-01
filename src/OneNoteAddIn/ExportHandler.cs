@@ -1,9 +1,9 @@
 using System.Xml.Linq;
-using OneMarkDotNet.ImportExport;
-using OneMarkDotNet.OneNoteConverter;
-using OneMarkDotNet.ThemeManager;
+using NoteMark.ImportExport;
+using NoteMark.OneNoteConverter;
+using NoteMark.ThemeManager;
 
-namespace OneMarkDotNet.AddIn;
+namespace NoteMark.AddIn;
 
 public sealed class ExportHandler
 {
@@ -13,10 +13,10 @@ public sealed class ExportHandler
     private readonly OneNoteXmlConverter _converter = new();
     private readonly MarkdownExporter _exporter = new();
     private readonly MarkdownImporter _importer = new();
-    private readonly OneMarkDotNet.ThemeManager.ThemeManager _themeManager;
+    private readonly NoteMark.ThemeManager.ThemeManager _themeManager;
     private readonly AddInSettings _settings;
 
-    public ExportHandler(OneNoteApiWrapper api, OneMarkDotNet.ThemeManager.ThemeManager themeManager, AddInSettings settings)
+    public ExportHandler(OneNoteApiWrapper api, NoteMark.ThemeManager.ThemeManager themeManager, AddInSettings settings)
     {
         _api = api;
         _themeManager = themeManager;
