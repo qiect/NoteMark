@@ -91,10 +91,10 @@ public sealed class MarkdownExporter
         if (document.Tags.Count > 0)
             fm["tags"] = document.Tags;
 
-        foreach (var (key, value) in document.FrontMatter)
+        foreach (var kv in document.FrontMatter)
         {
-            if (!fm.ContainsKey(key))
-                fm[key] = value;
+            if (!fm.ContainsKey(kv.Key))
+                fm[kv.Key] = kv.Value;
         }
 
         return _frontMatterParser.Serialize(fm);

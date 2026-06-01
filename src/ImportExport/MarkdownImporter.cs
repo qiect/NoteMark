@@ -96,7 +96,7 @@ public sealed class MarkdownImporter
 
     static string ExtractTitleFromContent(string body)
     {
-        var lines = body.Split('\n', StringSplitOptions.RemoveEmptyEntries);
+        var lines = body.Split(new[] { '\n' }, StringSplitOptions.RemoveEmptyEntries);
         foreach (var line in lines)
         {
             var trimmed = line.TrimStart();

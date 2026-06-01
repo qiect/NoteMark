@@ -232,11 +232,10 @@ public sealed class OneNoteToMarkdownConverter
         {
             foreach (var part in styleAttr.Split(';'))
             {
-                var kv = part.Split(':', 2);
-                if (kv.Length != 2) continue;
-
-                var key = kv[0].Trim().ToLowerInvariant();
-                var value = kv[1].Trim();
+                var colonIdx = part.IndexOf(':');
+                if (colonIdx < 0) continue;
+                var key = part.Substring(0, colonIdx).Trim().ToLowerInvariant();
+                var value = part.Substring(colonIdx + 1).Trim();
 
                 switch (key)
                 {
@@ -244,7 +243,7 @@ public sealed class OneNoteToMarkdownConverter
                         fontFamily = value;
                         break;
                     case "font-size" when value.EndsWith("pt"):
-                        fontSize = double.TryParse(value[..^2], out var fs) ? fs : null;
+                        fontSize = double.TryParse(value.Substring(0, value.Length - 2), out var fs) ? fs : (double?)null;
                         break;
                     case "color":
                         fontColor = value;

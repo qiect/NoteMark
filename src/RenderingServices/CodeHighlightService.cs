@@ -123,7 +123,7 @@ public sealed class CodeHighlightService
         {
             if (token.Index > lastEnd)
             {
-                sb.Append(EscapeHtml(code[lastEnd..token.Index]));
+                sb.Append(EscapeHtml(code.Substring(lastEnd, token.Index - lastEnd)));
             }
 
             var text = code.Substring(token.Index, token.Length);
@@ -133,7 +133,7 @@ public sealed class CodeHighlightService
 
         if (lastEnd < code.Length)
         {
-            sb.Append(EscapeHtml(code[lastEnd..]));
+            sb.Append(EscapeHtml(code.Substring(lastEnd)));
         }
 
         return sb.ToString();
@@ -146,7 +146,7 @@ public sealed class CodeHighlightService
             return string.Format(CultureInfo.InvariantCulture, "<pre><code class=\"hljs\">{0}</code></pre>", highlightedCode);
         }
 
-        var lines = highlightedCode.Split("\n");
+        var lines = highlightedCode.Split(new[] { '\n' }, StringSplitOptions.None);
         var sb = new StringBuilder();
         sb.Append("<pre><code class=\"hljs\">");
 

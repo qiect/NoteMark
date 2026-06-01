@@ -259,7 +259,7 @@ public sealed class OneNoteXmlBuilder
         var cells = new List<string[]>();
         foreach (var line in lines)
         {
-            var rowCells = line.Split('|', StringSplitOptions.RemoveEmptyEntries)
+            var rowCells = line.Split(new[] { '|' }, StringSplitOptions.RemoveEmptyEntries)
                 .Select(c => c.Trim())
                 .ToArray();
             cols = Math.Max(cols, rowCells.Length);

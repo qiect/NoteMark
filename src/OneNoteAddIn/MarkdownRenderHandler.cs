@@ -39,7 +39,7 @@ public sealed class MarkdownRenderHandler : IDisposable
             if (!LooksLikeMarkdown(currentLine)) return;
 
             RenderCurrentLine(currentLine);
-            AppLogger.Instance.LogInfo($"Realtime render triggered for: {currentLine[..Math.Min(currentLine.Length, 50)]}");
+            AppLogger.Instance.LogInfo($"Realtime render triggered for: {currentLine.Substring(0, Math.Min(currentLine.Length, 50))}");
         }
         catch (Exception ex)
         {
@@ -241,7 +241,7 @@ public sealed class MarkdownRenderHandler : IDisposable
 
         var trimmed = text.TrimStart();
 
-        if (trimmed.StartsWith('#') && trimmed.Length > 1 && trimmed[1] is ' ' or '#') return true;
+        if (trimmed.StartsWith("#") && trimmed.Length > 1 && (trimmed[1] == ' ' || trimmed[1] == '#')) return true;
         if (trimmed.StartsWith("- ") || trimmed.StartsWith("* ") || trimmed.StartsWith("+ ")) return true;
         if (trimmed.StartsWith("> ")) return true;
         if (trimmed.StartsWith("```")) return true;

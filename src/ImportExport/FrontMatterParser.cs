@@ -31,13 +31,13 @@ public sealed class FrontMatterParser
         var body = bodyStart < remaining.Length ? remaining.Substring(bodyStart) : string.Empty;
         body = body.TrimStart('\r', '\n');
 
-        foreach (var line in yamlBlock.Split('\n', StringSplitOptions.RemoveEmptyEntries))
+        foreach (var line in yamlBlock.Split(new[] { '\n' }, StringSplitOptions.RemoveEmptyEntries))
         {
             var trimmed = line.Trim();
             if (string.IsNullOrEmpty(trimmed))
                 continue;
 
-            if (trimmed.StartsWith('-'))
+            if (trimmed.StartsWith("-"))
             {
                 continue;
             }
@@ -107,10 +107,10 @@ public sealed class FrontMatterParser
         if (string.IsNullOrEmpty(value))
             return string.Empty;
 
-        if (value.StartsWith('"') && value.EndsWith('"') && value.Length >= 2)
+        if (value.StartsWith("\"") && value.EndsWith("\"") && value.Length >= 2)
             return value.Substring(1, value.Length - 2);
 
-        if (value.StartsWith('\'') && value.EndsWith('\'') && value.Length >= 2)
+        if (value.StartsWith("'") && value.EndsWith("'") && value.Length >= 2)
             return value.Substring(1, value.Length - 2);
 
         if (bool.TryParse(value, out var boolVal))
