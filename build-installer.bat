@@ -7,13 +7,12 @@ echo ============================================
 echo.
 
 set PROJECT_DIR=%~dp0src\OneNoteAddIn
-set PUBLISH_DIR=%PROJECT_DIR%\bin\Release\net8.0-windows\win-x64\publish
+set PUBLISH_DIR=%PROJECT_DIR%\bin\Release\net48\publish
 set INSTALLER_DIR=%~dp0installer
 set ISS_FILE=%INSTALLER_DIR%\setup.iss
 
-:: Step 1: Publish self-contained
-echo [1/3] Publishing self-contained build...
-dotnet publish "%PROJECT_DIR%" -c Release -r win-x64
+echo [1/3] Publishing build...
+dotnet publish "%PROJECT_DIR%" -c Release
 if %errorlevel% neq 0 (
     echo ERROR: Publish failed!
     pause
@@ -22,14 +21,12 @@ if %errorlevel% neq 0 (
 echo   Published to: %PUBLISH_DIR%
 echo.
 
-:: Step 2: Copy publish output to installer directory
 echo [2/3] Preparing installer files...
 if not exist "%INSTALLER_DIR%\publish" mkdir "%INSTALLER_DIR%\publish"
 xcopy /s /y /q "%PUBLISH_DIR%\*" "%INSTALLER_DIR%\publish\"
 echo   Files copied.
 echo.
 
-:: Step 3: Build installer with Inno Setup
 echo [3/3] Building installer...
 where iscc >nul 2>&1
 if %errorlevel% neq 0 (
@@ -43,7 +40,7 @@ if %errorlevel% neq 0 (
     echo   iscc "%ISS_FILE%"
     echo.
     echo You can also register the add-in directly without an installer:
-    echo   regsvr32 "%PUBLISH_DIR%\OneNoteAddIn.comhost.dll"
+    echo   RegAsm.exe "%PUBLISH_DIR%\OneNoteAddIn.dll" /codebase
     echo   Then run register.bat
     pause
     exit /b 1
