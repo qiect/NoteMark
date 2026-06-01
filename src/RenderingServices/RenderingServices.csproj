@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <AssemblyName>RenderingServices</AssemblyName>
-    <RootNamespace>OneMarkDotNet.RenderingServices</RootNamespace>
+    <RootNamespace>NoteMark.RenderingServices</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>

@@ -1,10 +1,10 @@
 using System.Xml.Linq;
-using OneMarkDotNet.MarkdownEngine;
-using OneMarkDotNet.OneNoteConverter;
-using OneMarkDotNet.RenderingServices;
-using OneMarkDotNet.ThemeManager;
+using NoteMark.MarkdownEngine;
+using NoteMark.OneNoteConverter;
+using NoteMark.RenderingServices;
+using NoteMark.ThemeManager;
 
-namespace OneMarkDotNet.AddIn;
+namespace NoteMark.AddIn;
 
 public sealed class MarkdownRenderHandler : IDisposable
 {
@@ -15,11 +15,11 @@ public sealed class MarkdownRenderHandler : IDisposable
     private readonly OneNotePageUpdater _pageUpdater;
     private readonly MarkdownParser _parser = new();
     private readonly CodeHighlightService _highlightService = new();
-    private readonly OneMarkDotNet.ThemeManager.ThemeManager _themeManager;
+    private readonly NoteMark.ThemeManager.ThemeManager _themeManager;
     private readonly AddInSettings _settings;
     private bool _disposed;
 
-    public MarkdownRenderHandler(OneNoteApiWrapper api, OneMarkDotNet.ThemeManager.ThemeManager themeManager, AddInSettings settings)
+    public MarkdownRenderHandler(OneNoteApiWrapper api, NoteMark.ThemeManager.ThemeManager themeManager, AddInSettings settings)
     {
         _api = api;
         _themeManager = themeManager;

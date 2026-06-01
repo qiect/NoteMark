@@ -1,7 +1,7 @@
 using System.Text;
 using System.Xml.Linq;
 
-namespace OneMarkDotNet.OneNoteConverter;
+namespace NoteMark.OneNoteConverter;
 
 public sealed class HtmlToOneNoteConverter
 {

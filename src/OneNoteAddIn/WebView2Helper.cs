@@ -2,7 +2,7 @@ using System.Diagnostics;
 using Microsoft.Web.WebView2.Core;
 using Microsoft.Web.WebView2.WinForms;
 
-namespace OneMarkDotNet.AddIn;
+namespace NoteMark.AddIn;
 
 public sealed class WebView2Helper : IDisposable
 {

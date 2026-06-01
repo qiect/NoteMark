@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <AssemblyName>ImportExport</AssemblyName>
-    <RootNamespace>OneMarkDotNet.ImportExport</RootNamespace>
+    <RootNamespace>NoteMark.ImportExport</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>

@@ -1,7 +1,7 @@
 using System.Globalization;
 using System.Text;
 
-namespace OneMarkDotNet.RenderingServices;
+namespace NoteMark.RenderingServices;
 
 public static class HtmlTemplateGenerator
 {

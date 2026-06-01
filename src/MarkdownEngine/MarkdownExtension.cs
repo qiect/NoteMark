@@ -6,9 +6,9 @@ using Markdig.Syntax;
 
 using MarkdigRenderer = Markdig.Renderers.IMarkdownRenderer;
 
-namespace OneMarkDotNet.MarkdownEngine;
+namespace NoteMark.MarkdownEngine;
 
-public class OneMarkMathExtension : IMarkdownExtension
+public class NoteMarkMathExtension : IMarkdownExtension
 {
     public void Setup(MarkdownPipelineBuilder pipeline)
     {
@@ -46,7 +46,7 @@ public class OneMarkMathExtension : IMarkdownExtension
     }
 }
 
-public class OneMarkDiagramExtension : IMarkdownExtension
+public class NoteMarkDiagramExtension : IMarkdownExtension
 {
     private static readonly HashSet<string> DiagramLanguages =
         new(StringComparer.OrdinalIgnoreCase) { "mermaid", "flow", "sequence", "mindmap" };
@@ -111,12 +111,12 @@ public class QuoteHeadingIconExtension : IMarkdownExtension
     }
 }
 
-public class OneMarkExtension : IMarkdownExtension
+public class NoteMarkExtension : IMarkdownExtension
 {
     private readonly IMarkdownExtension[] _extensions =
     [
-        new OneMarkMathExtension(),
-        new OneMarkDiagramExtension(),
+        new NoteMarkMathExtension(),
+        new NoteMarkDiagramExtension(),
         new QuoteHeadingIconExtension()
     ];
 

@@ -1,8 +1,8 @@
 using System.Diagnostics;
 using System.Text.Json;
-using OneMarkDotNet.RenderingServices;
+using NoteMark.RenderingServices;
 
-namespace OneMarkDotNet.AddIn;
+namespace NoteMark.AddIn;
 
 public sealed class LatexRenderService : IDisposable
 {

@@ -1,6 +1,6 @@
-# OneMarkDotNet
+# NoteMark
 
-OneMarkDotNet 是一个 OneNote Markdown 插件，通过 COM Add-In 方式集成到 Microsoft OneNote 中，为 OneNote 提供 Markdown 实时渲染、导入导出和主题定制功能。
+NoteMark 是一个 OneNote Markdown 插件，通过 COM Add-In 方式集成到 Microsoft OneNote 中，为 OneNote 提供 Markdown 实时渲染、导入导出和主题定制功能。
 
 ## 功能特性
 
@@ -30,12 +30,12 @@ OneMarkDotNet 是一个 OneNote Markdown 插件，通过 COM Add-In 方式集成
 ## 项目结构
 
 ```
-OneMarkDotNet/
+NoteMark/
 ├── Directory.Build.props          # 解决方案级别 MSBuild 属性（默认 netstandard2.0）
-├── OneMarkDotNet.sln              # Visual Studio 解决方案文件
+├── NoteMark.sln              # Visual Studio 解决方案文件
 ├── src/
 │   ├── OneNoteAddIn/              # COM Add-In 入口（.NET Framework 4.8）
-│   │   ├── OneMarkAddIn.cs        # Add-In 主类，IDTExtensibility2 + IRibbonExtensibility
+│   │   ├── NoteMarkAddIn.cs        # Add-In 主类，IDTExtensibility2 + IRibbonExtensibility
 │   │   ├── OneNoteApiWrapper.cs   # OneNote COM API 封装
 │   │   ├── OneNotePageUpdater.cs  # 页面更新器
 │   │   ├── WebView2Helper.cs      # WebView2 辅助类
@@ -80,8 +80,8 @@ dotnet build -c Release
    ```
 3. 添加 OneNote AddIn 注册表项：
    ```reg
-   [HKCU\Software\Microsoft\Office\OneNote\AddIns\OneMark.AddIn]
-   FriendlyName=OneMark
+   [HKCU\Software\Microsoft\Office\OneNote\AddIns\NoteMark.AddIn]
+   FriendlyName=NoteMark
    Description=Markdown Plugin
    LoadBehavior=3
    ```
@@ -93,14 +93,14 @@ dotnet build -c Release
 
 ```cmd
 "%WINDIR%\Microsoft.NET\Framework64\v4.0.30319\RegAsm.exe" bin\Release\net48\OneNoteAddIn.dll /unregister
-reg delete "HKCU\Software\Microsoft\Office\OneNote\AddIns\OneMark.AddIn" /f
+reg delete "HKCU\Software\Microsoft\Office\OneNote\AddIns\NoteMark.AddIn" /f
 ```
 
 或使用 `unregister.bat` 脚本。
 
 ## 主题定制
 
-主题以 CSS 文件形式存储在 `%APPDATA%\OneMark\themes\` 目录下。每个 CSS 文件定义一组 CSS 变量来控制渲染样式。
+主题以 CSS 文件形式存储在 `%APPDATA%\NoteMark\themes\` 目录下。每个 CSS 文件定义一组 CSS 变量来控制渲染样式。
 
 支持的变量：
 
@@ -125,7 +125,7 @@ reg delete "HKCU\Software\Microsoft\Office\OneNote\AddIns\OneMark.AddIn" /f
 
 ## 配置
 
-插件配置文件位于 `%APPDATA%\OneMark\settings.json`：
+插件配置文件位于 `%APPDATA%\NoteMark\settings.json`：
 
 ```json
 {

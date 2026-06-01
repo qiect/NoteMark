@@ -1,9 +1,9 @@
 using System.Xml.Linq;
-using OneMarkDotNet.MarkdownEngine;
-using OneMarkDotNet.OneNoteConverter;
-using OneMarkDotNet.ThemeManager;
+using NoteMark.MarkdownEngine;
+using NoteMark.OneNoteConverter;
+using NoteMark.ThemeManager;
 
-namespace OneMarkDotNet.AddIn;
+namespace NoteMark.AddIn;
 
 public sealed class OneNotePageUpdater : IDisposable
 {

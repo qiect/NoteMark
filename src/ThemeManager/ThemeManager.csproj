@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <AssemblyName>ThemeManager</AssemblyName>
-    <RootNamespace>OneMarkDotNet.ThemeManager</RootNamespace>
+    <RootNamespace>NoteMark.ThemeManager</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>

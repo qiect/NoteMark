@@ -2,7 +2,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Xml.Linq;
 
-namespace OneMarkDotNet.OneNoteConverter;
+namespace NoteMark.OneNoteConverter;
 
 public sealed class OneNoteToMarkdownConverter
 {

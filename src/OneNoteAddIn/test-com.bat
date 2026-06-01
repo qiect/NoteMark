@@ -1,13 +1,13 @@
 @echo off
 echo ============================================
-echo   OneMark COM Test (net48 + RegAsm)
+echo   NoteMark COM Test (net48 + RegAsm)
 echo ============================================
 echo.
 
 echo === Testing COM Object Creation ===
 powershell -Command ^
     "try { ^
-        $obj = New-Object -ComObject 'OneMark.AddIn'; ^
+        $obj = New-Object -ComObject 'NoteMark.AddIn'; ^
         Write-Host '[OK] COM object created'; ^
         Write-Host 'Type:' $obj.GetType().FullName; ^
         Write-Host 'Methods:'; _
@@ -23,7 +23,7 @@ reg query "HKCR\CLSID\{B8F2E4A1-3D7C-4F9B-A5E6-8C1D2F3A4B5E}\InprocServer32" 2>n
 echo.
 
 echo === Checking ProgID ===
-reg query "HKCR\OneMark.AddIn\CLSID" 2>nul
+reg query "HKCR\NoteMark.AddIn\CLSID" 2>nul
 echo.
 
 echo === Checking RegAsm Registration ===

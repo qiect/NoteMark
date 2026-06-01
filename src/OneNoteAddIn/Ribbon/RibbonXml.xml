@@ -3,8 +3,8 @@
           onLoad="RibbonOnLoad">
   <ribbon>
     <tabs>
-      <tab id="OneMarkDotNetTab" label="OneMarkDotNet">
-        <group id="OneMarkGroup" label="OneMark" autoScale="true">
+      <tab id="NoteMarkTab" label="NoteMark">
+        <group id="NoteMarkGroup" label="NoteMark" autoScale="true">
           <button id="btnRenderMarkdown"
                   label="Render Markdown"
                   screentip="Render current selection or pasted Markdown (F5)"

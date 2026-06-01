@@ -1,13 +1,13 @@
 @echo off
 echo ============================================
-echo   OneMark AddIn Unregistration (net48 + RegAsm)
+echo   NoteMark AddIn Unregistration (net48 + RegAsm)
 echo ============================================
 echo.
 
 set DLL=%~dp0bin\Debug\net48\OneNoteAddIn.dll
 
 echo [1/2] Removing OneNote AddIn registry entries...
-reg delete "HKCU\Software\Microsoft\Office\OneNote\AddIns\OneMark.AddIn" /f 2>nul
+reg delete "HKCU\Software\Microsoft\Office\OneNote\AddIns\NoteMark.AddIn" /f 2>nul
 echo Registry entries removed.
 
 echo.

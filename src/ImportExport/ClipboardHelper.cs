@@ -1,6 +1,6 @@
 using System.Runtime.InteropServices;
 
-namespace OneMarkDotNet.ImportExport;
+namespace NoteMark.ImportExport;
 
 public static class ClipboardHelper
 {

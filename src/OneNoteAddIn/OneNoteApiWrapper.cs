@@ -1,7 +1,7 @@
 using System.Runtime.InteropServices;
 using Microsoft.Office.Interop.OneNote;
 
-namespace OneMarkDotNet.AddIn;
+namespace NoteMark.AddIn;
 
 public sealed class OneNoteApiWrapper : IDisposable
 {

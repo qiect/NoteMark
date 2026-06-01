@@ -1,6 +1,6 @@
 @echo off
 echo ============================================
-echo   OneMark AddIn Diagnostic (net48 + RegAsm)
+echo   NoteMark AddIn Diagnostic (net48 + RegAsm)
 echo ============================================
 echo.
 
@@ -30,7 +30,7 @@ if %ERRORLEVEL% equ 0 (
 echo.
 
 echo Checking ProgID...
-reg query "HKCR\OneMark.AddIn" 2>nul
+reg query "HKCR\NoteMark.AddIn" 2>nul
 if %ERRORLEVEL% equ 0 (
     echo [OK] ProgID registered
 ) else (
@@ -39,7 +39,7 @@ if %ERRORLEVEL% equ 0 (
 echo.
 
 echo === OneNote AddIn Registry Check ===
-reg query "HKCU\Software\Microsoft\Office\OneNote\AddIns\OneMark.AddIn" 2>nul
+reg query "HKCU\Software\Microsoft\Office\OneNote\AddIns\NoteMark.AddIn" 2>nul
 if %ERRORLEVEL% equ 0 (
     echo [OK] OneNote AddIn registry entry found
 ) else (
@@ -49,7 +49,7 @@ echo.
 
 echo === COM Object Test ===
 echo Testing COM instantiation...
-powershell -Command "$obj = New-Object -ComObject 'OneMark.AddIn'; if ($obj) { Write-Host '[OK] COM object created successfully'; Write-Host 'Type:' $obj.GetType().FullName } else { Write-Host '[FAILED] COM object creation returned null' }" 2>nul
+powershell -Command "$obj = New-Object -ComObject 'NoteMark.AddIn'; if ($obj) { Write-Host '[OK] COM object created successfully'; Write-Host 'Type:' $obj.GetType().FullName } else { Write-Host '[FAILED] COM object creation returned null' }" 2>nul
 if %ERRORLEVEL% neq 0 (
     echo [FAILED] Cannot create COM object. RegAsm registration may be needed.
 )
@@ -65,7 +65,7 @@ if %ERRORLEVEL% equ 0 (
 echo.
 
 echo === Diagnostic Log ===
-set LOGDIR=%APPDATA%\OneMark\logs
+set LOGDIR=%APPDATA%\NoteMark\logs
 if exist "%LOGDIR%\startup.log" (
     echo Last 20 lines of startup.log:
     powershell -Command "Get-Content '%LOGDIR%\startup.log' -Tail 20"

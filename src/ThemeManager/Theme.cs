@@ -1,4 +1,4 @@
-namespace OneMarkDotNet.ThemeManager;
+namespace NoteMark.ThemeManager;
 
 public sealed class Theme
 {

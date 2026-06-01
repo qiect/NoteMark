@@ -1,4 +1,4 @@
-namespace OneMarkDotNet.RenderingServices;
+namespace NoteMark.RenderingServices;
 
 public enum DiagramType
 {

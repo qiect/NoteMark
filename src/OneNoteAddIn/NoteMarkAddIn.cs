@@ -2,25 +2,25 @@ using System.Runtime.InteropServices;
 using Extensibility;
 using Microsoft.Office.Core;
 using Microsoft.Office.Interop.OneNote;
-using OneMarkDotNet.AddIn.Ribbon;
-using OneMarkDotNet.OneNoteConverter;
-using OneMarkDotNet.ThemeManager;
+using NoteMark.AddIn.Ribbon;
+using NoteMark.OneNoteConverter;
+using NoteMark.ThemeManager;
 
-namespace OneMarkDotNet.AddIn;
+namespace NoteMark.AddIn;
 
 [ComVisible(true)]
 [Guid("B8F2E4A1-3D7C-4F9B-A5E6-8C1D2F3A4B5E")]
-[ProgId("OneMark.AddIn")]
+[ProgId("NoteMark.AddIn")]
 [ClassInterface(ClassInterfaceType.None)]
-public class OneMarkAddIn : IDTExtensibility2, IRibbonExtensibility
+public class NoteMarkAddIn : IDTExtensibility2, IRibbonExtensibility
 {
     private IApplication? _oneNoteApp;
-    private OneMarkRibbon? _ribbon;
+    private NoteMarkRibbon? _ribbon;
     private AppLogger? _logger;
 
     private readonly Lazy<KeyboardHook> _keyboardHook = new(() => new KeyboardHook());
     private readonly Lazy<OneNoteApiWrapper> _apiWrapper;
-    private readonly Lazy<OneMarkDotNet.ThemeManager.ThemeManager> _themeManager;
+    private readonly Lazy<NoteMark.ThemeManager.ThemeManager> _themeManager;
     private readonly Lazy<AddInSettings> _settings;
     private readonly Lazy<MarkdownRenderHandler> _renderHandler;
     private readonly Lazy<ExportHandler> _exportHandler;
@@ -29,7 +29,7 @@ public class OneMarkAddIn : IDTExtensibility2, IRibbonExtensibility
 
     private bool _keyboardHookInstalled;
 
-    public OneMarkAddIn()
+    public NoteMarkAddIn()
     {
         DiagnosticLog("Instance constructor called");
 
@@ -41,9 +41,9 @@ public class OneMarkAddIn : IDTExtensibility2, IRibbonExtensibility
             return s;
         });
 
-        _themeManager = new Lazy<OneMarkDotNet.ThemeManager.ThemeManager>(() =>
+        _themeManager = new Lazy<NoteMark.ThemeManager.ThemeManager>(() =>
         {
-            var tm = new OneMarkDotNet.ThemeManager.ThemeManager();
+            var tm = new NoteMark.ThemeManager.ThemeManager();
             var themesDir = _settings.Value.GetThemesDirectory();
             if (!string.IsNullOrEmpty(themesDir))
             {
@@ -96,7 +96,7 @@ public class OneMarkAddIn : IDTExtensibility2, IRibbonExtensibility
         });
     }
 
-    static OneMarkAddIn()
+    static NoteMarkAddIn()
     {
         DiagnosticLog("Static constructor called - .NET Framework 4.8 runtime loaded successfully");
     }
@@ -105,7 +105,7 @@ public class OneMarkAddIn : IDTExtensibility2, IRibbonExtensibility
     {
         try
         {
-            var dir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "OneMark", "logs");
+            var dir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "NoteMark", "logs");
             Directory.CreateDirectory(dir);
             var line = $"[{DateTime.Now:yyyy-MM-dd HH:mm:ss.fff}] {message}\r\n";
             File.AppendAllText(Path.Combine(dir, "startup.log"), line);
@@ -137,7 +137,7 @@ public class OneMarkAddIn : IDTExtensibility2, IRibbonExtensibility
         try
         {
             _logger = AppLogger.Instance;
-            _logger.LogInfo("OneMark AddIn connecting...");
+            _logger.LogInfo("NoteMark AddIn connecting...");
         }
         catch (Exception ex)
         {
@@ -148,7 +148,7 @@ public class OneMarkAddIn : IDTExtensibility2, IRibbonExtensibility
         {
             if (_themeManager is not null && _settings is not null)
             {
-                _ribbon = new OneMarkRibbon(_themeManager.Value);
+                _ribbon = new NoteMarkRibbon(_themeManager.Value);
             }
             DiagnosticLog("Ribbon initialized");
         }
@@ -157,7 +157,7 @@ public class OneMarkAddIn : IDTExtensibility2, IRibbonExtensibility
             DiagnosticLog($"Ribbon FAILED: {ex.GetType().Name}: {ex.Message}");
         }
 
-        _logger?.LogInfo("OneMark AddIn OnConnection completed");
+        _logger?.LogInfo("NoteMark AddIn OnConnection completed");
         DiagnosticLog("OnConnection completed - heavy init deferred to Lazy");
     }
 
@@ -165,7 +165,7 @@ public class OneMarkAddIn : IDTExtensibility2, IRibbonExtensibility
     {
         try
         {
-            _logger?.LogInfo("OneMark AddIn disconnecting...");
+            _logger?.LogInfo("NoteMark AddIn disconnecting...");
 
             if (_keyboardHook.IsValueCreated && _keyboardHookInstalled)
             {
@@ -186,7 +186,7 @@ public class OneMarkAddIn : IDTExtensibility2, IRibbonExtensibility
                 _webViewHelper.Value.Dispose();
 
             _settings.Value.SaveSettings();
-            _logger?.LogInfo("OneMark AddIn disconnected");
+            _logger?.LogInfo("NoteMark AddIn disconnected");
         }
         catch (Exception ex)
         {
@@ -201,12 +201,12 @@ public class OneMarkAddIn : IDTExtensibility2, IRibbonExtensibility
     public void OnStartupComplete(ref Array custom)
     {
         DiagnosticLog("OnStartupComplete called");
-        _logger?.LogInfo("OneMark AddIn startup complete");
+        _logger?.LogInfo("NoteMark AddIn startup complete");
     }
 
     public void OnBeginShutdown(ref Array custom)
     {
-        _logger?.LogInfo("OneMark AddIn beginning shutdown");
+        _logger?.LogInfo("NoteMark AddIn beginning shutdown");
     }
 
     public string GetCustomUI(string ribbonId)
@@ -298,8 +298,8 @@ public class OneMarkAddIn : IDTExtensibility2, IRibbonExtensibility
         try
         {
             System.Windows.Forms.MessageBox.Show(
-                "OneMark v1.0.0\n\nMarkdown rendering for OneNote\nhttps://github.com/onemark",
-                "About OneMark",
+                "NoteMark v1.0.0\n\nMarkdown rendering for OneNote\nhttps://github.com/onemark",
+                "About NoteMark",
                 System.Windows.Forms.MessageBoxButtons.OK,
                 System.Windows.Forms.MessageBoxIcon.Information);
         }

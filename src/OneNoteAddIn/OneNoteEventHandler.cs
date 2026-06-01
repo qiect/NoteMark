@@ -1,13 +1,13 @@
 using System.Runtime.InteropServices;
 using Microsoft.Office.Interop.OneNote;
-using OneMarkDotNet.ThemeManager;
+using NoteMark.ThemeManager;
 
-namespace OneMarkDotNet.AddIn;
+namespace NoteMark.AddIn;
 
 public sealed class OneNoteEventHandler : IDisposable
 {
     private Microsoft.Office.Interop.OneNote.Application? _app;
-    private readonly OneMarkDotNet.ThemeManager.ThemeManager _themeManager;
+    private readonly NoteMark.ThemeManager.ThemeManager _themeManager;
     private readonly AddInSettings _settings;
     private string _currentPageId = string.Empty;
     private bool _disposed;
@@ -17,7 +17,7 @@ public sealed class OneNoteEventHandler : IDisposable
     public event Action<string>? ContentChanged;
 #pragma warning restore CS0067
 
-    public OneNoteEventHandler(OneMarkDotNet.ThemeManager.ThemeManager themeManager, AddInSettings settings)
+    public OneNoteEventHandler(NoteMark.ThemeManager.ThemeManager themeManager, AddInSettings settings)
     {
         _themeManager = themeManager;
         _settings = settings;

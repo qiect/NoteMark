@@ -1,6 +1,6 @@
 using System.Text;
 
-namespace OneMarkDotNet.ImportExport;
+namespace NoteMark.ImportExport;
 
 public sealed class FrontMatterParser
 {

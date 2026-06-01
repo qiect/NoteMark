@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <AssemblyName>OneNoteConverter</AssemblyName>
-    <RootNamespace>OneMarkDotNet.OneNoteConverter</RootNamespace>
+    <RootNamespace>NoteMark.OneNoteConverter</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>

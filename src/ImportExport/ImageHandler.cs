@@ -1,9 +1,9 @@
 using System.Buffers;
 using System.Text;
 using System.Text.RegularExpressions;
-using OneMarkDotNet.MarkdownEngine;
+using NoteMark.MarkdownEngine;
 
-namespace OneMarkDotNet.ImportExport;
+namespace NoteMark.ImportExport;
 
 public sealed class ImageHandler
 {

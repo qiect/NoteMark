@@ -2,7 +2,7 @@
 setlocal
 
 echo ============================================
-echo  OneMarkDotNet Installer Build Script
+echo  NoteMark Installer Build Script
 echo ============================================
 echo.
 

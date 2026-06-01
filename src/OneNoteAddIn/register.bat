@@ -1,6 +1,6 @@
 @echo off
 echo ============================================
-echo   OneMark AddIn Registration (net48 + RegAsm)
+echo   NoteMark AddIn Registration (net48 + RegAsm)
 echo ============================================
 echo.
 
@@ -24,15 +24,15 @@ echo RegAsm registration succeeded.
 
 echo.
 echo [2/3] Adding OneNote AddIn registry entries...
-reg add "HKCU\Software\Microsoft\Office\OneNote\AddIns\OneMark.AddIn" /ve /d "OneMark - OneNote Markdown Plugin" /f
-reg add "HKCU\Software\Microsoft\Office\OneNote\AddIns\OneMark.AddIn" /v FriendlyName /d "OneMark" /f
-reg add "HKCU\Software\Microsoft\Office\OneNote\AddIns\OneMark.AddIn" /v Description /d "Markdown rendering and export plugin for OneNote" /f
-reg add "HKCU\Software\Microsoft\Office\OneNote\AddIns\OneMark.AddIn" /v LoadBehavior /t REG_DWORD /d 3 /f
+reg add "HKCU\Software\Microsoft\Office\OneNote\AddIns\NoteMark.AddIn" /ve /d "NoteMark - OneNote Markdown Plugin" /f
+reg add "HKCU\Software\Microsoft\Office\OneNote\AddIns\NoteMark.AddIn" /v FriendlyName /d "NoteMark" /f
+reg add "HKCU\Software\Microsoft\Office\OneNote\AddIns\NoteMark.AddIn" /v Description /d "Markdown rendering and export plugin for OneNote" /f
+reg add "HKCU\Software\Microsoft\Office\OneNote\AddIns\NoteMark.AddIn" /v LoadBehavior /t REG_DWORD /d 3 /f
 echo Registry entries added.
 
 echo.
 echo [3/3] Verifying registration...
-reg query "HKCU\Software\Microsoft\Office\OneNote\AddIns\OneMark.AddIn" 2>nul
+reg query "HKCU\Software\Microsoft\Office\OneNote\AddIns\NoteMark.AddIn" 2>nul
 if %ERRORLEVEL% equ 0 (
     echo.
     echo ============================================

@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <AssemblyName>MarkdownEngine</AssemblyName>
-    <RootNamespace>OneMarkDotNet.MarkdownEngine</RootNamespace>
+    <RootNamespace>NoteMark.MarkdownEngine</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>

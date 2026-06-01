@@ -1,7 +1,7 @@
 using Markdig;
-using OneMarkDotNet.MarkdownEngine;
+using NoteMark.MarkdownEngine;
 
-namespace OneMarkDotNet.ImportExport;
+namespace NoteMark.ImportExport;
 
 public sealed class MarkdownImporter
 {

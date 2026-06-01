@@ -5,7 +5,7 @@
     <UseWindowsForms>true</UseWindowsForms>
     <ComVisible>false</ComVisible>
     <AssemblyName>OneNoteAddIn</AssemblyName>
-    <RootNamespace>OneMarkDotNet.AddIn</RootNamespace>
+    <RootNamespace>NoteMark.AddIn</RootNamespace>
     <Nullable>enable</Nullable>
     <LangVersion>latest</LangVersion>
     <RegisterForComInterop>false</RegisterForComInterop>
@@ -35,15 +35,15 @@
 
   <Target Name="RegisterAddIn" AfterTargets="Build" Condition="'$(Configuration)' == 'Debug' and '$(OS)' == 'Windows_NT'">
     <Exec ContinueOnError="true" Command="&quot;%WINDIR%\Microsoft.NET\Framework64\v4.0.30319\RegAsm.exe&quot; &quot;$(TargetPath)&quot; /codebase" />
-    <Exec ContinueOnError="true" Command="reg add &quot;HKCU\Software\Microsoft\Office\OneNote\AddIns\OneMark.AddIn&quot; /ve /d &quot;OneMark - OneNote Markdown Plugin&quot; /f" />
-    <Exec ContinueOnError="true" Command="reg add &quot;HKCU\Software\Microsoft\Office\OneNote\AddIns\OneMark.AddIn&quot; /v LoadBehavior /t REG_DWORD /d 3 /f" />
-    <Exec ContinueOnError="true" Command="reg add &quot;HKCU\Software\Microsoft\Office\OneNote\AddIns\OneMark.AddIn&quot; /v FriendlyName /d &quot;OneMark&quot; /f" />
-    <Exec ContinueOnError="true" Command="reg add &quot;HKCU\Software\Microsoft\Office\OneNote\AddIns\OneMark.AddIn&quot; /v Description /d &quot;Markdown rendering and export plugin for OneNote&quot; /f" />
+    <Exec ContinueOnError="true" Command="reg add &quot;HKCU\Software\Microsoft\Office\OneNote\AddIns\NoteMark.AddIn&quot; /ve /d &quot;NoteMark - OneNote Markdown Plugin&quot; /f" />
+    <Exec ContinueOnError="true" Command="reg add &quot;HKCU\Software\Microsoft\Office\OneNote\AddIns\NoteMark.AddIn&quot; /v LoadBehavior /t REG_DWORD /d 3 /f" />
+    <Exec ContinueOnError="true" Command="reg add &quot;HKCU\Software\Microsoft\Office\OneNote\AddIns\NoteMark.AddIn&quot; /v FriendlyName /d &quot;NoteMark&quot; /f" />
+    <Exec ContinueOnError="true" Command="reg add &quot;HKCU\Software\Microsoft\Office\OneNote\AddIns\NoteMark.AddIn&quot; /v Description /d &quot;Markdown rendering and export plugin for OneNote&quot; /f" />
   </Target>
 
   <Target Name="UnregisterAddIn" Condition="'$(OS)' == 'Windows_NT'">
     <Exec ContinueOnError="true" Command="&quot;%WINDIR%\Microsoft.NET\Framework64\v4.0.30319\RegAsm.exe&quot; &quot;$(TargetPath)&quot; /unregister" />
-    <Exec ContinueOnError="true" Command="reg delete &quot;HKCU\Software\Microsoft\Office\OneNote\AddIns\OneMark.AddIn&quot; /f" />
+    <Exec ContinueOnError="true" Command="reg delete &quot;HKCU\Software\Microsoft\Office\OneNote\AddIns\NoteMark.AddIn&quot; /f" />
   </Target>
 
 </Project>

@@ -1,7 +1,7 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace OneMarkDotNet.AddIn;
+namespace NoteMark.AddIn;
 
 public sealed class AddInSettings
 {
@@ -28,7 +28,7 @@ public sealed class AddInSettings
 
     private AddInSettings()
     {
-        _settingsDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "OneMarkDotNet");
+        _settingsDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "NoteMark");
         _settingsFilePath = Path.Combine(_settingsDirectory, "settings.json");
     }
 
@@ -113,7 +113,7 @@ public sealed class AddInSettings
 
     public string GetThemesDirectory()
     {
-        return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "OneMarkDotNet", "themes");
+        return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "NoteMark", "themes");
     }
 
     private sealed class SettingsData

@@ -1,6 +1,6 @@
 using System.Collections.Concurrent;
 
-namespace OneMarkDotNet.ThemeManager;
+namespace NoteMark.ThemeManager;
 
 public sealed class ThemeManager
 {

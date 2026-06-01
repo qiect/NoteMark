@@ -1,6 +1,6 @@
 using System.Globalization;
 
-namespace OneMarkDotNet.ThemeManager;
+namespace NoteMark.ThemeManager;
 
 public static class CssStyleMapper
 {

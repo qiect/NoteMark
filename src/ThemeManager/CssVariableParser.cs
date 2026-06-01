@@ -1,7 +1,7 @@
 using System.Text;
 using System.Text.RegularExpressions;
 
-namespace OneMarkDotNet.ThemeManager;
+namespace NoteMark.ThemeManager;
 
 public static class CssVariableParser
 {
