@@ -3,10 +3,10 @@ using System.Text.RegularExpressions;
 
 namespace OneMarkDotNet.ThemeManager;
 
-public static partial class CssVariableParser
+public static class CssVariableParser
 {
     private static readonly string[] SupportedVariables =
-    [
+    {
         "--font-family",
         "--bg-color",
         "--line-height",
@@ -19,30 +19,30 @@ public static partial class CssVariableParser
         "--enable-code-line-number",
         "--enable-latex-to-image",
         "--block-width-margin"
-    ];
+    };
 
-    private static readonly HashSet<string> SupportedSet = [.. SupportedVariables];
+    private static readonly HashSet<string> SupportedSet = new(SupportedVariables, StringComparer.OrdinalIgnoreCase);
 
-    [GeneratedRegex(@":root\s*\{([^}]*)\}", RegexOptions.Singleline)]
-    private static partial Regex RootBlockRegex();
+    private static readonly Regex RootBlockRegex =
+        new Regex(@":root\s*\{([^}]*)\}", RegexOptions.Singleline | RegexOptions.Compiled);
 
-    [GeneratedRegex(@"--([\w-]+)\s*:\s*([^;]+);?", RegexOptions.Singleline)]
-    private static partial Regex VariableRegex();
+    private static readonly Regex VariableRegex =
+        new Regex(@"--([\w-]+)\s*:\s*([^;]+);?", RegexOptions.Singleline | RegexOptions.Compiled);
 
     public static Dictionary<string, string> ParseVariables(string cssContent)
     {
         var variables = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
 
-        foreach (Match rootMatch in RootBlockRegex().Matches(cssContent))
+        foreach (Match rootMatch in RootBlockRegex.Matches(cssContent))
         {
             var blockContent = rootMatch.Groups[1].Value;
 
-            foreach (Match varMatch in VariableRegex().Matches(blockContent))
+            foreach (Match varMatch in VariableRegex.Matches(blockContent))
             {
                 var name = string.Concat("--", varMatch.Groups[1].Value.Trim());
                 var value = varMatch.Groups[2].Value.Trim();
 
-                if (SupportedSet.Contains(name, StringComparer.OrdinalIgnoreCase))
+                if (SupportedSet.Contains(name))
                 {
                     variables[name] = value;
                 }
@@ -60,9 +60,9 @@ public static partial class CssVariableParser
         var sb = new StringBuilder();
         sb.AppendLine(":root {");
 
-        foreach (var (name, value) in variables)
+        foreach (var kv in variables)
         {
-            sb.Append("  ").Append(name).Append(": ").Append(value).AppendLine(";");
+            sb.Append("  ").Append(kv.Key).Append(": ").Append(kv.Value).AppendLine(";");
         }
 
         sb.AppendLine("}");

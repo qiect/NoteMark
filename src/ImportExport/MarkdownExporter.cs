@@ -38,7 +38,7 @@ public sealed class MarkdownExporter
 
         sb.Append(processedContent);
 
-        await File.WriteAllTextAsync(filePath, sb.ToString());
+        File.WriteAllText(filePath, sb.ToString());
     }
 
     public void ExportToClipboard(MarkdownDocument document)
@@ -244,20 +244,20 @@ public sealed class MarkdownExporter
         if (string.IsNullOrEmpty(style))
             return text;
 
-        if (style.Contains("bold", StringComparison.OrdinalIgnoreCase) &&
-            style.Contains("italic", StringComparison.OrdinalIgnoreCase))
+        if (style.IndexOf("bold", StringComparison.OrdinalIgnoreCase) >= 0 &&
+            style.IndexOf("italic", StringComparison.OrdinalIgnoreCase) >= 0)
             return $"***{text}***";
 
-        if (style.Contains("bold", StringComparison.OrdinalIgnoreCase))
+        if (style.IndexOf("bold", StringComparison.OrdinalIgnoreCase) >= 0)
             return $"**{text}**";
 
-        if (style.Contains("italic", StringComparison.OrdinalIgnoreCase))
+        if (style.IndexOf("italic", StringComparison.OrdinalIgnoreCase) >= 0)
             return $"*{text}*";
 
-        if (style.Contains("underline", StringComparison.OrdinalIgnoreCase))
+        if (style.IndexOf("underline", StringComparison.OrdinalIgnoreCase) >= 0)
             return $"<u>{text}</u>";
 
-        if (style.Contains("strikethrough", StringComparison.OrdinalIgnoreCase))
+        if (style.IndexOf("strikethrough", StringComparison.OrdinalIgnoreCase) >= 0)
             return $"~~{text}~~";
 
         return text;

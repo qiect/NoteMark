@@ -2,9 +2,9 @@ using System.Diagnostics;
 using Microsoft.Web.WebView2.Core;
 using Microsoft.Web.WebView2.WinForms;
 
-namespace OneMarkDotNet.RenderingServices;
+namespace OneMarkDotNet.AddIn;
 
-public sealed class WebView2Helper : IAsyncDisposable
+public sealed class WebView2Helper : IDisposable
 {
     private WebView2? _webView;
     private TaskCompletionSource<string>? _messageTcs;
@@ -98,7 +98,7 @@ public sealed class WebView2Helper : IAsyncDisposable
         await _webView.CoreWebView2.ExecuteScriptAsync("document.readyState === 'complete'");
     }
 
-    public ValueTask DisposeAsync()
+    public void Dispose()
     {
         if (_webView is not null)
         {
@@ -114,8 +114,6 @@ public sealed class WebView2Helper : IAsyncDisposable
         _isInitialized = false;
         _messageTcs?.TrySetCanceled();
         _messageTcs = null;
-
-        return ValueTask.CompletedTask;
     }
 
     private static async Task InstallWebView2RuntimeAsync()
@@ -128,7 +126,7 @@ public sealed class WebView2Helper : IAsyncDisposable
 
         if (process is not null)
         {
-            await process.WaitForExitAsync();
+            process.WaitForExit();
         }
     }
 }

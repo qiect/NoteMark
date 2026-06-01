@@ -135,7 +135,7 @@ public sealed class HtmlToOneNoteConverter
     {
         var tagName = element.Name.LocalName.ToLowerInvariant();
         var fontSize = HeadingFontSizes[tagName];
-        var level = int.Parse(tagName[1..]);
+        var level = int.Parse(tagName.Substring(1));
 
         var html = BuildInlineHtml(element);
         var style = new OneNoteStyle
@@ -306,7 +306,7 @@ public sealed class HtmlToOneNoteConverter
         switch (tagName)
         {
             case "h1" or "h2" or "h3" or "h4" or "h5" or "h6":
-                var level = int.Parse(tagName[1..]);
+                var level = int.Parse(tagName.Substring(1));
                 elements.Add(new OutlineElement
                 {
                     Type = ElementType.Heading,

@@ -24,7 +24,7 @@ public sealed class AddInSettings
     public bool IsLineNumberEnabled { get; set; } = false;
     public bool IsLatexToImage { get; set; } = true;
     public bool IsSourceModeDefault { get; set; } = false;
-    public HashSet<string> SourceModeBlocks { get; set; } = [];
+    public HashSet<string> SourceModeBlocks { get; set; } = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
 
     private AddInSettings()
     {
@@ -55,7 +55,7 @@ public sealed class AddInSettings
                 IsSourceModeDefault = loaded.IsSourceModeDefault ?? false;
                 SourceModeBlocks = loaded.SourceModeBlocks is not null
                     ? new HashSet<string>(loaded.SourceModeBlocks, StringComparer.OrdinalIgnoreCase)
-                    : [];
+                    : new HashSet<string>(StringComparer.OrdinalIgnoreCase);
             }
             catch (Exception ex)
             {
@@ -79,7 +79,7 @@ public sealed class AddInSettings
                     IsLineNumberEnabled = IsLineNumberEnabled,
                     IsLatexToImage = IsLatexToImage,
                     IsSourceModeDefault = IsSourceModeDefault,
-                    SourceModeBlocks = [.. SourceModeBlocks]
+                    SourceModeBlocks = SourceModeBlocks.ToList()
                 };
 
                 var json = JsonSerializer.Serialize(data, JsonOptions);

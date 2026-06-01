@@ -1,16 +1,12 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net8.0-windows</TargetFramework>
-    <UseWindowsForms>true</UseWindowsForms>
-    <Nullable>enable</Nullable>
-    <LangVersion>12</LangVersion>
     <AssemblyName>OneNoteConverter</AssemblyName>
-    <RootNamespace>OneNoteConverter</RootNamespace>
+    <RootNamespace>OneMarkDotNet.OneNoteConverter</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Interop.Microsoft.Office.Interop.OneNote" Version="1.1.0.2" />
+    <Compile Include="..\Shared\Polyfills.cs" Link="Shared\Polyfills.cs" />
   </ItemGroup>
 
   <ItemGroup>

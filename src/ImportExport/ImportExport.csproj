@@ -1,14 +1,13 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
     <AssemblyName>ImportExport</AssemblyName>
-    <RootNamespace>ImportExport</RootNamespace>
-    <Nullable>enable</Nullable>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <LangVersion>12</LangVersion>
-    <NoWarn>CA1305,CA1310,CA1822</NoWarn>
+    <RootNamespace>OneMarkDotNet.ImportExport</RootNamespace>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="..\Shared\Polyfills.cs" Link="Shared\Polyfills.cs" />
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Markdig" Version="0.38.0" />

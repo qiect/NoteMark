@@ -4,7 +4,7 @@ namespace OneMarkDotNet.ImportExport;
 
 public sealed class FrontMatterParser
 {
-    static readonly string[] Separator = ["---"];
+    static readonly string[] Separator = { "---" };
 
     public (Dictionary<string, object> FrontMatter, string Body) Parse(string markdown)
     {
@@ -13,23 +13,22 @@ public sealed class FrontMatterParser
         if (string.IsNullOrEmpty(markdown) || !markdown.StartsWith("---"))
             return (frontMatter, markdown);
 
-        var span = markdown.AsSpan();
-        var firstLineEnd = span.IndexOf('\n');
+        var firstLineEnd = markdown.IndexOf('\n');
         if (firstLineEnd < 0)
             return (frontMatter, markdown);
 
-        var remaining = span[(firstLineEnd + 1)..];
-        var closingIndex = remaining.IndexOf("\n---\n");
+        var remaining = markdown.Substring(firstLineEnd + 1);
+        var closingIndex = remaining.IndexOf("\n---\n", StringComparison.Ordinal);
         if (closingIndex < 0)
-            closingIndex = remaining.IndexOf("\r\n---\r\n");
+            closingIndex = remaining.IndexOf("\r\n---\r\n", StringComparison.Ordinal);
         if (closingIndex < 0)
-            closingIndex = remaining.IndexOf("\n---");
+            closingIndex = remaining.IndexOf("\n---", StringComparison.Ordinal);
         if (closingIndex < 0)
             return (frontMatter, markdown);
 
-        var yamlBlock = remaining[..closingIndex].ToString();
+        var yamlBlock = remaining.Substring(0, closingIndex);
         var bodyStart = closingIndex + 3;
-        var body = bodyStart < remaining.Length ? remaining[bodyStart..].ToString() : string.Empty;
+        var body = bodyStart < remaining.Length ? remaining.Substring(bodyStart) : string.Empty;
         body = body.TrimStart('\r', '\n');
 
         foreach (var line in yamlBlock.Split('\n', StringSplitOptions.RemoveEmptyEntries))
@@ -47,17 +46,17 @@ public sealed class FrontMatterParser
             if (colonIndex < 0)
                 continue;
 
-            var key = trimmed[..colonIndex].Trim();
-            var valueSpan = trimmed[(colonIndex + 1)..].Trim();
+            var key = trimmed.Substring(0, colonIndex).Trim();
+            var valueStr = trimmed.Substring(colonIndex + 1).Trim();
 
             if (key is "tags" or "categories")
             {
-                var list = ParseList(valueSpan.ToString(), yamlBlock);
+                var list = ParseList(valueStr, yamlBlock);
                 frontMatter[key] = list;
             }
             else
             {
-                frontMatter[key] = ParseScalar(valueSpan.ToString());
+                frontMatter[key] = ParseScalar(valueStr);
             }
         }
 
@@ -70,7 +69,7 @@ public sealed class FrontMatterParser
 
         if (!string.IsNullOrEmpty(inlineValue) && inlineValue != "[]" && inlineValue != "")
         {
-            foreach (var item in inlineValue.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries))
+            foreach (var item in inlineValue.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries).Select(x => x.Trim()))
             {
                 var cleaned = item.Trim('[', ']', ' ', '"', '\'');
                 if (!string.IsNullOrEmpty(cleaned))
@@ -83,7 +82,6 @@ public sealed class FrontMatterParser
 
         var lines = yamlBlock.Split('\n');
         var inList = false;
-        var listKey = inlineValue.Length == 0 ? "tags" : "tags";
 
         foreach (var line in lines)
         {
@@ -91,7 +89,7 @@ public sealed class FrontMatterParser
             if (trimmed.StartsWith("- "))
             {
                 inList = true;
-                var item = trimmed[2..].Trim('"', '\'', ' ');
+                var item = trimmed.Substring(2).Trim('"', '\'', ' ');
                 if (!string.IsNullOrEmpty(item))
                     list.Add(item);
             }
@@ -109,11 +107,11 @@ public sealed class FrontMatterParser
         if (string.IsNullOrEmpty(value))
             return string.Empty;
 
-        if (value.StartsWith('"') && value.EndsWith('"'))
-            return value[1..^1];
+        if (value.StartsWith('"') && value.EndsWith('"') && value.Length >= 2)
+            return value.Substring(1, value.Length - 2);
 
-        if (value.StartsWith('\'') && value.EndsWith('\''))
-            return value[1..^1];
+        if (value.StartsWith('\'') && value.EndsWith('\'') && value.Length >= 2)
+            return value.Substring(1, value.Length - 2);
 
         if (bool.TryParse(value, out var boolVal))
             return boolVal;
@@ -139,31 +137,31 @@ public sealed class FrontMatterParser
         var sb = new StringBuilder();
         sb.AppendLine("---");
 
-        foreach (var (key, value) in frontMatter)
+        foreach (var kv in frontMatter)
         {
-            switch (value)
+            switch (kv.Value)
             {
                 case IList<string> list:
-                    sb.AppendLine($"{key}:");
+                    sb.AppendLine($"{kv.Key}:");
                     foreach (var item in list)
                         sb.AppendLine($"  - {item}");
                     break;
                 case IList<object> objList:
-                    sb.AppendLine($"{key}:");
+                    sb.AppendLine($"{kv.Key}:");
                     foreach (var item in objList)
                         sb.AppendLine($"  - {item}");
                     break;
                 case DateTime dt:
-                    sb.AppendLine($"{key}: {dt:yyyy-MM-dd}");
+                    sb.AppendLine($"{kv.Key}: {dt:yyyy-MM-dd}");
                     break;
                 case bool b:
-                    sb.AppendLine($"{key}: {(b ? "true" : "false")}");
+                    sb.AppendLine($"{kv.Key}: {(b ? "true" : "false")}");
                     break;
-                case string s when s.Contains(':') || s.Contains('#') || s.StartsWith(' ') || s.StartsWith('"'):
-                    sb.AppendLine($"{key}: \"{s}\"");
+                case string s when s.Contains(':') || s.Contains('#') || s.StartsWith(" ") || s.StartsWith("\""):
+                    sb.AppendLine($"{kv.Key}: \"{s}\"");
                     break;
                 default:
-                    sb.AppendLine($"{key}: {value}");
+                    sb.AppendLine($"{kv.Key}: {kv.Value}");
                     break;
             }
         }

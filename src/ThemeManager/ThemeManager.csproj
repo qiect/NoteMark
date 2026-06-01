@@ -1,9 +1,12 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
     <AssemblyName>ThemeManager</AssemblyName>
     <RootNamespace>OneMarkDotNet.ThemeManager</RootNamespace>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="..\Shared\Polyfills.cs" Link="Shared\Polyfills.cs" />
+  </ItemGroup>
 
 </Project>

@@ -127,7 +127,7 @@ public sealed class CodeHighlightService
             }
 
             var text = code.Substring(token.Index, token.Length);
-            sb.Append(CultureInfo.InvariantCulture, $"""<span class="{token.CssClass}">{EscapeHtml(text)}</span>""");
+            sb.Append(string.Format(CultureInfo.InvariantCulture, "<span class=\"{0}\">{1}</span>", token.CssClass, EscapeHtml(text)));
             lastEnd = token.Index + token.Length;
         }
 
@@ -153,8 +153,8 @@ public sealed class CodeHighlightService
         for (var i = 0; i < lines.Length; i++)
         {
             var lineNumber = i + 1;
-            sb.Append(CultureInfo.InvariantCulture, $"""<span class="hljs-ln-number" data-line-number="{lineNumber}"></span>""");
-            sb.Append(CultureInfo.InvariantCulture, $"""<span class="hljs-ln-line">{lines[i]}""");
+            sb.Append(string.Format(CultureInfo.InvariantCulture, "<span class=\"hljs-ln-number\" data-line-number=\"{0}\"></span>", lineNumber));
+            sb.Append(string.Format(CultureInfo.InvariantCulture, "<span class=\"hljs-ln-line\">{0}", lines[i]));
             if (i < lines.Length - 1)
                 sb.Append('\n');
             sb.Append("</span>");
@@ -165,10 +165,10 @@ public sealed class CodeHighlightService
     }
 
     private static string EscapeHtml(string text) =>
-        text.Replace("&", "&amp;", StringComparison.Ordinal)
-            .Replace("<", "&lt;", StringComparison.Ordinal)
-            .Replace(">", "&gt;", StringComparison.Ordinal)
-            .Replace("\"", "&quot;", StringComparison.Ordinal);
+        text.Replace("&", "&amp;")
+            .Replace("<", "&lt;")
+            .Replace(">", "&gt;")
+            .Replace("\"", "&quot;");
 
     private static Dictionary<string, LanguageRuleSet> InitializeRuleSets() => new()
     {

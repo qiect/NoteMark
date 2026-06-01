@@ -50,7 +50,7 @@ public sealed class AppLogger
         if (_disposed) return;
 
         var timestamp = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff");
-        var threadId = Environment.CurrentManagedThreadId;
+        var threadId = System.Threading.Thread.CurrentThread.ManagedThreadId;
         var line = $"[{timestamp}] [{level}] [T{threadId}] {message}";
         _queue.Enqueue(line);
     }

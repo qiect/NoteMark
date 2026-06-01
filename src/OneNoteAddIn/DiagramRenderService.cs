@@ -1,9 +1,9 @@
 using System.Diagnostics;
-using System.Text.Json;
+using OneMarkDotNet.RenderingServices;
 
-namespace OneMarkDotNet.RenderingServices;
+namespace OneMarkDotNet.AddIn;
 
-public sealed class DiagramRenderService : IAsyncDisposable
+public sealed class DiagramRenderService : IDisposable
 {
     private WebView2Helper? _webViewHelper;
 
@@ -49,19 +49,16 @@ public sealed class DiagramRenderService : IAsyncDisposable
         if (_webViewHelper is not null && _webViewHelper.IsInitialized)
             return;
 
-        _webViewHelper?.DisposeAsync().AsTask().Wait();
+        _webViewHelper?.Dispose();
 
         _webViewHelper = new WebView2Helper();
         await WebView2Helper.EnsureWebView2RuntimeAsync();
         await _webViewHelper.CreateWebViewAsync();
     }
 
-    public async ValueTask DisposeAsync()
+    public void Dispose()
     {
-        if (_webViewHelper is not null)
-        {
-            await _webViewHelper.DisposeAsync();
-            _webViewHelper = null;
-        }
+        _webViewHelper?.Dispose();
+        _webViewHelper = null;
     }
 }

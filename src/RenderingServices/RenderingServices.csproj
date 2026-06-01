@@ -1,14 +1,12 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net8.0-windows</TargetFramework>
-    <UseWindowsForms>true</UseWindowsForms>
     <AssemblyName>RenderingServices</AssemblyName>
     <RootNamespace>OneMarkDotNet.RenderingServices</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.2903.40" />
+    <Compile Include="..\Shared\Polyfills.cs" Link="Shared\Polyfills.cs" />
   </ItemGroup>
 
   <ItemGroup>
