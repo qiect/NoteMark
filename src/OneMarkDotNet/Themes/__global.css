@@ -1,0 +1,8 @@
+:root {
+  --font-family: "Segoe UI";
+  --line-height: 1.6;
+  --paragraph-margin: 8px;
+  --monospace: "Consolas";
+  --enable-code-line-number: true;
+  --enable-latex-to-image: true;
+}

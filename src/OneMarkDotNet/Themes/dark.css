@@ -1,0 +1,14 @@
+:root {
+  --font-family: "Segoe UI";
+  --bg-color: #1e1e1e;
+  --line-height: 1.7;
+  --paragraph-margin: 10px;
+  --monospace: "Cascadia Code";
+  --select-text-bg-color: #2d2d2d;
+  --select-text-font-color: #d4d4d4;
+  --blockquote-heading-icons: true;
+  --enable-heading-in-blockquote: true;
+  --enable-code-line-number: true;
+  --enable-latex-to-image: true;
+  --block-width-margin: #404040;
+}

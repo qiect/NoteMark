@@ -1,0 +1,246 @@
+﻿//************************************************************************************************
+// Copyright © 2022 Steven M Cohn.  All rights reserved.
+//************************************************************************************************
+
+namespace OneMoreSetupActions
+{
+	using Microsoft.Win32;
+	using System;
+	using System.Runtime.InteropServices;
+
+
+	/// <summary>
+	/// Clones the OneMore CLSID branch to support both 32bit and 64bit installs of OneNote
+	/// </summary>
+	internal class RegistryWowAction : CustomAction
+	{
+		private readonly Architecture architecture;
+
+
+		public RegistryWowAction(Logger logger, Stepper stepper, Architecture onArchitecture)
+			: base(logger, stepper)
+		{
+			architecture = onArchitecture;
+		}
+
+
+		//========================================================================================
+
+		/// <summary>
+		/// Note this is invoked as a single call, not as part of Program:Install
+		/// </summary>
+		/// <returns></returns>
+		public override int Install()
+		{
+			logger.WriteLine();
+			logger.WriteLine($"RegistryWowAction.Install --- OS x64:{Environment.Is64BitProcess}, OneNote:{architecture}");
+
+			if (CloningRequired())
+			{
+				// delete subtrees to start from scratch
+				// then create new subtrees
+
+				if (UnregisterWow() == SUCCESS &&
+					RegisterWow() == SUCCESS)
+				{
+					return SUCCESS;
+				}
+			}
+			else
+			{
+				logger.WriteLine("WOW cloning not required");
+			}
+
+			return SUCCESS;
+		}
+
+
+		/*
+		 * Initial attempt was to use RegistryKey.OpenBase specifying the RegistryHive and
+		 * RegistryView.Registry32. This required configuring the project as AnyCPU and
+		 * disabling the Prefer 32-bit option. However, this did not work consistently as
+		 * it should. After trial and error, realized that only the ClassesRoot\CLSID\{guid}
+		 * key needed to be cloned to WOW6432Node\CLSID and that could be done directly.
+		 */
+		/// <summary>
+		/// Copies the OneMore CLSID branch from HKLM\SOFTWARE\Classes\CLSID to
+		/// HKLM\SOFTWARE\WOW6432Node\Classes\CLSID so 32-bit OneNote can activate the add-in.
+		/// Uses Registry64 explicitly so this works when the process is 32-bit (x86 MSI).
+		/// </summary>
+		private int RegisterWow()
+		{
+			logger.WriteLine($"step {stepper.Step()}: cloning CLSID");
+
+			var view = Environment.Is64BitOperatingSystem ? RegistryView.Registry64 : RegistryView.Default;
+
+			using var lm = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, view);
+			using var source = lm.OpenSubKey(
+				$@"SOFTWARE\Classes\CLSID\{RegistryHelper.OneMoreID}",
+				RegistryKeyPermissionCheck.ReadSubTree, RegistryHelper.ReadRights);
+
+			if (source != null)
+			{
+				using var target = lm.OpenSubKey(@"SOFTWARE\WOW6432Node\Classes\CLSID", true);
+				if (target != null)
+				{
+					logger.WriteLine($"step {stepper.Step()}: copying from {source.Name} to {target.Name}");
+					source.CopyTo(target);
+				}
+				else
+				{
+					logger.WriteLine($"step {stepper.Step()}: WOW6432Node\\Classes\\CLSID not accessible");
+				}
+			}
+			else
+			{
+				logger.WriteLine($"source CLSID\\{RegistryHelper.OneMoreID} not found");
+			}
+
+			return SUCCESS;
+		}
+
+
+		//========================================================================================
+
+		/// <summary>
+		/// Removes the WOW6432Node CLSID clone if cloning was required for this configuration.
+		/// </summary>
+		public override int Uninstall()
+		{
+			logger.WriteLine();
+			logger.WriteLine($"RegistryWowAction.Uninstall --- x64:{Environment.Is64BitProcess}, OneNote:{architecture}");
+
+			if (CloningRequired())
+			{
+				return UnregisterWow();
+			}
+
+			logger.WriteLine("WOW cloning not required, no cleanup necessary");
+			return SUCCESS;
+		}
+
+
+		/// <summary>
+		/// Deletes the OneMore CLSID entry from HKLM\SOFTWARE\WOW6432Node\Classes\CLSID.
+		/// Uses Registry64 explicitly so this works when the process is 32-bit (x86 MSI).
+		/// </summary>
+		private int UnregisterWow()
+		{
+			logger.WriteLine($"step {stepper.Step()}: deleting CLSID clone");
+
+			var view = Environment.Is64BitOperatingSystem ? RegistryView.Registry64 : RegistryView.Default;
+
+			using var lm = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, view);
+			using var key = lm.OpenSubKey(@"SOFTWARE\WOW6432Node\Classes\CLSID", true);
+
+			if (key != null)
+			{
+				key.DeleteSubKeyTree(RegistryHelper.OneMoreID, false);
+				key.DeleteSubKey(RegistryHelper.OneMoreID, false);
+			}
+			else
+			{
+				logger.WriteLine("CLSID key not found");
+			}
+
+			return SUCCESS;
+		}
+
+
+
+		/// <summary>
+		/// Returns true when OneNote is a 32-bit installation, determined by checking whether
+		/// its LocalServer32 path contains "Program Files (x86)". When true, the CLSID must
+		/// be cloned to WOW6432Node so the 32-bit COM activation path can find it.
+		/// </summary>
+		private bool CloningRequired()
+		{
+			string clsid = null;
+
+			/*
+			 * This makes no sense at all but if we don't attempt the 1st chance code then
+			 * the 2nd chance code below doesn't work...
+			 */
+
+			using (var basekey = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine,
+				Environment.Is64BitOperatingSystem ? RegistryView.Registry64 : RegistryView.Registry32))
+			{
+				using (var key = basekey.OpenSubKey(@"OneNote.Application\CLSID"))
+				{
+					if (key != null)
+					{
+						clsid = key.GetValue(string.Empty) as string; // default value
+						logger.WriteLine($"read CLSID ({clsid})");
+					}
+					else
+					{
+						logger.WriteLine($"1st chance, could not read CLSID or key missing");
+					}
+				}
+			}
+
+			if (clsid == null)
+			{
+				using (var key = Registry.ClassesRoot.OpenSubKey(@"OneNote.Application\CLSID"))
+				{
+					if (key != null)
+					{
+						clsid = (string)key.GetValue(string.Empty); // default value
+						logger.WriteLine($"2nd chance, read CLSID ({clsid})");
+					}
+					else
+					{
+						logger.WriteLine($"2nd chance, could not read CLSID or key missing");
+					}
+				}
+			}
+
+			string path = null;
+			if (!string.IsNullOrEmpty(clsid))
+			{
+				using (var key = Registry.ClassesRoot.OpenSubKey($@"CLSID\{clsid}\LocalServer32"))
+				{
+					if (key != null)
+					{
+						path = (string)key.GetValue(string.Empty); // default value
+						logger.WriteLine($"read path from LocalServer32 ({path})");
+					}
+					else
+					{
+						logger.WriteLine($"could not read LocalServer32 or key missing");
+					}
+				}
+
+				if (path == null)
+				{
+					using (var key = Registry.ClassesRoot.OpenSubKey($@"WOW6432Node\CLSID\{clsid}\LocalServer32"))
+					{
+						if (key != null)
+						{
+							path = (string)key.GetValue(string.Empty); // default value
+							logger.WriteLine($@"read path from WOW6432Node\..\LocalServer32 ({path})");
+						}
+						else
+						{
+							logger.WriteLine($@"could not WOW6432Node\..\LocalServer32 or key missing");
+						}
+					}
+				}
+			}
+
+			if (path == null)
+			{
+				logger.WriteLine("OneNote application path not found; continuing optimistically");
+				return true;
+			}
+			else if (path.Contains(@"\Program Files (x86)\"))
+			{
+				logger.WriteLine("detected 32-bit install");
+				return true;
+			}
+
+			logger.WriteLine("detected 64-bit install");
+			return false;
+		}
+	}
+}

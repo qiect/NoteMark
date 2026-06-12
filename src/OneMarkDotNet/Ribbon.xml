@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<customUI xmlns="http://schemas.microsoft.com/office/2009/07/customui"
+          onLoad="OnRibbonLoad">
+  <ribbon>
+    <tabs>
+      <tab id="TabOneMark" label="OneMark" insertAfterMso="TabView" keytip="M">
+        <group id="GroupMarkdown" label="Markdown">
+          <button id="RenderButton"
+                  onAction="OnRenderClick"
+                  label="Render"
+                  size="large" />
+          <button id="ExportButton"
+                  onAction="OnExportClick"
+                  label="Export"
+                  size="large" />
+          <button id="SourceModeButton"
+                  onAction="OnSourceModeClick"
+                  label="Source Mode"
+                  size="large" />
+        </group>
+        <group id="GroupFile" label="File">
+          <button id="ImportButton"
+                  onAction="OnImportClick"
+                  label="Import"
+                  size="normal" />
+          <button id="ExportFileButton"
+                  onAction="OnExportFileClick"
+                  label="Export to File"
+                  size="normal" />
+        </group>
+        <group id="GroupHelp" label="Help">
+          <button id="AboutButton"
+                  onAction="OnAboutClick"
+                  label="About"
+                  size="normal" />
+        </group>
+      </tab>
+    </tabs>
+  </ribbon>
+</customUI>

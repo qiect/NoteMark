@@ -1,0 +1,14 @@
+:root {
+  --font-family: "Times New Roman";
+  --bg-color: #fffff8;
+  --line-height: 1.8;
+  --paragraph-margin: 12px;
+  --monospace: "Courier New";
+  --select-text-bg-color: #f9f7f1;
+  --select-text-font-color: #333333;
+  --blockquote-heading-icons: false;
+  --enable-heading-in-blockquote: false;
+  --enable-code-line-number: true;
+  --enable-latex-to-image: true;
+  --block-width-margin: #cccccc;
+}

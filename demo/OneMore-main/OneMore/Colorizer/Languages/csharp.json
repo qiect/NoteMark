@@ -1,0 +1,86 @@
+{
+  "name": "C#",
+  "aliases": [
+    "CSharp",
+    "cs"
+  ],
+  "rules": [
+    {
+      "pattern": "(/\\*(?:[^*]|[\\r\\n]|(?:\\*+(?:[^*/]|[\\r\\n])))*\\*+/)",
+      "captures": [
+        "Comment"
+      ]
+    },
+    {
+      "pattern": "(/\\*[^\\r\\n]*)$",
+      "scope": "Comment",
+      "captures": [
+        "Comment"
+      ]
+    },
+    {
+      "pattern": "^([^\\r\\n]*\\*/)",
+      "scope": "",
+      "captures": [
+        "Comment"
+      ]
+    },
+    {
+      "pattern": "(///)(?:\\s*?(<[/a-zA-Z0-9\\s\"=]+>))*([^\\r\\n]*)",
+      "captures": [
+        "XmlDocTag",
+        "XmlDocTag",
+        "XmlDocComment"
+      ]
+    },
+    {
+      "pattern": "(//.*?)\\r?$",
+      "captures": [
+        "Comment"
+      ]
+    },
+    {
+      "pattern": "('[^\\n]*?(?<!\\\\)')",
+      "captures": [
+        "String"
+      ]
+    },
+    {
+      "pattern": "(?s)(@\"(?:\"\"|.)*?\"(?!\"))",
+      "captures": [
+        "StringCSharpVerbatim"
+      ]
+    },
+    {
+      "pattern": "(?s)(\"[^\\n]*?(?<!\\\\)\")",
+      "captures": [
+        "String"
+      ]
+    },
+    {
+      "pattern": "\\[(assembly|module|type|return|param|method|field|property|event):[^\\]\"]*(\"[^\\n]*?(?<!\\\\)\")?[^\\]]*\\]",
+      "captures": [
+        "Keyword",
+        "String"
+      ]
+    },
+    {
+      "pattern": "^\\s*(\\#define|\\#elif|\\#else|\\#endif|\\#endregion|\\#error|\\#if|\\#line|\\#pragma|\\#region|\\#undef|\\#warning).*?$",
+      "captures": [
+        "PreprocessorKeyword"
+      ]
+    },
+    {
+      "pattern": "\\b(abstract|as|ascending|async|await|base|bool|break|by|byte|case|catch|char|checked|class|const|continue|decimal|default|delegate|descending|do|double|dynamic|else|enum|equals|event|explicit|extern|false|file|finally|fixed|float|for|foreach|from|get|goto|group|if|implicit|in|init|int|into|interface|internal|is|join|let|lock|long|managed|namespace|new|nint|notnull|nuint|null|object|on|operator|orderby|out|override|params|partial|private|protected|public|readonly|record|ref|required|return|sbyte|scoped|sealed|select|set|short|sizeof|stackalloc|static|string|struct|switch|this|throw|true|try|typeof|uint|ulong|unchecked|unmanaged|unsafe|ushort|using|var|virtual|void|volatile|where|while|with|yield)\\b",
+      "captures": [
+        "Keyword"
+      ]
+    },
+    {
+      "pattern": "\\b([0-9]{1,})\\b",
+      "captures": [
+        "Number"
+      ]
+    }
+  ]
+}

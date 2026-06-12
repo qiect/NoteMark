@@ -1,0 +1,314 @@
+{
+  "colors": {
+    // Auto=DarkPlainText is near-white
+    "Auto": "#F0F0F0",
+    "AutoNative": "#000000",
+    "Black": "#000000",
+    "Blue": "#2E75B5",
+    "CornflowerBlue": "#5B9BD5",
+    "DarkCyan": "#008B8B",
+    "DarkOliveGreen": "#556B2F",
+    "DarkRed": "#7D180D",
+    "DarkYellow": "#BF9000",
+    "DiffGreen": "#CCFFCC",
+    "DiffRed": "#F2DCDB",
+    "Firebrick": "#B22222",
+    "Gray": "#808080",
+    "Green": "#008000",
+    "LightGray": "#A5A5A5",
+    "LightGreen": "#00B050",
+    "LightSeaGreen": "#20B2AA",
+    "Magenta": "#CC00FF",
+    "MediumTurqoise": "#48D1CC",
+    // DarkNavy is light blue
+    "Navy": "#92CAF4",
+    "OliveDrab": "#6B8E23",
+    "Orange": "#FF5800",
+    "Purple": "#8064A2",
+    "Red": "#E30303",
+    "Salmon": "#F1937A",
+    "Teal": "#008080",
+    "Yellow": "#FFFF00"
+  },
+  "styles": [
+    {
+      "name": "PlainText",
+      "foreground": "Auto"
+    },
+    {
+      "name": "Attribute",
+      "foreground": "DarkCyan",
+      "italic": true
+    },
+    {
+      "name": "BuiltinFunction",
+      "foreground": "OliveDrab",
+      "bold": true
+    },
+    {
+      "name": "BuiltinValue",
+      "foreground": "DarkOliveGreen",
+      "bold": true
+    },
+    {
+      "name": "ClassName",
+      "foreground": "MediumTurqoise"
+    },
+    {
+      "name": "Comment",
+      "foreground": "LightGreen"
+    },
+    {
+      "name": "Constructor",
+      "foreground": "Purple"
+    },
+    {
+      "name": "ControlKeyword",
+      "foreground": "Blue"
+    },
+    {
+      "name": "CssPropertyName",
+      "foreground": "Red"
+    },
+    {
+      "name": "CssPropertyValue",
+      "foreground": "Blue"
+    },
+    {
+      "name": "CssSelector",
+      "foreground": "Firebrick"
+    },
+    {
+      "name": "Delimeter"
+    },
+    {
+      "name": "DiffAdd",
+      "background": "DiffGreen"
+    },
+    {
+      "name": "DiffRemove",
+      "background": "DiffRed"
+    },
+    {
+      "name": "HtmlServerSideScript",
+      "background": "Yellow"
+    },
+    {
+      "name": "HtmlComment",
+      "foreground": "LightGreen"
+    },
+    {
+      "name": "HtmlTagDelimeter",
+      "foreground": "Blue"
+    },
+    {
+      "name": "HtmlElementName",
+      "foreground": "Firebrick"
+    },
+    {
+      "name": "HtmlAttributeName",
+      "foreground": "Red"
+    },
+    {
+      "name": "HtmlAttributeValue",
+      "foreground": "Blue"
+    },
+    {
+      "name": "HtmlEntity",
+      "foreground": "Red"
+    },
+    {
+      "name": "HtmlOperator",
+      "foreground": "Blue"
+    },
+    {
+      "name": "JsonKey",
+      "foreground": "Orange"
+    },
+    {
+      "name": "Keyword",
+      "foreground": "Blue"
+    },
+    {
+      "name": "Macro",
+      "foreground": "Purple"
+    },
+    {
+      "name": "MarkdownBold",
+      "bold": true
+    },
+    {
+      "name": "MarkdownCode",
+      "foreground": "Teal"
+    },
+    {
+      "name": "MarkdownEmph",
+      "italic": true
+    },
+    {
+      "name": "MarkdownListItem",
+      "bold": true
+    },
+    {
+      "name": "MarkdownHeader",
+      "foreground": "Blue",
+      "bold": true
+    },
+    {
+      "name": "Namespace",
+      "foreground": "Navy"
+    },
+    {
+      "name": "Number",
+      "foreground": "Purple"
+    },
+    {
+      "name": "Operator"
+    },
+    {
+      "name": "PlantArrow",
+      "foreground": "CornflowerBlue"
+    },
+    {
+      "name": "PlantBlock",
+      "foreground": "CornflowerBlue",
+      "bold": true
+    },
+    {
+      "name": "PlantClass",
+      "foreground": "LightSeaGreen"
+    },
+    {
+      "name": "PlantComment",
+      "foreground": "LightGreen"
+    },
+    {
+      "name": "PlantNote",
+      "foreground": "DarkYellow"
+    },
+    {
+      "name": "PlantSkin",
+      "foreground": "LightGray"
+    },
+    {
+      "name": "PowerShellAttribute",
+      "foreground": "CornflowerBlue"
+    },
+    {
+      "name": "PowerShellCommand",
+      "foreground": "Blue"
+    },
+    {
+      "name": "PowerShellKeyword",
+      "foreground": "Purple"
+    },
+    {
+      "name": "PowerShellOperator",
+      "foreground": "Gray"
+    },
+    {
+      "name": "PowerShellType",
+      "foreground": "Teal"
+    },
+    {
+      "name": "PowerShellVariable",
+      "foreground": "Orange"
+    },
+    {
+      "name": "Predefined",
+      "foreground": "Navy"
+    },
+    {
+      "name": "PsuedoKeyword",
+      "foreground": "CornflowerBlue"
+    },
+    {
+      "name": "PreprocessorKeyword",
+      "foreground": "Blue"
+    },
+    {
+      "name": "PreprocessorParameter",
+      "foreground": "Magenta"
+    },
+    {
+      "name": "RegDelete",
+      "foreground": "Gray"
+    },
+    {
+      "name": "ShellKnownVariable",
+      "foreground": "Firebrick"
+    },
+    {
+      "name": "ShellUserVariable",
+      "foreground": "Orange"
+    },
+    {
+      "name": "SpecialCharacter"
+    },
+    {
+      "name": "SqlSystemFunction",
+      "foreground": "Magenta"
+    },
+    {
+      "name": "String",
+      "foreground": "Firebrick"
+    },
+    {
+      "name": "StringCSharpVerbatim",
+      "foreground": "Firebrick"
+    },
+    {
+      "name": "StringEscape",
+      "foreground": "Gray"
+    },
+    {
+      "name": "Type",
+      "foreground": "Teal"
+    },
+    {
+      "name": "TypeVariable",
+      "foreground": "Teal",
+      "italic": true
+    },
+    {
+      "name": "Variable",
+      "foreground": "Navy"
+    },
+    {
+      "name": "XmlAttribute",
+      "foreground": "Red"
+    },
+    {
+      "name": "XmlAttributeQuotes",
+      "foreground": "Black"
+    },
+    {
+      "name": "XmlAttributeValue",
+      "foreground": "Blue"
+    },
+    {
+      "name": "XmlCDataSection",
+      "foreground": "Gray"
+    },
+    {
+      "name": "XmlComment",
+      "foreground": "LightGreen"
+    },
+    {
+      "name": "XmlDelimiter",
+      "foreground": "Blue"
+    },
+    {
+      "name": "XmlDocTag",
+      "foreground": "Gray"
+    },
+    {
+      "name": "XmlDocComment",
+      "foreground": "Green"
+    },
+    {
+      "name": "XmlName",
+      "foreground": "DarkRed"
+    }
+  ]
+}

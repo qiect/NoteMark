@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Do not remove this test for UTF-8: if “Ω” doesn’t appear as greek uppercase omega letter enclosed in quotation marks, you should use an editor that supports UTF-8, not this one. -->
+<package xmlns="http://schemas.microsoft.com/packaging/2015/06/nuspec.xsd">
+  <metadata>
+    <id>onemore</id>
+    <version>6.8.4</version>
+    <packageSourceUrl>https://github.com/stevencohn/OneMore/tree/main/packers/chocolatey</packageSourceUrl>
+    <owners>Steven Cohn</owners>
+    <title>OneMore</title>
+    <authors>Steven Cohn</authors>
+    <projectUrl>https://github.com/stevencohn/OneMore</projectUrl>
+    <iconUrl>https://cdn.statically.io/gh/stevencohn/OneMore/main/OneMore/Properties/Images/Logo.png</iconUrl>
+    <copyright>Copyright © 2016 Steven M Cohn. All rights reserved.</copyright>
+    <licenseUrl>https://cdn.statically.io/gh/stevencohn/OneMore/main/LICENSE</licenseUrl>
+    <requireLicenseAcceptance>true</requireLicenseAcceptance>
+    <projectSourceUrl>https://github.com/stevencohn/OneMore</projectSourceUrl>
+    <docsUrl>https://onemoreaddin.com/</docsUrl>
+    <bugTrackerUrl>https://github.com/stevencohn/OneMore/issues</bugTrackerUrl>
+    <tags>onemore onenote addin calendar calculations colorizer favorites formula hashtags snippets styles navigator tagging</tags>
+    <summary>A OneNote add-in with simple, yet powerful and useful features</summary>
+    <description>OneMore is an add-in for OneNote with simple and powerful features that make OneNote a better OneNote.</description>
+    <releaseNotes>## What's Changed
+
+* Added option to capture anonymous telemetry, [#1974](https://github.com/stevencohn/OneMore/issues/1974)
+   * User is prompted with one-time splash screen, but it can be turned on or off in Settings
+   * Please opt-in to help me improve OneMore!
+* Updated Active Setup robustness, [#1963](https://github.com/stevencohn/OneMore/issues/1963)
+* Fixed an issue where Copy as Text would copy the entire page is only a URL is selected, [#1921](https://github.com/stevencohn/OneMore/issues/1921)
+* Fixed an issue where PlantUML would fail if containing a URL, [#1967](https://github.com/stevencohn/OneMore/issues/1967)
+* Fixed an issue Preview Markdown would stop interpreting after a code blocks, [#1979](https://github.com/stevencohn/OneMore/issues/1979)
+* Fixed(?) an issue where OneNote architecture was not properly detected on AMR64, [#1981](https://github.com/stevencohn/OneMore/issues/1981)
+* Fixed an issue where copy section group failed to copy to another notebook, [#1990](https://github.com/stevencohn/OneMore/issues/1990)
+
+## Experimental
+* Added non-indexed full-text search capabilities, bound to `Alt+Shift+G`, [#1856](https://github.com/stevencohn/OneMore/issues/1856)
+   * ΓÜá∩╕Å WARNING: this is not fully baked. Needs performance improvements and may cause OneNote to hang upon exit
+   * Only available after enabling the _Experimental_ option
+
+## Internal Updates
+* Updated build.ps1 to allow VS2026
+
+## Known Issues
+* ≡ƒÉ£ _Search and Replace_ doesn't replace the currently highlighted or selected word/phrase; sometimes it doesn't replace other candidates either
+* ≡ƒÉ£_Select Similar Styles_ will find differences in colors Auto vs #000000 - make it more fuzzy?
+* ≡ƒÆíPaginate Hashtag search results
+* ≡ƒÆíMove Navigator to DB, paginate history panel, provide import/export
+* ≡ƒÆíMove Reminders to DB, option in dialog and on-page link to delete completed reminders
+* ≡ƒÆíGithub PR action to pull ticket# prefix from branch name, e.g. 1234-do-something-cool
+
+## Checksums
+* x86 = A57BA2E3611491A59DB74B6AB20491EE49FB6EB0AC9F621C968319A36CB56205
+* x64 = 003001D7205866E9EBA7AFF2F32D24C1A2B2B15D07B7DA9A8F3F8507EAD5C80C
+* ARM64 = 7067968D4B7FE4985EB6FC03F37E83B707D3A8426CEF46FD0818D8963C5EE745
+
+**Full Changelog**: https://github.com/stevencohn/OneMore/compare/6.8.2...6.8.4
+
+# Which Installer?
+v6.7.7 changed the fundamental approach to installation. Rather than installers that are tied to the operating system architecture, they are now dependent on the architecture of OneNote itself. If you do not know which version of OneNote you have, refer to Which Version of Office Do I Have? on the [How to Install OneNote](https://onemoreaddin.com/get-started/How%20to%20Install%20OneNote.htm) page.
+
+* If you have 64-bit OneNote installed, download the x64 installer
+* If you have 32-bit OneNote installed, download the x86 installer
+* If you have Arm64 OneNote installed, download the ARM64 installer</releaseNotes>
+  </metadata>
+  <files>
+    <file src="tools\**" target="tools" />
+  </files>
+</package>

@@ -1,0 +1,59 @@
+<#
+.SYNOPSIS
+Prepare packer files for publishing.
+This should be run after the release/tag are established on Github.
+
+.PARAMETER version
+The version string to apply. Must be of the form major.minor or major.minor.patch
+#>
+
+param (
+    [Parameter(Mandatory = $true)]
+    [ValidatePattern({^\d+\.\d+(?:\.\d+)?(?:\-Beta|\-Experimental)?$})]
+    [string] $version
+    )
+
+Begin
+{
+	$tagUri = "https://api.github.com/repos/stevencohn/OneMore/releases/tags/$version"
+}
+Process
+{
+	$release = (curl -s --request GET $tagUri) | ConvertFrom-Json
+	if ($release.status)
+	{
+		Write-Host "** cannot curl releases/tags/$version" -Fore Red
+		return
+	}
+
+	# choco...
+
+	$0 = Resolve-Path '.\chocolatey\onemore.nuspec'
+	$xml = [xml](Get-Content $0)
+	$xml.package.metadata.version = $version
+	# strip surrogate-pair emoji (codepoints above U+FFFF) to avoid XML encoding issues
+	$body = $release.body -replace '[^ -ï¿¿]', ''
+	$xml.package.metadata.releaseNotes = $body
+	$encoding = New-Object System.Text.UTF8Encoding($false)
+	$writer = New-Object System.IO.StreamWriter($0, $false, $encoding)
+	$writer.NewLine = "`n"
+	$xml.Save($writer)
+	$writer.Close()
+
+	$0 = '.\chocolatey\tools\chocolateyinstall.ps1'
+	$content = (Get-Content $0) -replace '\d+\.\d+(?:\.\d+)?/OneMore_\d+\.\d+(?:\.\d+)?',"$version/OneMore_$version"
+	$checksumx86 = (checksum -t sha256 $home\Downloads\OneMore_$version`_Setupx86.msi)
+	$content = $content -replace "(checksum\s+=\s+)'([^']+)(')","`$1'$checksumx86`$3"
+	$checksumx64 = (checksum -t sha256 $home\Downloads\OneMore_$version`_Setupx64.msi)
+	$content = $content -replace "(checksum64\s+=\s+)'([^']+)(')","`$1'$checksumx64`$3"
+	$content = $content -replace "`r`n","`n"
+	$content | Out-File $0 -Encoding utf8 -Force
+
+	$0 = Resolve-Path '.\chocolatey\tools\VERIFICATION.txt'
+	$vcontent = (Get-Content $0 -Raw) -replace '\d+\.\d+(?:\.\d+)?/OneMore_\d+\.\d+(?:\.\d+)?',"$version/OneMore_$version"
+	$vcontent = $vcontent -replace '(?<=releases/tag/)\d+\.\d+(?:\.\d+)?', $version
+	$vcontent = $vcontent -replace '(?<=checksum \(x86\): )[A-Fa-f0-9]+', $checksumx86
+	$vcontent = $vcontent -replace '(?<=checksum \(x64\): )[A-Fa-f0-9]+', $checksumx64
+	$vcontent = $vcontent -replace "`r`n","`n"
+	[System.IO.File]::WriteAllText($0, $vcontent, $encoding)
+}

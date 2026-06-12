@@ -1,0 +1,378 @@
+﻿//************************************************************************************************
+// Copyright © 2022 Steven M Cohn.  All rights reserved.
+//************************************************************************************************
+
+namespace River.OneMoreAddIn.Commands
+{
+	using River.OneMoreAddIn.Models;
+	using River.OneMoreAddIn.Styles;
+	using System;
+	using System.Collections.Generic;
+	using System.Linq;
+	using System.Text.RegularExpressions;
+	using System.Xml.Linq;
+
+
+	/// <summary>
+	/// Utility class for post-processing a page converted from markdown.
+	/// </summary>
+	internal class MarkdownConverter
+	{
+		private sealed class Candidate
+		{
+			public XElement Element;
+			public Style Style;
+			public StandardStyles? Key;
+		}
+
+
+		private readonly Page page;
+		private readonly XNamespace ns;
+		private readonly StyleAnalyzer analyzer;
+
+
+		public MarkdownConverter(Page page)
+		{
+			this.page = page;
+			ns = page.Namespace;
+
+			PageNamespace.Set(ns);
+
+			analyzer = new StyleAnalyzer(page.Root);
+		}
+
+
+		/// <summary>
+		/// Applies standard OneNote styling to all recognizable headings in all Outlines
+		/// on the page
+		/// </summary>
+		public void RewriteHeadings()
+		{
+			foreach (var outline in page.BodyOutlines)
+			{
+				RewriteHeadings(outline.Descendants(ns + "OE"));
+			}
+		}
+
+
+		/// <summary>
+		/// Tags current lines with To Do tags if beginning with [ ] or [x] in all Outlines
+		/// </summary>
+		public void RewriteTodo()
+		{
+			foreach (var outline in page.BodyOutlines)
+			{
+				RewriteTodo(outline.Descendants(ns + "OE"));
+			}
+		}
+
+
+		/// <summary>
+		/// Applies standard OneNote styling all recognizable headings in the given Outline
+		/// </summary>
+		public MarkdownConverter RewriteHeadings(IEnumerable<XElement> paragraphs)
+		{
+			var headings = paragraphs
+				// candidate headings imported from markdown should have exactly one text run
+				.Where(e => e.Elements(ns + "T").Count() == 1)
+				.Select(e => new Candidate
+				{
+					Element = e,
+					// deep dive into style of text run
+					Style = new Style(analyzer.CollectFrom(e.Elements(ns + "T").First(), true))
+				})
+				.Select(c =>
+				{
+					// have to match heading after Style is set in previous Select
+					c.Key = MatchHeading(c.Style);
+					return c;
+				})
+				// shouldn't happen but...
+				.Where(c => c.Key != null);
+
+			foreach (var heading in headings)
+			{
+				// ensures quick style is declared if not already
+				var quick = page.GetQuickStyle((StandardStyles)heading.Key);
+
+				// nix inline style we added during phase 1 import
+				heading.Element.Attributes().Where(a => a.Name == "style").Remove();
+				// set heading quick style on OE
+				heading.Element.SetAttributeValue("quickStyleIndex", quick.Index);
+
+				var stylizer = new Stylizer(quick);
+
+				heading.Element
+					.Elements(ns + "T")
+					.ForEach(e =>
+					{
+						// set any additional css on text run such as italics
+						stylizer.ApplyStyle(e);
+					});
+			}
+
+			return this;
+		}
+
+
+		private static StandardStyles? MatchHeading(Style style)
+		{
+			// do not gate the rest of this routine by font family as that is not a reliable
+			// indicator of heading level in markdown since the default font was changed from
+			// Calibri to Aptos in OneNote starting in 2023 and users may have custom defaults
+
+			var standard = StandardStyles.PageTitle.GetDefaults();
+			if (style.FontSize == standard.FontSize && style.Color == Style.Automatic)
+			{
+				return StandardStyles.PageTitle;
+			}
+
+			standard = StandardStyles.Heading1.GetDefaults();
+			if (style.FontSize == standard.FontSize && style.Color == standard.Color)
+			{
+				return StandardStyles.Heading1;
+			}
+
+			standard = StandardStyles.Heading2.GetDefaults();
+			if (style.FontSize == standard.FontSize && style.Color == standard.Color)
+			{
+				return StandardStyles.Heading2;
+			}
+
+			standard = StandardStyles.Heading3.GetDefaults();
+			if (style.FontSize == standard.FontSize && style.Color == standard.Color)
+			{
+				return style.IsItalic ? StandardStyles.Heading4 : StandardStyles.Heading3;
+			}
+
+			standard = StandardStyles.Heading5.GetDefaults();
+			if (style.Color == standard.Color)
+			{
+				return style.IsItalic ? StandardStyles.Heading6 : StandardStyles.Heading5;
+			}
+
+			return null;
+		}
+
+
+		/// <summary>
+		/// Tag current line with To Do tag if beginning with [ ] or [x]
+		/// All other :emojis: should be translated inline by Markdig
+		/// </summary>
+		/// <param name="paragraphs"></param>
+		public MarkdownConverter RewriteTodo(IEnumerable<XElement> paragraphs)
+		{
+			var boxpattern = new Regex(@"^\\?\[(?<x>x|\s)\]");
+
+			foreach (var paragraph in paragraphs)
+			{
+				var run = paragraph.Elements(ns + "T").FirstOrDefault();
+
+				if (run is not null)
+				{
+					var cdata = run.GetCData();
+					var wrapper = cdata.GetWrapper();
+					if (wrapper.FirstNode is XText text)
+					{
+						var match = boxpattern.Match(text.Value);
+						if (match.Success)
+						{
+							text.Value = text.Value.Substring(match.Length);
+
+							// ensure TagDef exists
+							var index = page.AddTagDef("3", "To Do", 4);
+
+							// inject tag prior to run
+							run.AddBeforeSelf(new Tag(index, match.Groups["x"].Value == "x"));
+
+							// update run text
+							cdata.Value = wrapper.GetInnerXml();
+						}
+					}
+				}
+			}
+
+			return this;
+		}
+
+
+		/// <summary>
+		/// Applies the Code quickstyle to all paragraphs with Consolas font in all Outlines
+		/// </summary>
+		public void RewriteCode()
+		{
+			foreach (var outline in page.BodyOutlines)
+			{
+				RewriteCode(outline.Descendants(ns + "OE"));
+			}
+		}
+
+
+		/// <summary>
+		/// Applies the Code quickstyle to paragraphs with Consolas font in the given collection
+		/// </summary>
+		public MarkdownConverter RewriteCode(IEnumerable<XElement> paragraphs)
+		{
+			var codeParagraphs = paragraphs
+				.Where(e => e.Elements(ns + "T").Any())
+				.Select(e => new
+				{
+					Element = e,
+					Style = new Style(analyzer.CollectFrom(e))
+				})
+				.Where(c => c.Style.FontFamily?.IndexOf("Consolas", StringComparison.OrdinalIgnoreCase) >= 0)
+				.ToList();
+
+			if (!codeParagraphs.Any())
+			{
+				return this;
+			}
+
+			var quick = page.GetQuickStyle(StandardStyles.Code);
+
+			foreach (var para in codeParagraphs)
+			{
+				para.Element.Attributes().Where(a => a.Name == "style").Remove();
+				para.Element.SetAttributeValue("quickStyleIndex", quick.Index);
+			}
+
+			return this;
+		}
+
+
+		/// <summary>
+		/// Applies standard Lucida Console 9pt styling to all inline code spans
+		/// (backtick-delimited) in all Outlines on the page
+		/// </summary>
+		public void RewriteInlineCode()
+		{
+			foreach (var outline in page.BodyOutlines)
+			{
+				RewriteInlineCode(outline.Descendants(ns + "OE"));
+			}
+		}
+
+
+		/// <summary>
+		/// Applies standard Lucida Console 9pt styling to inline code spans
+		/// (backtick-delimited) in the given paragraph collection
+		/// </summary>
+		public MarkdownConverter RewriteInlineCode(IEnumerable<XElement> paragraphs)
+		{
+			var css = $"font-family:'{StyleBase.DefaultCodeFamily}';font-size:9.0pt";
+
+			foreach (var para in paragraphs.Where(e => e.Elements(ns + "T").Any()))
+			{
+				foreach (var run in para.Elements(ns + "T"))
+				{
+					var cdata = run.GetCData();
+					if (cdata == null ||
+						cdata.Value.IndexOf("font-family:Consolas",
+							StringComparison.OrdinalIgnoreCase) < 0)
+					{
+						continue;
+					}
+
+					var wrapper = cdata.GetWrapper();
+					var updated = false;
+
+					foreach (var span in wrapper.Descendants("span").ToList())
+					{
+						var attr = span.Attribute("style")?.Value;
+						if (attr != null &&
+							attr.IndexOf("font-family:Consolas",
+								StringComparison.OrdinalIgnoreCase) >= 0)
+						{
+							span.SetAttributeValue("style", css);
+							updated = true;
+						}
+					}
+
+					if (updated)
+					{
+						cdata.Value = wrapper.GetInnerXml();
+					}
+				}
+			}
+
+			return this;
+		}
+
+
+		/// <summary>
+		/// Adds OneNote paragraph spacing in all Outlines on the page
+		/// </summary>
+		/// <param name="spaceAfter"></param>
+		public MarkdownConverter SpaceOutParagraphs(float spaceAfter)
+		{
+			foreach (var outline in page.BodyOutlines)
+			{
+				SpaceOutParagraphs(outline.Descendants(ns + "OE"), spaceAfter);
+			}
+
+			return this;
+		}
+
+
+		/// <summary>
+		/// Adds OneNote paragraph spacing in the given Outline
+		/// </summary>
+		/// <param name="spaceAfter"></param>
+		public MarkdownConverter SpaceOutParagraphs(
+			IEnumerable<XElement> paragraphs, float spaceAfter)
+		{
+			static bool IsCodeParagraph(XElement element, string codeIndex)
+			{
+				return element.Attribute("quickStyleIndex")?.Value == codeIndex;
+			}
+
+			var after = $"{spaceAfter:0.0}";
+
+			var paraList = paragraphs.ToList();
+			if (!paraList.Any())
+			{
+				return this;
+			}
+
+			var last = paraList.Last();
+
+			var codeIndex = page.GetQuickStyle(StandardStyles.Code).Index.ToString();
+
+			// code paragraphs immediately followed by another code paragraph are interior
+			// lines of a fenced block and must not introduce spacing between them
+			var innerCodeParagraphs = new HashSet<XElement>();
+			for (var i = 0; i < paraList.Count - 1; i++)
+			{
+				if (IsCodeParagraph(paraList[i], codeIndex) && IsCodeParagraph(paraList[i + 1], codeIndex))
+				{
+					innerCodeParagraphs.Add(paraList[i]);
+				}
+			}
+
+			var list = paraList
+				.Where(e =>
+					// not the last paragraph in the Outline
+					e != last &&
+					// not an interior line of a code block
+					!innerCodeParagraphs.Contains(e) &&
+					// any paragraph that is not a List
+					((e.NextNode is not null && !e.Elements(ns + "List").Any()) ||
+					// any last item in a List
+					(e.NextNode is null && e.Elements(ns + "List").Any())
+					))
+				.ToList();
+
+			foreach (var item in list)
+			{
+				item.SetAttributeValue("spaceAfter", after);
+			}
+
+			foreach (var item in innerCodeParagraphs)
+			{
+				item.SetAttributeValue("spaceAfter", "0.0");
+			}
+
+			return this;
+		}
+	}
+}

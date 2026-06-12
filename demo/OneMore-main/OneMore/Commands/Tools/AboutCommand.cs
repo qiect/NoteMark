@@ -1,0 +1,40 @@
+﻿//************************************************************************************************
+// Copyright © 2016 Steven M Cohn. All rights reserved.
+//************************************************************************************************
+
+namespace River.OneMoreAddIn.Commands
+{
+	using System.Threading.Tasks;
+
+
+	internal class AboutCommand : Command
+	{
+		private static bool commandIsActive = false;
+
+
+		public AboutCommand()
+		{
+			// prevent replay
+			IsCancelled = true;
+		}
+
+
+		public override async Task Execute(params object[] args)
+		{
+			if (commandIsActive) { return; }
+			commandIsActive = true;
+
+			try
+			{
+				using var dialog = new AboutDialog(factory);
+				dialog.ShowDialog(owner);
+
+				await Task.Yield();
+			}
+			finally
+			{
+				commandIsActive = false;
+			}
+		}
+	}
+}

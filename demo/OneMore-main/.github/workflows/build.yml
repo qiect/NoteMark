@@ -1,0 +1,98 @@
+name: Build
+
+on:
+  workflow_dispatch:
+    inputs:
+      beta_build:
+        description: 'Mark as beta build (shows Beta in About box)'
+        required: false
+        type: boolean
+        default: false
+      beta:
+        description: 'Beta number (e.g. 1 for 7.1.0-beta.1)'
+        required: true
+        type: number
+      output_build_log:
+        description: 'Output build log to console'
+        required: false
+        type: boolean
+        default: false
+      run_tests:
+        description: 'Run automation tests after building'
+        required: false
+        type: boolean
+        default: false
+
+jobs:
+  build:
+    runs-on: windows-2025-vs2026
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+
+      - name: Setup devenv
+        uses: seanmiddleditch/gha-setup-vsdevenv@cf96bf5b227cac6af28c04c4a4e69286ea444163 # master
+
+      - name: Setup NuGet
+        uses: NuGet/setup-nuget@d105a947828025cd7a980103c35ba2bfae586d0f # v2
+
+      - name: Build solution
+        shell: pwsh
+        run: |
+          $beta = '${{ inputs.beta_build }}' -eq 'true' ? '-Beta' : ''
+          $echoLog = '${{ inputs.output_build_log }}' -eq 'true' ? '-EchoLog' : ''
+          Invoke-Expression ".\build.ps1 -Architecture x64 $beta $echoLog"
+
+      - name: Upload build log
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: OneMoreBuild-log
+          path: ${{ runner.temp }}\OneMoreBuild.log
+          if-no-files-found: warn
+
+      - name: Run tests
+        if: inputs.run_tests
+        shell: pwsh
+        run: .\build.ps1 -Test
+
+      - name: Upload test results
+        if: always() && inputs.run_tests
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: OneMoreTests-results
+          path: ${{ runner.temp }}\OneMoreTests.trx
+          if-no-files-found: warn
+
+      - name: Stage installer
+        id: stage
+        shell: pwsh
+        run: |
+          $msi = Get-ChildItem "$env:USERPROFILE\Downloads\OneMore_*_Setupx64.msi" | Select-Object -First 1
+          if (-not $msi) { throw "MSI not found in $env:USERPROFILE\Downloads" }
+          Move-Item $msi.FullName $msi.Name
+          $exe = Get-ChildItem "$env:USERPROFILE\Downloads\OneMore_*_Setupx64.exe" | Select-Object -First 1
+          if ($exe) { Move-Item $exe.FullName $exe.Name }
+          $version = $msi.BaseName -replace '^OneMore_(.+)_Setupx64$', '$1'
+          echo "version=$version" >> $env:GITHUB_OUTPUT
+
+      - name: Upload installer
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: OneMore-${{ steps.stage.outputs.version }}-x64
+          path: OneMore_*_Setupx64.*
+
+      - name: Create release
+        shell: pwsh
+        run: |
+          $tag = "${{ steps.stage.outputs.version }}-beta.${{ inputs.beta }}"
+          $notes = "_This is a preview of what's to come. These changes have not yet been fully tested and no guarantee is provided. Be cautious using this build against your production notebooks. But if you're curious and willing to give it a try, please send feedback by opening a ticket. Thanks!_`n`n"
+          gh release create $tag OneMore_*_Setupx64.exe OneMore_*_Setupx64.msi `
+            --title "OneMore $tag" `
+            --notes $notes `
+            --generate-notes `
+            --prerelease
+        env:
+          GH_TOKEN: ${{ github.token }}

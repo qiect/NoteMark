@@ -1,0 +1,159 @@
+//************************************************************************************************
+// Copyright © 2020 Steven M Cohn.  All rights reserved.
+//************************************************************************************************
+
+namespace River.OneMoreAddIn.Commands
+{
+	using River.OneMoreAddIn.Cli;
+	using River.OneMoreAddIn.Models;
+	using System;
+	using System.Linq;
+	using System.Threading.Tasks;
+	using System.Windows.Forms;
+	using System.Xml.Linq;
+
+
+	/// <summary>
+	/// Toggles the page date and time stamps under the title on the current page or all
+	/// pages in the current section
+	/// </summary>
+	internal class ToggleDttmCommand : Command, ICliPageCommand
+	{
+		private static bool commandIsActive = false;
+
+
+		public ToggleDttmCommand()
+		{
+		}
+
+
+		#region CLI Implementation
+
+		public string CommandName => "ToggleDttm";
+
+		public string Description => "Show or hide date/time stamps on a page";
+
+		public CliParameterDefinition DefineParameters() =>
+			new CliParameterDefinition()
+			.AddString("notebook", "Name of notebook", required: true)
+			.AddString("section", "Path of section", required: false)
+			.AddString("page", "Name of page", required: false)
+			.AddEnum("visibility", "Show or hide timestamps",
+				new[] { "show", "hide" }, required: true);
+
+		#endregion CLI Implementation
+
+
+		public override async Task Execute(params object[] args)
+		{
+			var cliParams = args.Length > 0 ? args[0] as CliParameterSet : null;
+			if (cliParams != null)
+			{
+				cliParams.TryGet("pageId", out string pageId);
+				if (string.IsNullOrWhiteSpace(pageId)) { return; }
+				cliParams.TryGet("visibility", out string visibility);
+				var show = "show".Equals(visibility, StringComparison.OrdinalIgnoreCase);
+
+				await using var one = new OneNote();
+				var page = await one.GetPage(pageId, OneNote.PageDetail.Basic);
+				await SetTimestampVisibility(one, page, show);
+				return;
+			}
+
+			if (commandIsActive) { return; }
+			commandIsActive = true;
+
+			try
+			{
+				using var dialog = new ToggleDttmDialog();
+				if (dialog.ShowDialog(owner) == DialogResult.OK)
+				{
+					await Toggle(dialog.PageOnly, dialog.ShowTimestamps);
+				}
+			}
+			finally
+			{
+				commandIsActive = false;
+			}
+		}
+
+
+		private async Task Toggle(bool pageOnly, bool showTimestamps)
+		{
+			await using var one = new OneNote();
+			if (pageOnly)
+			{
+				var page = await one.GetPage();
+				await SetTimestampVisibility(one, page, showTimestamps);
+			}
+			else
+			{
+				var section = await one.GetSection();
+				if (section != null)
+				{
+					var ns = one.GetNamespace(section);
+
+					var pageIds = section.Elements(ns + "Page")
+						.Select(e => e.Attribute("ID").Value)
+						.ToList();
+
+					using var progress = new UI.ProgressDialog();
+					progress.SetMaximum(pageIds.Count);
+					progress.Show();
+
+					foreach (var pageId in pageIds)
+					{
+						var page = await one.GetPage(pageId, OneNote.PageDetail.Basic);
+						var name = page.Root.Attribute("name").Value;
+
+						progress.SetMessage(name);
+						progress.Increment();
+
+						await SetTimestampVisibility(one, page, showTimestamps);
+					}
+				}
+			}
+		}
+
+
+		private static async Task SetTimestampVisibility(OneNote one, Page page, bool visible)
+		{
+			var modified = false;
+			var title = page.Root.Element(page.Namespace + "Title");
+			if (title != null)
+			{
+				modified |= SetTimestampAttribute(title, "showDate", visible);
+				modified |= SetTimestampAttribute(title, "showTime", visible);
+
+				if (modified)
+				{
+					await one.Update(page);
+				}
+			}
+		}
+
+
+		private static bool SetTimestampAttribute(XElement title, string name, bool visible)
+		{
+			var attr = title.Attribute(name);
+			if (visible)
+			{
+				if (attr != null)
+				{
+					attr.Remove();
+					return true;
+				}
+			}
+			else
+			{
+				if (attr == null || attr.Value == "true")
+				{
+					title.SetAttributeValue(name, "false");
+					return true;
+				}
+			}
+
+			return false;
+		}
+	}
+}

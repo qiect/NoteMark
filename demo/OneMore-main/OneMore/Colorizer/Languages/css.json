@@ -1,0 +1,44 @@
+{
+  "name": "CSS",
+  "rules": [
+    {
+      "pattern": "(@(?:charset|container|counter-style|document|font-face|font-feature-values|import|keyframes|layer|media|namespace|page|property|scope|starting-style|supports|viewport))\\b",
+      "captures": [
+        "Keyword"
+      ]
+    },
+    {
+      "pattern": "([^\\r\\n,{}]+)(?:,(?=[^}]*{)|\\s*{)",
+      "captures": [
+        "CssSelector"
+      ]
+    },
+    {
+      "pattern": "\\s*([^:\\n]+)\\s*:\\s*([^;\\n]+)\\s*;?",
+      "captures": [
+        "CssPropertyName",
+        "CssPropertyValue"
+      ]
+    },
+    {
+      "pattern": "(/\\*(?:[^*]|[\\r\\n]|(?:\\*+(?:[^*/]|[\\r\\n])))*\\*+/)",
+      "captures": [
+        "Comment"
+      ]
+    },
+    {
+      "pattern": "(/\\*[^\\r\\n]*)$",
+      "scope": "Comment",
+      "captures": [
+        "Comment"
+      ]
+    },
+    {
+      "pattern": "^([^\\r\\n]*\\*/)",
+      "scope": "",
+      "captures": [
+        "Comment"
+      ]
+    }
+  ]
+}
