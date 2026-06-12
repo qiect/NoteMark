@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">x64</Platform>
+    <ProjectGuid>{C3D4E5F6-A7B8-9012-CDEF-234567890123}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <RootNamespace>NoteMark</RootNamespace>
+    <AssemblyName>NoteMark</AssemblyName>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <LangVersion>9.0</LangVersion>
+    <FileAlignment>512</FileAlignment>
+    <Deterministic>true</Deterministic>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x64' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <PlatformTarget>x64</PlatformTarget>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x64' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <PlatformTarget>x64</PlatformTarget>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.IO.Compression" />
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
+    <Reference Include="WindowsBase" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Microsoft.Office.Interop.OneNote, Version=15.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c, processorArchitecture=MSIL">
+      <EmbedInteropTypes>False</EmbedInteropTypes>
+      <Private>true</Private>
+    </Reference>
+    <Reference Include="Office, Version=15.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c, processorArchitecture=MSIL">
+      <EmbedInteropTypes>False</EmbedInteropTypes>
+      <Private>true</Private>
+    </Reference>
+    <Reference Include="extensibility">
+      <Private>True</Private>
+      <HintPath>C:\Program Files\Microsoft Visual Studio\18\Enterprise\Common7\IDE\PublicAssemblies\extensibility.dll</HintPath>
+    </Reference>
+    <Reference Include="stdole">
+      <Private>True</Private>
+      <HintPath>C:\Program Files\Microsoft Visual Studio\18\Enterprise\Common7\IDE\PublicAssemblies\stdole.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Markdig" Version="0.38.0" />
+    <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.2903.40" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="AddIn\NoteMarkAddIn.cs" />
+    <Compile Include="AddIn\KeyboardHook.cs" />
+    <Compile Include="AddIn\OneMarkRibbon.cs" />
+    <Compile Include="Handler\MarkdownRenderHandler.cs" />
+    <Compile Include="Handler\ExportHandler.cs" />
+    <Compile Include="Converter\OneNoteXmlConverter.cs" />
+    <Compile Include="Converter\HtmlToOneNoteConverter.cs" />
+    <Compile Include="Converter\OneNoteToMarkdownConverter.cs" />
+    <Compile Include="Converter\OneNoteXmlBuilder.cs" />
+    <Compile Include="Converter\OneNotePageUpdater.cs" />
+    <Compile Include="Converter\OutlineElement.cs" />
+    <Compile Include="Converter\ConverterOneNoteStyle.cs" />
+    <Compile Include="Rendering\CodeHighlightService.cs" />
+    <Compile Include="Rendering\LatexRenderService.cs" />
+    <Compile Include="Rendering\DiagramRenderService.cs" />
+    <Compile Include="Rendering\HtmlTemplateGenerator.cs" />
+    <Compile Include="Rendering\WebView2Helper.cs" />
+    <Compile Include="Rendering\RenderResult.cs" />
+    <Compile Include="Engine\MarkdownParser.cs" />
+    <Compile Include="Engine\MarkdownDocument.cs" />
+    <Compile Include="Engine\MarkdownRenderer.cs" />
+    <Compile Include="Engine\MarkdownExtension.cs" />
+    <Compile Include="Engine\MarkdownImage.cs" />
+    <Compile Include="Engine\Elements\BlockElement.cs" />
+    <Compile Include="Engine\Elements\InlineElement.cs" />
+    <Compile Include="Engine\Elements\HeadingElement.cs" />
+    <Compile Include="Engine\Elements\ParagraphElement.cs" />
+    <Compile Include="Engine\Elements\CodeBlockElement.cs" />
+    <Compile Include="Engine\Elements\QuoteBlockElement.cs" />
+    <Compile Include="Engine\Elements\ListElement.cs" />
+    <Compile Include="Engine\Elements\TaskListElement.cs" />
+    <Compile Include="Engine\Elements\TableElement.cs" />
+    <Compile Include="Engine\Elements\HorizontalRuleElement.cs" />
+    <Compile Include="Engine\Elements\MathBlockElement.cs" />
+    <Compile Include="Engine\Elements\DiagramBlockElement.cs" />
+    <Compile Include="Engine\Elements\TextElement.cs" />
+    <Compile Include="Engine\Elements\BoldElement.cs" />
+    <Compile Include="Engine\Elements\ItalicElement.cs" />
+    <Compile Include="Engine\Elements\StrikethroughElement.cs" />
+    <Compile Include="Engine\Elements\CodeInlineElement.cs" />
+    <Compile Include="Engine\Elements\LinkElement.cs" />
+    <Compile Include="Engine\Elements\ImageElement.cs" />
+    <Compile Include="Engine\Elements\MathInlineElement.cs" />
+    <Compile Include="Infrastructure\AppLogger.cs" />
+    <Compile Include="Infrastructure\AddInSettings.cs" />
+    <Compile Include="Infrastructure\ThemeManager.cs" />
+    <Compile Include="Infrastructure\Theme.cs" />
+    <Compile Include="Infrastructure\OneNoteStyle.cs" />
+    <Compile Include="Infrastructure\BorderStyle.cs" />
+    <Compile Include="Infrastructure\CssVariableParser.cs" />
+    <Compile Include="Infrastructure\CssStyleMapper.cs" />
+    <Compile Include="Infrastructure\OneNoteApiWrapper.cs" />
+    <Compile Include="Infrastructure\ClipboardHelper.cs" />
+    <Compile Include="Infrastructure\FrontMatterParser.cs" />
+    <Compile Include="Infrastructure\MarkdownImporter.cs" />
+    <Compile Include="Infrastructure\MarkdownExporter.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="AddIn\Ribbon.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Themes\dark.css">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Themes\academic.css">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Themes\__global.css">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+
+  <!-- 构建后自动注册 COM Add-In（需要以管理员身份运行 Visual Studio） -->
+  <Target Name="PostBuildRegAsm" AfterTargets="Build" Condition="'$(PostBuildRegAsm)' != 'false'">
+    <PropertyGroup>
+      <RegAsmPath>C:\Windows\Microsoft.NET\Framework64\v4.0.30319\RegAsm.exe</RegAsmPath>
+      <DllPath>$(TargetPath)</DllPath>
+    </PropertyGroup>
+    <Exec Command="&quot;$(RegAsmPath)&quot; /codebase &quot;$(DllPath)&quot;"
+          Condition="Exists('$(RegAsmPath)')"
+          IgnoreExitCode="true"
+          ConsoleToMSBuild="true">
+      <Output TaskParameter="ConsoleOutput" PropertyName="RegAsmOutput" />
+    </Exec>
+    <Message Importance="high" Text="RegAsm: $(RegAsmOutput)" Condition="Exists('$(RegAsmPath)')" />
+    <Message Importance="high" Text="警告: RegAsm.exe 未找到，请手动注册 COM Add-In" Condition="!Exists('$(RegAsmPath)')" />
+  </Target>
+
+  <!-- 构建后自动注册 OneNote Add-In 注册表条目 -->
+  <Target Name="PostBuildRegisterAddIn" AfterTargets="PostBuildRegAsm" Condition="'$(PostBuildRegAsm)' != 'false'">
+    <Exec Command="reg add &quot;HKCU\Software\Microsoft\Office\OneNote\AddIns\NoteMark.AddIn&quot; /v FriendlyName /d NoteMark /f"
+          IgnoreExitCode="true" ConsoleToMSBuild="true" />
+    <Exec Command="reg add &quot;HKCU\Software\Microsoft\Office\OneNote\AddIns\NoteMark.AddIn&quot; /v Description /d &quot;OneNote Markdown Extension&quot; /f"
+          IgnoreExitCode="true" ConsoleToMSBuild="true" />
+    <Exec Command="reg add &quot;HKCU\Software\Microsoft\Office\OneNote\AddIns\NoteMark.AddIn&quot; /v LoadBehavior /t REG_DWORD /d 3 /f"
+          IgnoreExitCode="true" ConsoleToMSBuild="true" />
+    <Message Importance="high" Text="OneNote Add-In 注册表条目已创建" />
+  </Target>
+</Project>

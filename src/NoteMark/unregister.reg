@@ -1,0 +1,10 @@
+Windows Registry Editor Version 5.00
+
+; NoteMark COM Add-In - Unregistration
+; Removes all NoteMark.AddIn entries from OneNote AddIns registry keys
+
+; ===== Remove OneNote Add-In Registration (HKCU) =====
+[-HKEY_CURRENT_USER\Software\Microsoft\Office\OneNote\AddIns\NoteMark.AddIn]
+
+; ===== Remove OneNote Add-In Registration (HKLM) =====
+[-HKEY_LOCAL_MACHINE\Software\Microsoft\Office\OneNote\AddIns\NoteMark.AddIn]

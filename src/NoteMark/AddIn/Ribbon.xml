@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<customUI xmlns="http://schemas.microsoft.com/office/2009/07/customui"
+          onLoad="OnRibbonLoad">
+  <ribbon>
+    <tabs>
+      <tab id="TabNoteMark" label="NoteMark" insertAfterMso="TabView" keytip="M">
+        <group id="GroupMarkdown" label="Markdown" autoScale="true">
+          <button id="RenderButton"
+                  onAction="OnRenderClick"
+                  label="渲染"
+                  screentip="渲染当前页面的 Markdown 内容 (F5)"
+                  imageMso="AutoCorrect"
+                  size="large" />
+          <button id="SourceModeButton"
+                  onAction="OnSourceModeClick"
+                  label="源码模式"
+                  screentip="切换源码/渲染模式 (Ctrl+,)"
+                  imageMso="DesignMode"
+                  size="large" />
+          <separator id="Sep1" />
+          <button id="ExportButton"
+                  onAction="OnExportClick"
+                  label="导出剪贴板"
+                  screentip="导出 Markdown 到剪贴板 (F8)"
+                  imageMso="Copy"
+                  size="large" />
+          <button id="ImportButton"
+                  onAction="OnImportClick"
+                  label="导入文件"
+                  screentip="从文件导入 Markdown"
+                  imageMso="FileOpen"
+                  size="large" />
+          <button id="ExportFileButton"
+                  onAction="OnExportFileClick"
+                  label="导出文件"
+                  screentip="导出 Markdown 到文件"
+                  imageMso="FileSave"
+                  size="large" />
+          <separator id="Sep2" />
+          <menu id="ThemeMenu"
+                label="主题"
+                screentip="选择和管理渲染主题"
+                imageMso="ColorSchemes"
+                size="large">
+            <button id="ThemeDarkButton"
+                    label="暗色主题"
+                    onAction="OnThemeMenuClick"
+                    tag="dark" />
+            <button id="ThemeAcademicButton"
+                    label="学术主题"
+                    onAction="OnThemeMenuClick"
+                    tag="academic" />
+            <menuSeparator id="ThemeSep1" />
+            <button id="OpenThemeDirButton"
+                    label="打开主题目录"
+                    onAction="OnOpenThemeDirClick" />
+            <button id="ReloadThemesButton"
+                    label="刷新主题"
+                    onAction="OnReloadThemesClick" />
+          </menu>
+          <separator id="Sep3" />
+          <button id="AboutButton"
+                  onAction="OnAboutClick"
+                  label="关于"
+                  screentip="关于 NoteMark"
+                  imageMso="Help"
+                  size="large" />
+        </group>
+      </tab>
+    </tabs>
+  </ribbon>
+</customUI>
